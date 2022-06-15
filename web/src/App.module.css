@@ -1,0 +1,16 @@
+.app-container {
+  font: var(--fw-normal) var(--base-font) var(--ff-sans);
+  display: flex;
+  flex-direction: row;
+}
+
+.app-content {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 700px) {
+  .app-container {
+    flex-direction: column;
+  }
+}

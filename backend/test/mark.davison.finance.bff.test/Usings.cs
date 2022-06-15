@@ -1,0 +1,11 @@
+﻿global using System;
+global using System.Net.Http;
+global using System.Threading.Tasks;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.TestHost;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using mark.davison.finance.bff.Configuration;
+global using mark.davison.finance.bff.test.Framework;

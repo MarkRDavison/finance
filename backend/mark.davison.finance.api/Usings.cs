@@ -1,0 +1,15 @@
+﻿global using mark.davison.finance.api.Configuration;
+global using mark.davison.finance.common.server.Authentication;
+global using mark.davison.finance.common.server.Health;
+global using mark.davison.finance.common.server.Identification;
+global using mark.davison.finance.common.server.Middleware;
+global using mark.davison.finance.common.server.Repository;
+global using mark.davison.finance.models;
+global using mark.davison.finance.models.Entities;
+global using mark.davison.finance.models.EntityDefaulter;
+global using mark.davison.finance.persistence.Controllers;
+global using mark.davison.finance.persistence.EntityDefaulter;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.Extensions.DependencyInjection;

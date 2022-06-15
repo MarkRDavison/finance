@@ -1,0 +1,11 @@
+﻿global using mark.davison.finance.bff.queries.Scenarios.CreateAccountQuery;
+global using mark.davison.finance.common.server.Authentication;
+global using mark.davison.finance.common.server.Identification;
+global using mark.davison.finance.common.server.Repository;
+global using mark.davison.finance.models.Entities;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Moq;
+global using System;
+global using System.Collections.Generic;
+global using System.Threading;
+global using System.Threading.Tasks;

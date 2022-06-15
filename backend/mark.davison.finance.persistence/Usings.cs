@@ -1,0 +1,13 @@
+﻿global using mark.davison.finance.common.server;
+global using mark.davison.finance.common.server.Instrumentation;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using mark.davison.finance.persistence.EntityDefaulter;
+global using mark.davison.finance.persistence.Repository;
+global using mark.davison.finance.common.server.Identification;
+global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.EntityFrameworkCore;
+global using System.Linq.Expressions;
+global using mark.davison.finance.common.server.Authentication;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.Extensions.Primitives;
