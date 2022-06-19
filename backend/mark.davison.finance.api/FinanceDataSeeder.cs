@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.common.server.Repository;
-
-namespace mark.davison.finance.api;
+﻿namespace mark.davison.finance.api;
 
 public interface IFinanceDataSeeder
 {
@@ -9,14 +7,14 @@ public interface IFinanceDataSeeder
 
 public class FinanceDataSeeder : IFinanceDataSeeder
 {
-    private readonly IRepository _repository;
+    protected readonly IRepository _repository;
 
     public FinanceDataSeeder(IRepository repository)
     {
         _repository = repository;
     }
 
-    public async Task EnsureDataSeeded(CancellationToken cancellationToken)
+    public virtual async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
         await EnsureUserSeeded(cancellationToken);
         await EnsureBanksSeeded(cancellationToken);
@@ -109,7 +107,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     {
         var seededCurrencies = new List<Currency>
         {
-            new Currency { Id = Currency.NZD, Code = "NZD", Name = "New Zealand Dollar", Symbol = "$", DecimalPlaces = 2  },
+            new Currency { Id = Currency.NZD, Code = "NZD", Name = "New Zealand Dollar", Symbol = "NZ$", DecimalPlaces = 2  },
             new Currency { Id = Currency.AUD, Code = "AUD", Name = "Australian Dollar", Symbol = "A$", DecimalPlaces = 2  },
             new Currency { Id = Currency.USD, Code = "USD", Name = "US  Dollar", Symbol = "US$", DecimalPlaces = 2  },
             new Currency { Id = Currency.CAD, Code = "CAD", Name = "Canadian Dollar", Symbol = "C$", DecimalPlaces = 2  },

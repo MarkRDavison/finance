@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
+    <ProjectReference Include="..\..\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
     <ProjectReference Include="..\..\mark.davison.finance.server.common\mark.davison.finance.common.server.csproj" />
   </ItemGroup>
 

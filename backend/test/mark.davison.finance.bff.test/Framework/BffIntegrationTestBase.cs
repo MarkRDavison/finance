@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 
 namespace mark.davison.finance.bff.test.Framework;
 
-public class IntegrationTestBase
+public class BffIntegrationTestBase
 {
-    public IntegrationTestBase()
+    public BffIntegrationTestBase()
     {
         Factory = new FinanceWebApplicationFactory(() => ConfigureSettings);
         Client = Factory.CreateClient();
@@ -34,7 +33,7 @@ public class IntegrationTestBase
         {
             Method = httpMethod,
             RequestUri = new Uri(uri, UriKind.Relative),
-            Headers = 
+            Headers =
             {
                 //{ HttpRequestHeader.Authorization.ToString(), $"Bearer { MockJwtTokens.GenerateJwtToken(claims ?? DefaultClaims) }" },
                 //{ AuthConstants.Token.Sub, Sub.ToString() }

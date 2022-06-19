@@ -8,4 +8,5 @@ public partial class Account : FinanceEntity
     public int Order { get; set; }
     public Guid BankId { get; set; }
     public Guid AccountTypeId { get; set; }
+    public Guid CurrencyId { get; set; }
 }

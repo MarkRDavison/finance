@@ -1,10 +1,4 @@
-﻿using mark.davison.finance.models.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-
-namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount.Validators;
+﻿namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount.Validators;
 
 [TestClass]
 public class CreateAccountCommandValidatorTests
@@ -14,6 +8,7 @@ public class CreateAccountCommandValidatorTests
     private readonly Mock<IHttpRepository> _httpRepository;
     private readonly List<Bank> _banks;
     private readonly List<AccountType> _accountTypes;
+    private readonly List<Currency> _currencies;
     private readonly User _user;
 
     public CreateAccountCommandValidatorTests()
@@ -32,6 +27,10 @@ public class CreateAccountCommandValidatorTests
             new AccountType { Id = AccountType.Expense, Type = "Expense" },
             new AccountType { Id = AccountType.Revenue, Type = "Revenue" },
             new AccountType { Id = AccountType.Cash, Type = "Cash" }
+        };
+        _currencies = new()
+        {
+            new Currency { Id = Currency.NZD }
         };
         _user = new()
         {
@@ -92,6 +91,42 @@ public class CreateAccountCommandValidatorTests
     }
 
     [TestMethod]
+    public async Task Validate_WhereCurrencyIdIsNotValid_ReturnsError()
+    {
+        _httpRepository
+            .Setup(_ => _
+                .GetEntityAsync<Bank>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_banks[0]);
+
+        _httpRepository
+            .Setup(_ => _
+                .GetEntityAsync<AccountType>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_accountTypes[0]);
+
+        _httpRepository
+            .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Currency?)null);
+
+        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() };
+        var response = await _createAccountCommandValidator.Validate(
+            request,
+            _currentUserContext.Object,
+            CancellationToken.None);
+
+        Assert.IsTrue(response.Error.Contains(CreateAccountCommandValidator.VALIDATION_CURRENCY_ID));
+    }
+
+    [TestMethod]
     public async Task Validate_WhereNameIsNotValid_ReturnsError()
     {
         _httpRepository
@@ -110,7 +145,15 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(_accountTypes[0]);
 
-        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() };
+        _httpRepository
+            .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -144,6 +187,14 @@ public class CreateAccountCommandValidatorTests
 
         _httpRepository
             .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        _httpRepository
+            .Setup(_ => _
                 .GetEntitiesAsync<Account>(
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
@@ -160,6 +211,7 @@ public class CreateAccountCommandValidatorTests
         {
             BankId = Guid.NewGuid(),
             AccountTypeId = Guid.NewGuid(),
+            CurrencyId = Guid.NewGuid(),
             Name = "Name",
             AccountNumber = AccountNumber
         };
@@ -194,6 +246,14 @@ public class CreateAccountCommandValidatorTests
 
         _httpRepository
             .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        _httpRepository
+            .Setup(_ => _
                 .GetEntitiesAsync<Account>(
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
@@ -211,6 +271,7 @@ public class CreateAccountCommandValidatorTests
         {
             BankId = Guid.NewGuid(),
             AccountTypeId = AccountType.Expense,
+            CurrencyId = Guid.NewGuid(),
             Name = "Name",
             AccountNumber = AccountNumber
         };
@@ -244,6 +305,14 @@ public class CreateAccountCommandValidatorTests
 
         _httpRepository
             .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        _httpRepository
+            .Setup(_ => _
                 .GetEntitiesAsync<Account>(
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
@@ -261,6 +330,7 @@ public class CreateAccountCommandValidatorTests
         {
             BankId = Guid.NewGuid(),
             AccountTypeId = AccountType.Revenue,
+            CurrencyId = Guid.NewGuid(),
             Name = "Name",
             AccountNumber = AccountNumber
         };
@@ -294,6 +364,14 @@ public class CreateAccountCommandValidatorTests
 
         _httpRepository
             .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        _httpRepository
+            .Setup(_ => _
                 .GetEntitiesAsync<Account>(
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
@@ -317,6 +395,7 @@ public class CreateAccountCommandValidatorTests
         {
             BankId = Guid.NewGuid(),
             AccountTypeId = AccountType.Revenue,
+            CurrencyId = Guid.NewGuid(),
             Name = "Name",
             AccountNumber = AccountNumber
         };
@@ -351,6 +430,14 @@ public class CreateAccountCommandValidatorTests
 
         _httpRepository
             .Setup(_ => _
+                .GetEntityAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_currencies[0]);
+
+        _httpRepository
+            .Setup(_ => _
                 .GetEntitiesAsync<Account>(
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
@@ -361,6 +448,7 @@ public class CreateAccountCommandValidatorTests
         {
             BankId = Guid.NewGuid(),
             AccountTypeId = Guid.NewGuid(),
+            CurrencyId = Guid.NewGuid(),
             Name = "Name",
             AccountNumber = AccountNumber
         };

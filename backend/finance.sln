@@ -43,9 +43,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.qu
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.bff.commands.test", "test\mark.davison.finance.bff.commands.test\mark.davison.finance.bff.commands.test.csproj", "{F68B36DC-ECEF-4D28-98DE-036E62E17FE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.commands.test", "test\mark.davison.finance.bff.commands.test\mark.davison.finance.bff.commands.test.csproj", "{F68B36DC-ECEF-4D28-98DE-036E62E17FE0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.bff.queries.test", "test\mark.davison.finance.bff.queries.test\mark.davison.finance.bff.queries.test.csproj", "{DD15FC63-4475-42CE-AD06-3A663CF56B69}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.queries.test", "test\mark.davison.finance.bff.queries.test\mark.davison.finance.bff.queries.test.csproj", "{DD15FC63-4475-42CE-AD06-3A663CF56B69}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.dtos", "mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj", "{311531A4-955D-4772-875C-569D7F208786}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.common.test", "mark.davison.finance.common.test\mark.davison.finance.common.test.csproj", "{F01A2869-BC03-4634-8693-F6EEC9DA576F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +105,14 @@ Global
 		{DD15FC63-4475-42CE-AD06-3A663CF56B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD15FC63-4475-42CE-AD06-3A663CF56B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD15FC63-4475-42CE-AD06-3A663CF56B69}.Release|Any CPU.Build.0 = Release|Any CPU
+		{311531A4-955D-4772-875C-569D7F208786}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{311531A4-955D-4772-875C-569D7F208786}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311531A4-955D-4772-875C-569D7F208786}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{311531A4-955D-4772-875C-569D7F208786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -121,6 +133,8 @@ Global
 		{C618DEB5-7903-4656-B851-73CDAB574199} = {2195F093-0053-4EED-8409-EEBCA64D0532}
 		{F68B36DC-ECEF-4D28-98DE-036E62E17FE0} = {7E3B8DDF-D353-4A37-8560-04ADEB39E8BF}
 		{DD15FC63-4475-42CE-AD06-3A663CF56B69} = {7E3B8DDF-D353-4A37-8560-04ADEB39E8BF}
+		{311531A4-955D-4772-875C-569D7F208786} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
+		{F01A2869-BC03-4634-8693-F6EEC9DA576F} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}

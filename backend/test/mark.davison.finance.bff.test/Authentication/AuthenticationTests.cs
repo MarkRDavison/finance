@@ -3,7 +3,7 @@
 namespace mark.davison.finance.bff.test.Authentication;
 
 [TestClass]
-public class AuthenticationTests : IntegrationTestBase
+public class AuthenticationTests : BffIntegrationTestBase
 {
     [TestMethod]
     public async Task LoginCallback_CreatesUser_WhereUserDoesNotExist()

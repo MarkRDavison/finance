@@ -1,0 +1,17 @@
+﻿global using mark.davison.finance.api.Configuration;
+global using mark.davison.finance.api.test.Framework;
+global using mark.davison.finance.common.server.Repository;
+global using mark.davison.finance.common.test.Framework;
+global using mark.davison.finance.models.Entities;
+global using mark.davison.finance.models.Models;
+global using Microsoft.AspNetCore.Hosting;
+global using Microsoft.AspNetCore.Mvc.Testing;
+global using Microsoft.AspNetCore.TestHost;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Threading;
+global using System.Threading.Tasks;

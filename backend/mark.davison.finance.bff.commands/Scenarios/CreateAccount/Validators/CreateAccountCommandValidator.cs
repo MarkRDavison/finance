@@ -7,6 +7,8 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 
     public const string VALIDATION_BANK_ID = "INVALID_BANK_ID";
     public const string VALIDATION_ACCOUNT_TYPE_ID = "INVALID_ACCOUNT_TYPE_ID";
+    public const string VALIDATION_CURRENCY_ID = "INVALID_CURRENCY_ID";
+
     public const string VALIDATION_MISSING_REQ_FIELD = "MISSING_REQ${0}";
     public const string VALIDATION_DUPLICATE_ACC_NUM = "DUPLICATE_ACC_NUM";
 
@@ -45,6 +47,18 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         {
             response.Success = false;
             response.Error.Add(VALIDATION_ACCOUNT_TYPE_ID);
+            return response;
+        }
+
+        var currency = await _httpRepository.GetEntityAsync<Currency>(
+            request.CurrencyId,
+            authHeaders,
+            cancellation);
+
+        if (currency == null)
+        {
+            response.Success = false;
+            response.Error.Add(VALIDATION_CURRENCY_ID);
             return response;
         }
 

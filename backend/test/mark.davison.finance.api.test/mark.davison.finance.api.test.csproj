@@ -17,10 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\mark.davison.finance.api\mark.davison.finance.api.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Framework\" />
+    <ProjectReference Include="..\..\mark.davison.finance.common.test\mark.davison.finance.common.test.csproj" />
   </ItemGroup>
 
 </Project>

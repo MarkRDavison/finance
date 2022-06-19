@@ -7,9 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
-    <ProjectReference Include="..\mark.davison.finance.models\mark.davison.finance.models.csproj" />
+    <PackageReference Include="Moq" Version="4.18.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\mark.davison.finance.server.common\mark.davison.finance.common.server.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Helpers\Repository\" />
   </ItemGroup>
 
 </Project>

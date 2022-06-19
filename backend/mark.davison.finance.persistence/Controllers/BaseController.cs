@@ -27,10 +27,11 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
     public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var where = GenerateWhereClause(HttpContext.Request.Query);
+        var include = GenerateIncludesClause(HttpContext.Request.Query);
 
         using (_logger.ProfileOperation(context: $"GET api/{typeof(T).Name.ToLowerInvariant()}"))
         {
-            return Ok(await _repository.GetEntitiesAsync<T>(where, cancellationToken));
+            return Ok(await _repository.GetEntitiesAsync<T>(where, include, cancellationToken));
         }
     }
 
@@ -149,6 +150,13 @@ public abstract class BaseController<T> : ControllerBase where T : BaseEntity, n
                 return new BadRequestResult();
             }
         }
+    }
+
+    protected Expression<Func<T, object>>[]? GenerateIncludesClause(IQueryCollection query)
+    {
+        var includes = query["includes"].Select(x => x.ToString()).SelectMany(_ => _.Split('|'));
+
+        return null;
     }
 
     protected Expression<Func<T, bool>>? GenerateWhereClause(IQueryCollection query)
