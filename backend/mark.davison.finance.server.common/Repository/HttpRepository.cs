@@ -36,6 +36,10 @@ public abstract class HttpRepository : IHttpRepository
             $"{_remoteEndpoint}/api/{entityRouteName}/{id}");
         header.CopyHeaders(request);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
+        if (!response.IsSuccessStatusCode)
+        {
+            return null;
+        }
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         return JsonSerializer.Deserialize<T>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
     }

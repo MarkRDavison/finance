@@ -4,6 +4,5 @@
 public class AccountListQueryRequest : ICommand<AccountListQueryRequest, AccountListQueryResponse>
 {
     public bool ShowActive { get; set; } = false;
-    public string AccountType { get; set; } = string.Empty;
 }
 

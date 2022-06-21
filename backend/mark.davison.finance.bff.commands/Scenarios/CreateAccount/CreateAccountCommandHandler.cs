@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.Entities;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateLocation;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateLocation;
 
 public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest, CreateAccountResponse>
 {
@@ -37,6 +35,7 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
             AccountNumber = query.AccountNumber,
             AccountTypeId = query.AccountTypeId,
             BankId = query.BankId,
+            CurrencyId = query.CurrencyId,
             Order = -1,
             UserId = currentUserContext.CurrentUser.Id
         };

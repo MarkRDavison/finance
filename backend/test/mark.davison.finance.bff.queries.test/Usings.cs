@@ -1,5 +1,4 @@
 ﻿global using mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
-global using mark.davison.finance.bff.queries.Scenarios.CreateAccountQuery;
 global using mark.davison.finance.common.server.Authentication;
 global using mark.davison.finance.common.server.Identification;
 global using mark.davison.finance.common.server.Repository;
