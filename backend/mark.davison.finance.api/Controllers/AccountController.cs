@@ -22,16 +22,22 @@ public class AccountController : BaseController<Account>
     public async Task<IActionResult> GetSummary(CancellationToken cancellationToken)
     {
         var where = GenerateWhereClause(HttpContext.Request.Query);
+        var includes = new Expression<Func<Account, object>>[]
+        {
+            _ => _.AccountType!
+        };
 
         using (_logger.ProfileOperation(context: $"GET api/{typeof(Account).Name.ToLowerInvariant()}/summary"))
         {
-            var accounts = await _repository.GetEntitiesAsync<Account>(where, cancellationToken);
+            var accounts = await _repository.GetEntitiesAsync<Account>(where, includes, cancellationToken);
             var summaries = accounts.Select(_ => new AccountSummary
             {
                 Id = _.Id,
                 Name = _.Name,
                 AccountNumber = _.AccountNumber,
-                IsActive = _.IsActive
+                AccountType = _.AccountType.Type,
+                IsActive = _.IsActive,
+                LastActivity = _.LastModified
             });
 
             return Ok(summaries);

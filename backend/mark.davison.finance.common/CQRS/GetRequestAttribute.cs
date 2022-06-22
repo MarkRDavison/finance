@@ -1,7 +1,8 @@
-﻿namespace mark.davison.finance.common.server.CQRS;
+﻿namespace mark.davison.finance.common.CQRS;
+
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-public class PostRequestAttribute : Attribute
+public class GetRequestAttribute : Attribute
 {
     public string Path { get; set; } = null!;
 }

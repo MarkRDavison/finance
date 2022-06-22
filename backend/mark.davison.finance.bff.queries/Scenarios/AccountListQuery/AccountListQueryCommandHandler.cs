@@ -13,10 +13,9 @@ public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRe
     {
         var response = new AccountListQueryResponse();
 
-        var queryParameters = new QueryParameters();
-
-        var accounts = await _httpRepository.GetEntitiesAsync<Account>(
-            queryParameters,
+        var accounts = await _httpRepository.GetEntitiesAsync<AccountSummary>(
+            "account/summary",
+            new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellation);
 
@@ -25,9 +24,9 @@ public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRe
             Id = _.Id,
             AccountNumber = _.AccountNumber,
             Name = _.Name,
-            AccountType = _.AccountType.Type,
+            AccountType = _.AccountType,
             Active = _.IsActive,
-            LastModified = _.LastModified
+            LastModified = _.LastActivity
         }));
 
         return response;

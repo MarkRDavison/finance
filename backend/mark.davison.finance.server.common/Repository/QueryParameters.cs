@@ -12,5 +12,17 @@ public class QueryParameters : Dictionary<string, string>
         }
         return uri;
     }
+
+    public void Include(string path)
+    {
+        if (!ContainsKey("include"))
+        {
+            this["include"] = path;
+        }
+        else
+        {
+            this["include"] += "|" + path;
+        }
+    }
 }
 

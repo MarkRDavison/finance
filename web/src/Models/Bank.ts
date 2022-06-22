@@ -1,9 +1,7 @@
-import { BaseEntity } from "@/Models/BaseEntity";
+import { BaseEntity } from '@/Models/BaseEntity';
 
 export interface BankCreationArgs {
-    name: string
+  name: string;
 }
 
-export interface Bank extends BankCreationArgs, BaseEntity {
-
-}
+export interface Bank extends BankCreationArgs, BaseEntity {}

@@ -21,7 +21,19 @@ public abstract class HttpRepository : IHttpRepository
             $"{_remoteEndpoint}/api/{entityRouteName}{query.CreateQueryString()}");
         header.CopyHeaders(request);
         using var response = await _httpClient.SendAsync(request, cancellationToken);
-        response.EnsureSuccessStatusCode(); // TODO: Dev only?
+        response.EnsureSuccessStatusCode();
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+        var result = JsonSerializer.Deserialize<T[]>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        return result?.ToList() ?? new List<T>();
+    }
+    public async Task<List<T>> GetEntitiesAsync<T>(string path, QueryParameters query, HeaderParameters header, CancellationToken cancellationToken)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Get,
+            $"{_remoteEndpoint}/api/{path}{query.CreateQueryString()}");
+        header.CopyHeaders(request);
+        using var response = await _httpClient.SendAsync(request, cancellationToken);
+        response.EnsureSuccessStatusCode();
         var content = await response.Content.ReadAsStringAsync(cancellationToken);
         var result = JsonSerializer.Deserialize<T[]>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
         return result?.ToList() ?? new List<T>();

@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using System.Net;
-using System.Text;
-using static mark.davison.finance.common.server.Authentication.ZenoAuthenticationConstants;
+﻿using static mark.davison.finance.common.server.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.finance.common.server.Middleware;
 

@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-namespace mark.davison.finance.common.server;
+﻿namespace mark.davison.finance.common.server;
 
 public static class ProxyEndpointRouteBuilderExtensions
 {

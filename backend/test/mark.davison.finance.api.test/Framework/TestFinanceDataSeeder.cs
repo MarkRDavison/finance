@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace mark.davison.finance.api.test.Framework;
+﻿namespace mark.davison.finance.api.test.Framework;
 
 public class TestFinanceDataSeeder : FinanceDataSeeder
 {

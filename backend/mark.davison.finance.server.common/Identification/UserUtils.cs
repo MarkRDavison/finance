@@ -1,6 +1,4 @@
-﻿using System.Security.Claims;
-
-namespace mark.davison.finance.common.server.Identification;
+﻿namespace mark.davison.finance.common.server.Identification;
 
 public static class ClaimsPrincipalExtensions
 {

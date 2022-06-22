@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.bff.queries.Scenarios.StartupQuery;
+﻿namespace mark.davison.finance.models.dtos.Queries.StartupQuery;
 
 public class StartupQueryResponse
 {

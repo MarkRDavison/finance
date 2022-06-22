@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System.Web;
-
-namespace mark.davison.finance.common.server.Utilities;
+﻿namespace mark.davison.finance.common.server.Utilities;
 
 public static class WebUtilities
 {

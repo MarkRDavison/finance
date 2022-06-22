@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Components.WebAssembly.Http;
-
-namespace mark.davison.finance.common.client.Authentication;
+﻿namespace mark.davison.finance.common.client.Authentication;
 
 public class CookieHandler : DelegatingHandler
 {

@@ -6,7 +6,6 @@ import ReactDom from 'react-dom';
 import App from '@/App';
 import { AuthContext, AuthEndpoints } from '@mark.davison/zeno-common-client';
 import config from '@/Utility/Config';
-import styles from '@/Index.module.css';
 import { Provider } from 'react-redux';
 import createReduxStore from '@/Store/Store';
 
@@ -22,7 +21,7 @@ axios.defaults.withCredentials = true;
 const store = createReduxStore();
 
 ReactDom.render(
-  <div className={styles.main}>
+  <div style={{ background: '#4287f5' }}>
     <Provider store={store}>
       <AuthContext {...authEndpoints}>
         <App />

@@ -1,7 +1,4 @@
-﻿using System.Text;
-using System.Text.Json;
-
-namespace mark.davison.finance.bff.test.Framework;
+﻿namespace mark.davison.finance.bff.test.Framework;
 
 public class BffIntegrationTestBase
 {

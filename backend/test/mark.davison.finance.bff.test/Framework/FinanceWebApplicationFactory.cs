@@ -1,13 +1,4 @@
-﻿using mark.davison.finance.common.server.Authentication;
-using mark.davison.finance.common.server.Identification;
-using Moq;
-using Moq.Protected;
-using System.IO;
-using System.Text.Json;
-using System.Threading;
-using System.Web;
-
-namespace mark.davison.finance.bff.test.Framework;
+﻿namespace mark.davison.finance.bff.test.Framework;
 
 public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
 {
@@ -42,7 +33,8 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
                 }
                 else if (request.RequestUri.PathAndQuery.Contains("/auth/realms/markdavison.kiwi/protocol/openid-connect/token"))
                 {
-                    response.Content = new StringContent(JsonSerializer.Serialize(new AuthTokens {
+                    response.Content = new StringContent(JsonSerializer.Serialize(new AuthTokens
+                    {
                         access_token = "access",
                         refresh_token = "refresh"
                     }));
@@ -54,13 +46,13 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
                 else if (request.RequestUri.PathAndQuery.Contains("/api/user") && request.Method == HttpMethod.Post)
                 {
                     response.Content = new StringContent(JsonSerializer.Serialize(User));
-                }                
+                }
                 else if (request.RequestUri.PathAndQuery.Contains("/api/user?sub="))
                 {
                     var query = HttpUtility.ParseQueryString(request.RequestUri.Query);
                     if (Guid.TryParse(query["sub"], out Guid userSub) && userSub == User.Sub)
                     {
-                       response.Content = new StringContent(JsonSerializer.Serialize(new User[] { User }));
+                        response.Content = new StringContent(JsonSerializer.Serialize(new User[] { User }));
                     }
                     else
                     {
@@ -78,7 +70,8 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
         {
             _.PrimaryHandler = MessageHandlerMock.Object;
         });
-        services.Configure<AppSettings>(a => {
+        services.Configure<AppSettings>(a =>
+        {
             if (ConfigureSettings() != null)
             {
                 ConfigureSettings()(a);
@@ -89,7 +82,8 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
     protected Func<Action<AppSettings>> ConfigureSettings { get; set; }
     protected Mock<HttpMessageHandler> MessageHandlerMock { get; set; } = new();
 
-    protected virtual UserProfile UserProfile => new UserProfile {
+    protected virtual UserProfile UserProfile => new UserProfile
+    {
         sub = new Guid("ACC47AFA-F89E-4FED-A346-B75BB5B01737"),
         given_name = "First",
         family_name = "Last",
@@ -99,7 +93,8 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
         preferred_username = "First"
     };
 
-    protected virtual User User => new User {
+    protected virtual User User => new User
+    {
         Id = new Guid("6282A750-13F8-4C1D-9F13-58EFFDD8BE20"),
         Sub = new Guid("ACC47AFA-F89E-4FED-A346-B75BB5B01737")
     };

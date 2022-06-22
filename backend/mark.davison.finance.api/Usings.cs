@@ -1,4 +1,5 @@
-﻿global using mark.davison.finance.api.Configuration;
+﻿global using mark.davison.finance.api;
+global using mark.davison.finance.api.Configuration;
 global using mark.davison.finance.common.server.Authentication;
 global using mark.davison.finance.common.server.Health;
 global using mark.davison.finance.common.server.Identification;
@@ -15,3 +16,4 @@ global using Microsoft.AspNetCore.Authentication.JwtBearer;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.DependencyInjection;
+global using System.Linq.Expressions;

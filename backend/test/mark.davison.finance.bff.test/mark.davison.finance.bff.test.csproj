@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <None Update="openid-configuration.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

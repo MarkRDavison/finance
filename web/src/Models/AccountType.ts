@@ -1,9 +1,7 @@
-import { BaseEntity } from "@/Models/BaseEntity";
+import { BaseEntity } from '@/Models/BaseEntity';
 
 export interface AccountTypeCreationArgs {
-    type: string
+  type: string;
 }
 
-export interface AccountType extends AccountTypeCreationArgs, BaseEntity {
-
-}
+export interface AccountType extends AccountTypeCreationArgs, BaseEntity {}

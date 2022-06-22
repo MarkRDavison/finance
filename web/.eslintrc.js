@@ -18,6 +18,8 @@ module.exports = {
                 trailingComma: 'all',
             }
         ],
+        'react/display-name': 'off',
+        '@typescript-eslint/no-non-null-assertion': 'off',
         'react/prop-types': [
             1,
             {

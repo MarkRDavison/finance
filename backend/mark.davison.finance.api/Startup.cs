@@ -49,7 +49,7 @@ public class Startup
             ));
 
         services.AddDbContextFactory<FinanceDbContext>(_ =>
-            _.UseSqlite($"Data Source=C:/temp/{Guid.NewGuid()}.db"));
+            _.UseSqlite($"Data Source=C:/temp/finance-current.db"));
 
         services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();
 

@@ -1,0 +1,17 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>Zeno Finance</PageTitle>
+
+<div class="z-app-container">
+    <Appbar Items="@AppbarItems" />
+    @Body
+</div>
+
+@code {
+    private List<AppbarItem> AppbarItems { get; } = new()
+    {
+        // TODO: Internationalisation
+        new AppbarItem("Finance", Routes.Root),
+        new AppbarItem("Accounts", Routes.Accounts)
+    };
+}

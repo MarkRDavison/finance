@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace mark.davison.finance.common.server.Instrumentation;
+﻿namespace mark.davison.finance.common.server.Instrumentation;
 
 public static class LoggerEvents
 {

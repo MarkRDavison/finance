@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
-using System.Text.Json;
-
-namespace mark.davison.finance.common.client.Authentication;
+﻿namespace mark.davison.finance.common.client.Authentication;
 
 public partial class AuthenticationContext : ObservableObject, IAuthenticationContext
 {
@@ -37,8 +34,7 @@ public partial class AuthenticationContext : ObservableObject, IAuthenticationCo
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri(_authenticationConfig.UserEndpoint),
-
+                RequestUri = new Uri(_authenticationConfig.UserEndpoint)
             };
 
             var client = _httpClientFactory.CreateClient("API");
@@ -67,10 +63,17 @@ public partial class AuthenticationContext : ObservableObject, IAuthenticationCo
             IsAuthenticating = false;
             User = null;
         }
+
+        if (!IsAuthenticated)
+        {
+            await Login();
+        }
     }
     public async Task Login()
     {
         await Task.CompletedTask;
+        var relative = _navigationManager.Uri.Replace(_navigationManager.BaseUri.Trim('/'), "");
+        _navigationManager.NavigateTo(_authenticationConfig.LoginEndpoint + "?redirect_uri=" + relative);
     }
     public async Task Logout()
     {

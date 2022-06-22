@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Net.Http.Json;
-using System.Security.Cryptography;
-using static mark.davison.finance.common.server.Authentication.ZenoAuthenticationConstants;
+﻿using static mark.davison.finance.common.server.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.finance.common.server.Authentication;
 

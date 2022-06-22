@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount;
+﻿namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount;
 
 [TestClass]
 public class CreateAccountCommandHandlerTests

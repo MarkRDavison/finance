@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.finance.common.server.Repository;
+﻿namespace mark.davison.finance.common.server.Repository;
 
 public interface IRepository
 {

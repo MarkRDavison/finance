@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.common.server.Health;
-using mark.davison.finance.common.server.Middleware;
-
-namespace mark.davison.finance.bff;
+﻿namespace mark.davison.finance.bff;
 
 public class Startup
 {

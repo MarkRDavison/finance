@@ -1,8 +1,4 @@
-﻿
-
-using mark.davison.finance.common.server.Repository;
-
-namespace mark.davison.finance.persistence.Controllers;
+﻿namespace mark.davison.finance.persistence.Controllers;
 
 public abstract class BaseController<T> : ControllerBase where T : BaseEntity, new()
 {

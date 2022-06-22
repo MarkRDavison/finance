@@ -1,0 +1,2 @@
+Playright instead of cypress
+ef core migrations

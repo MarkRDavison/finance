@@ -47,9 +47,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.queries.test", "test\mark.davison.finance.bff.queries.test\mark.davison.finance.bff.queries.test.csproj", "{DD15FC63-4475-42CE-AD06-3A663CF56B69}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.dtos", "mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj", "{311531A4-955D-4772-875C-569D7F208786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.dtos", "mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj", "{311531A4-955D-4772-875C-569D7F208786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.common.test", "mark.davison.finance.common.test\mark.davison.finance.common.test.csproj", "{F01A2869-BC03-4634-8693-F6EEC9DA576F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.test", "mark.davison.finance.common.test\mark.davison.finance.common.test.csproj", "{F01A2869-BC03-4634-8693-F6EEC9DA576F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WEB", "WEB", "{FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui", "mark.davison.finance.web.ui\mark.davison.finance.web.ui.csproj", "{39D248CD-78CA-4C03-8CC2-031460CC97D7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.client", "mark.davison.finance.common.client\mark.davison.finance.common.client.csproj", "{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZUI", "ZUI", "{1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.client.components", "mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj", "{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.common", "mark.davison.finance.common\mark.davison.finance.common.csproj", "{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,6 +125,22 @@ Global
 		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F01A2869-BC03-4634-8693-F6EEC9DA576F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39D248CD-78CA-4C03-8CC2-031460CC97D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39D248CD-78CA-4C03-8CC2-031460CC97D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39D248CD-78CA-4C03-8CC2-031460CC97D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39D248CD-78CA-4C03-8CC2-031460CC97D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -135,6 +163,10 @@ Global
 		{DD15FC63-4475-42CE-AD06-3A663CF56B69} = {7E3B8DDF-D353-4A37-8560-04ADEB39E8BF}
 		{311531A4-955D-4772-875C-569D7F208786} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{F01A2869-BC03-4634-8693-F6EEC9DA576F} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
+		{39D248CD-78CA-4C03-8CC2-031460CC97D7} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
+		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
+		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
+		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.common.server.Repository;
-
-namespace mark.davison.finance.persistence.Repository;
+﻿namespace mark.davison.finance.persistence.Repository;
 
 public abstract class RepositoryBase<TContext> : IRepository
     where TContext : DbContext
