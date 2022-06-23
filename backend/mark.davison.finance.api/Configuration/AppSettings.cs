@@ -9,4 +9,5 @@ public class AppSettings
     public string CLIENT_SECRET { get; set; } = string.Empty;
     public string SESSION_NAME { get; set; } = "finance-session-name";
     public string SCOPE { get; set; } = "openid profile email offline_access zeno zeno-finance";
+    public string CONNECTION_STRING { get; set; } = "Data Source=C:/temp/finance-current.db";
 }

@@ -1,15 +1,15 @@
-﻿namespace mark.davison.finance.api.test.Framework;
+﻿using Microsoft.Extensions.Configuration;
 
-public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, IFinanceWebApplicationFactory
+namespace mark.davison.finance.api.test.Framework;
+
+public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, IFinanceWebApplicationFactory<AppSettings>
 {
     public virtual Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
 
-    public FinanceApiWebApplicationFactory()
-    {
-    }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.ConfigureAppConfiguration((context, conf) => conf.AddJsonFile("appsettings.integration.json"));
         builder.ConfigureTestServices(ConfigureServices);
         builder.ConfigureLogging((WebHostBuilderContext context, ILoggingBuilder loggingBuilder) =>
         {

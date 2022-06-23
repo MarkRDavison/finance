@@ -1,7 +1,7 @@
 ﻿namespace mark.davison.finance.common.test.Framework;
 
 public class IntegrationTestBase<TFactory, TSettings>
-    where TFactory : IFinanceWebApplicationFactory, new()
+    where TFactory : IFinanceWebApplicationFactory<TSettings>, IDisposable, new()
 {
     protected TFactory _factory;
 

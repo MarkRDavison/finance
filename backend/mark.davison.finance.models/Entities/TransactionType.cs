@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.models.Entities;
 
-[Lookup]
+[Lookup(PhaseName = "Startup", Phase = 0)]
 public partial class TransactionType : FinanceEntity
 {
     public static Guid Withdrawal = new Guid("42E893A8-AA6A-4878-A884-AE610FD184E7");

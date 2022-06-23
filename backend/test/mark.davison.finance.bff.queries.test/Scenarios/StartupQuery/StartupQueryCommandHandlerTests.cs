@@ -37,6 +37,11 @@ public class StartupQueryCommandHandlerTests
         var currencies = new List<Currency> {
             new Currency { Id = Guid.NewGuid(), Code = "NZD", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 }
         };
+        var transactionTypes = new List<TransactionType> {
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.OpeningBalance) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.Invalid) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.Deposit) },
+        };
 
         _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<Bank>(
             It.IsAny<QueryParameters>(),
@@ -53,6 +58,11 @@ public class StartupQueryCommandHandlerTests
             It.IsAny<HeaderParameters>(),
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(currencies);
+        _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<TransactionType>(
+            It.IsAny<QueryParameters>(),
+            It.IsAny<HeaderParameters>(),
+            It.IsAny<CancellationToken>()))
+            .ReturnsAsync(transactionTypes);
 
         var request = new StartupQueryRequest { };
 
@@ -61,6 +71,7 @@ public class StartupQueryCommandHandlerTests
         Assert.AreEqual(banks.Count, response.Banks.Count);
         Assert.AreEqual(accountTypes.Count, response.AccountTypes.Count);
         Assert.AreEqual(currencies.Count, response.Currencies.Count);
+        Assert.AreEqual(transactionTypes.Count, response.TransactionTypes.Count);
         foreach (var b in banks)
         {
             Assert.IsTrue(response.Banks.Exists(_ =>
@@ -81,6 +92,12 @@ public class StartupQueryCommandHandlerTests
                 _.Name == c.Name &&
                 _.Symbol == c.Symbol &&
                 _.DecimalPlaces == c.DecimalPlaces));
+        }
+        foreach (var at in transactionTypes)
+        {
+            Assert.IsTrue(response.TransactionTypes.Exists(_ =>
+                _.Id == at.Id &&
+                _.Type == at.Type));
         }
     }
 }

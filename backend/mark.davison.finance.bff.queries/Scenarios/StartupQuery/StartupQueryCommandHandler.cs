@@ -28,6 +28,11 @@ public class StartupQueryCommandHandler : ICommandHandler<StartupQueryRequest, S
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellation);
 
+        var transactionTypes = await _httpRepository.GetEntitiesAsync<TransactionType>(
+            new QueryParameters(),
+            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
+            cancellation);
+
         response.Banks.AddRange(banks.Select(_ => new BankDto
         {
             Id = _.Id,
@@ -35,6 +40,12 @@ public class StartupQueryCommandHandler : ICommandHandler<StartupQueryRequest, S
         }));
 
         response.AccountTypes.AddRange(accountTypes.Select(_ => new AccountTypeDto
+        {
+            Id = _.Id,
+            Type = _.Type
+        }));
+
+        response.TransactionTypes.AddRange(transactionTypes.Select(_ => new TransactionTypeDto
         {
             Id = _.Id,
             Type = _.Type

@@ -48,8 +48,14 @@ public class Startup
                 .Build()
             ));
 
-        services.AddDbContextFactory<FinanceDbContext>(_ =>
-            _.UseSqlite($"Data Source=C:/temp/finance-current.db"));
+        if (AppSettings.CONNECTION_STRING.Equals("RANDOM"))
+        {
+            services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite($"Data Source={Guid.NewGuid()}.db"));
+        }
+        else
+        {
+            services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite(AppSettings.CONNECTION_STRING));
+        }
 
         services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();
 
