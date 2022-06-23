@@ -20,4 +20,10 @@
     <ProjectReference Include="..\..\mark.davison.finance.common.test\mark.davison.finance.common.test.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="appsettings.integration.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

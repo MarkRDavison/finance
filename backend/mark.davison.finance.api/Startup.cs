@@ -48,7 +48,7 @@ public class Startup
                 .Build()
             ));
 
-        if (AppSettings.CONNECTION_STRING.Equals("RANDOM"))
+        if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
         {
             services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite($"Data Source={Guid.NewGuid()}.db"));
         }

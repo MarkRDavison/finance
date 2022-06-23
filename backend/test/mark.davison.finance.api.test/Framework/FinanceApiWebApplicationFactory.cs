@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-
-namespace mark.davison.finance.api.test.Framework;
+﻿namespace mark.davison.finance.api.test.Framework;
 
 public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, IFinanceWebApplicationFactory<AppSettings>
 {
@@ -9,7 +7,9 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        builder.ConfigureAppConfiguration((context, conf) => conf.AddJsonFile("appsettings.integration.json"));
+        builder.ConfigureAppConfiguration((context, conf) => conf
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.integration.json"));
         builder.ConfigureTestServices(ConfigureServices);
         builder.ConfigureLogging((WebHostBuilderContext context, ILoggingBuilder loggingBuilder) =>
         {
