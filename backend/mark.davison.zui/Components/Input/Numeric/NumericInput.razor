@@ -14,6 +14,7 @@
         type="text"
         readonly="@IsReadOnly"
         disabled="@Disabled"
+        onclick="this.select();"
         @bind-value="@StringValue"
         @onkeydown="@OnKeydown"
         @onkeydown:preventDefault="@preventKey"
@@ -117,11 +118,6 @@
         }
 
         return false;
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
     }
 
     private void OnInput(ChangeEventArgs e)
