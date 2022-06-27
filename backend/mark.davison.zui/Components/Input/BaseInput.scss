@@ -1,0 +1,29 @@
+﻿@import '../../_variables.scss';
+
+.z-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.z-form-label {
+    font-size: 1rem;
+    margin-bottom: $ui-label-margin-bottom;
+    font-weight: $ui-label-font-weight;
+    color: $grey-700;
+}
+
+.z-form-control {
+    font-size: $ui-control-font-size;
+    min-width: $ui-control-min-width;
+    min-height: $ui-control-min-height;
+    padding: $ui-control-padding;
+    border-radius: $ui-control-border-radius;
+    box-sizing: border-box;
+    border: $ui-control-border;
+    color: $ui-text-colour;
+
+    &:focus-visible {
+        outline: none !important;
+        box-shadow: 0 0 0 $ui-box-shadow-size rgba($ui-border-colour, 0.5);
+    }
+}

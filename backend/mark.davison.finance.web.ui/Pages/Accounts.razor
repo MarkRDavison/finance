@@ -1,3 +1,18 @@
-﻿@attribute [Route(Routes.Accounts)]
+﻿@using System.Text.Json
+@using mark.davison.finance.models.dtos.Queries.StartupQuery
+@attribute [Route(Routes.Accounts)]
+@inject IClientHttpRepository _repository;
 
 <h1>Accounts</h1>
+
+<button onclick="@(() => GetStartup())">STARTUP</button>
+
+@code {
+
+    private async Task GetStartup()
+    {
+        var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(new StartupQueryRequest { });
+        Console.WriteLine(JsonSerializer.Serialize(response));
+    }
+
+}

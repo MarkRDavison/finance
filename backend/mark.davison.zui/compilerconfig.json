@@ -1,0 +1,12 @@
+﻿[
+  {
+    "outputFile": "wwwroot/css/zeno-ui.css",
+    "inputFile": "zui.scss",
+    "minify": {
+      "enabled": true
+    },
+    "options": {
+      "sourceMap": true
+    }
+  }
+]

@@ -1,8 +1,9 @@
+var bffRoot = "https://localhost:40000";
 var authConfig = new AuthenticationConfig
 {
-    LoginEndpoint = "https://localhost:40000/auth/login",
-    LogoutEndpoint = "https://localhost:40000/auth/logout",
-    UserEndpoint = "https://localhost:40000/auth/user"
+    LoginEndpoint = bffRoot + "/auth/login",
+    LogoutEndpoint = bffRoot + "/auth/logout",
+    UserEndpoint = bffRoot + "/auth/user"
 };
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -13,5 +14,6 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddHttpClient("API").AddHttpMessageHandler(_ => new CookieHandler());
 builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
+builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(bffRoot, _.GetRequiredService<IHttpClientFactory>()));
 
 await builder.Build().RunAsync();

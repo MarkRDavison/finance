@@ -1,0 +1,84 @@
+﻿@using mark.davison.zui.Components.Icon
+@using mark.davison.zui.Components.OutsideAlerter
+@using mark.davison.zui.foundations.Abstractions
+@inherits BaseInput
+
+<div class="z-col" style="width: @Width;">
+    @if (IsLabelDisplay)
+    {
+        <label htmlFor="@Id" class="z-form-label">@Label</label>
+    }
+        <div
+            @ref="@_divthing"
+            tabindex="0"
+            class="z-dropdownlist z-form-control @extraclass"
+            onfocus="@(() => SetOpen(true))"
+            onclick="@(() => SetOpen(true))">
+            <span class="noselect">@GetSelectedValue()</span>
+            <Icon Id="DropdownChevron" IconType="chevron-down" />
+        </div>
+    
+        @if (_open)
+        {     
+            <OutsideAlerter OnClickOutside="@(() => SetOpen(false))">
+                <div class="z-dropdownlist-content">
+                    @foreach (var item in Items)
+                    {
+                        var selected = item.Id == Value ? "selected" : string.Empty;
+                        <div key=@item.Id class="z-dropdownlist-item @selected" onclick="@(() => OnItemClicked(item))">
+                            <div>
+                                <span>@item.PrimaryText</span>
+                                @if (!string.IsNullOrEmpty(item.Code))
+                                {
+                                    <span class="muted-text">  (@item.Code)</span>
+                                }
+                        </div>
+                            @if (!string.IsNullOrEmpty(item.SecondaryText))
+                            {
+                                <span class="muted-text" style="font-size: 0.75rem;">@item.SecondaryText</span>
+                            }
+                        </div>
+                    }
+                </div>
+            </OutsideAlerter>
+        }
+</div>
+
+@code {
+    private bool _open;
+    private ElementReference _divthing;
+    private string extraclass => _open ? "focused" : "";
+
+    [Parameter]
+    public List<IDropdownItem> Items { get; set; } = new();
+
+    private async void OnItemClicked(IDropdownItem item)
+    {
+        Value = item.Id;
+        await ValueChanged.InvokeAsync(item.Id);
+        SetOpen(false);
+    }
+
+    private string GetSelectedValue()
+    {
+        var selected = Items.FirstOrDefault(_ => _.Id == Value);
+        return selected?.PrimaryText ?? Placeholder ?? string.Empty;
+    }
+    private string GetSelectedSecondaryValue()
+    {
+        var selected = Items.FirstOrDefault(_ => _.Id == Value);
+        return selected?.SecondaryText ??  string.Empty;
+    }
+
+    private void SetOpen(bool open)
+    {
+        if (Disabled || _open == open)
+        {
+            return;
+        }
+
+        _open = open;
+        StateHasChanged();
+    }
+
+}
