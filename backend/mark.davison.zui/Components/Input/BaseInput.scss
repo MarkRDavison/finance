@@ -27,3 +27,19 @@
         box-shadow: 0 0 0 $ui-box-shadow-size rgba($ui-border-colour, 0.5);
     }
 }
+
+.z-numeric-input {
+    text-align: right;
+}
+
+.hide-spinner {
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+}

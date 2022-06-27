@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.zui.Components.Input;
 
-public class BaseInput : Component
+public class BaseInput<TInputType> : Component
 {
     [Parameter]
     public string Label { get; set; } = string.Empty;
@@ -21,8 +21,8 @@ public class BaseInput : Component
     public string Width { get; set; } = Size.DefaultControlWidth;
 
     [Parameter]
-    public string Value { get; set; } = string.Empty;
+    public TInputType Value { get; set; } = default!;
 
     [Parameter]
-    public EventCallback<string> ValueChanged { get; set; }
+    public EventCallback<TInputType> ValueChanged { get; set; }
 }

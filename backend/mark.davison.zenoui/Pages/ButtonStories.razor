@@ -7,14 +7,14 @@
         <h3>@variant</h3>
         @foreach (var type in _types)
         {
-            <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
-                <Button Variant="@variant" Type="@type" Label="Text" />
-                <Button Variant="@variant" Type="@type" Label="Disabled" Disabled="true" />
-                <Button Variant="@variant" Type="@type" Label="Progress" Progress="true" />
-                <Button Variant="@variant" Type="@type" IconStyle="IconStyle.IconOnly" Icon="heart-fill" />
-                <Button Variant="@variant" Type="@type" Label="Icon Left" IconStyle="IconStyle.IconLeft" Icon="chevron-left" />
-                <Button Variant="@variant" Type="@type" Label="Icon Right" IconStyle="IconStyle.IconRight" Icon="chevron-right" />
-            </div>    
+        <div style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
+            <Button Variant="@variant" Type="@type" Label="Text" />
+            <Button Variant="@variant" Type="@type" Label="Disabled" Disabled="true" />
+            <Button Variant="@variant" Type="@type" Label="Progress" Progress="true" />
+            <Button Variant="@variant" Type="@type" IconStyle="IconStyle.IconOnly" Icon="heart-fill" />
+            <Button Variant="@variant" Type="@type" Label="Icon Left" IconStyle="IconStyle.IconLeft" Icon="chevron-left" />
+            <Button Variant="@variant" Type="@type" Label="Icon Right" IconStyle="IconStyle.IconRight" Icon="chevron-right" />
+        </div>    
         }
     }
 </div>

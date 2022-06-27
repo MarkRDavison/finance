@@ -1,0 +1,26 @@
+﻿@inherits NumericInput
+
+@{
+    base.BuildRenderTree(__builder);
+}
+
+@code {
+
+    private string formatter(decimal num)
+    {
+        if (num < 0)
+        {
+            return $"({num.ToString("N2")})%";
+        }
+        return num.ToString("N2") + "%";
+    }
+
+    protected override void OnInitialized()
+    {
+        this.Formatter = formatter;
+        this.Min = Negative ? -100 : 0;     
+        this.Max = +100;   
+
+        base.OnInitialized();
+    }
+}

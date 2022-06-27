@@ -1,4 +1,4 @@
-﻿@inherits BaseInput
+﻿@inherits BaseInput<string>
 
 <div class="z-col" style="width: @Width;">
 
@@ -22,7 +22,7 @@
 
 @code {
 
-    private async void OnBlur()
+    private async Task OnBlur()
     {
         await ValueChanged.InvokeAsync(Value);
     }
