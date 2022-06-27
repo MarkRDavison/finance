@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff;
+﻿using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
+
+namespace mark.davison.finance.bff;
 
 public class Startup
 {
@@ -29,14 +31,14 @@ public class Startup
         services.AddSwaggerGen();
 
         services.AddCors(options =>
-            options.AddPolicy("AllowOrigin", _ => _
-                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                .SetIsOriginAllowed(_ => true)
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .AllowAnyHeader()
-                .Build()
-            ));
+        {
+            options.AddPolicy("CorsPolicy",
+                builder => builder
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                    .SetIsOriginAllowed((host) => true)
+                    .AllowAnyHeader());
+        });
 
         services.AddAuthentication(ZenoAuthenticationConstants.ZenoAuthenticationScheme);
         services.AddAuthorization();
@@ -76,7 +78,11 @@ public class Startup
             .AddHttpContextAccessor();
 
         services.AddProxyServices(ProxyOptions);
-        services.UseCQRS(typeof(BffRootType), typeof(CommandsRootType), typeof(QueriesRootType));
+        services.UseCQRS(
+            typeof(BffRootType),
+            typeof(CommandsRootType),
+            typeof(QueriesRootType),
+            typeof(DtosRootType));
         services.AddCommandCQRS();
     }
 
@@ -89,9 +95,10 @@ public class Startup
         }
         app.UseSession();
 
-        app.UseCors("AllowOrigin");
-
         app.UseMiddleware<RequestResponseLoggingMiddleware>();
+
+        app.UseCors("CorsPolicy");
+
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
@@ -104,7 +111,11 @@ public class Startup
             endpoints
                 .MapControllers();
             endpoints
-                .ConfigureCQRSEndpoints(typeof(BffRootType), typeof(CommandsRootType), typeof(QueriesRootType));
+                .ConfigureCQRSEndpoints(
+                    typeof(BffRootType),
+                    typeof(CommandsRootType),
+                    typeof(QueriesRootType),
+                    typeof(DtosRootType));
         });
     }
 

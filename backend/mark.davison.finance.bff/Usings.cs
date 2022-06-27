@@ -10,6 +10,7 @@ global using mark.davison.finance.common.server.Identification;
 global using mark.davison.finance.common.server.Middleware;
 global using mark.davison.finance.common.server.Proxy;
 global using mark.davison.finance.common.server.Repository;
+global using mark.davison.finance.models.dtos;
 global using Microsoft.AspNetCore.Mvc.ApplicationParts;
 global using System.Text;
 global using System.Text.Json;

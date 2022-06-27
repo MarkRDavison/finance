@@ -12,4 +12,8 @@
     <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.1.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.finance.common\mark.davison.finance.common.csproj" />
+  </ItemGroup>
+
 </Project>
