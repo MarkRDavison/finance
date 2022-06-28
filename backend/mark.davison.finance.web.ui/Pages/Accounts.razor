@@ -4,8 +4,14 @@
 @inject IClientHttpRepository _repository;
 
 <h1>Accounts</h1>
+<div>
+    <Button 
+        Variant="ButtonVariant.Outlined"
+        Type="ButtonType.Success" 
+        Label="Startup"
+        OnClick="@GetStartup"/>
 
-<button onclick="@(() => GetStartup())">STARTUP</button>
+</div>
 
 @code {
 
