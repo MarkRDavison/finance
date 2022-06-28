@@ -1,0 +1,55 @@
+﻿@inherits Component
+@if (IsOpen)
+{
+    <div class="z-modal-background">
+        <OutsideAlerter OnClickOutside="@ClickOutside">
+            <div class='z-centered'>
+                <div class='z-modal'>
+                    <div class='z-modal-header'>
+                        <h1>@Title</h1>
+                    </div>
+                    <div class='z-modal-content'>
+                        @ModalContent
+                    </div>
+                    @if (ModalFooter == null)
+                    {
+                        <div class='z-modal-footer-bottom' />
+                    }
+                    else
+                    {
+                        <div class='z-modal-footer'>@ModalFooter</div>
+                    }
+                </div>
+            </div>
+        </OutsideAlerter>
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
+    [Parameter]
+    public bool CloseOnOutsideClick { get; set; }
+
+    [Parameter]
+    public RenderFragment ModalContent { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? ModalFooter { get; set; }
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private async void ClickOutside()
+    {
+        if (CloseOnOutsideClick)
+        {
+            await IsOpenChanged.InvokeAsync(false);
+        }
+    }
+
+}

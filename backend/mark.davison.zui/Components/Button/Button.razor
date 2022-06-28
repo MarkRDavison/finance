@@ -1,6 +1,6 @@
 ﻿@inherits Component
 
-<button class="z-btn @_buttonVariantCss @_buttonTypeCss @_iconOnlyCss" disabled="@Disabled">
+<button class="z-btn @_buttonVariantCss @_buttonTypeCss @_iconOnlyCss" disabled="@Disabled" onclick="@OnClick">
     <div class="container">
         @if (Progress)
         {
@@ -50,5 +50,8 @@
 
     [Parameter]
     public string? Icon { get; set; }
+
+    [Parameter]
+    public EventCallback<MouseEventArgs> OnClick { get; set; }
 
 }

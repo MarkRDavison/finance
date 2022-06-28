@@ -1,0 +1,51 @@
+﻿<Button
+    Disabled="@_inProgress"
+    Label="@CancelText" 
+    Variant="ButtonVariant.Outlined"
+    Type="ButtonType.Danger" 
+    OnClick="@OnCancel"/>
+<Button
+    Disabled="@_inProgress"
+    Progress="@_inProgress"
+    Label="@SaveText" 
+    Variant="ButtonVariant.Outlined"
+    Type="ButtonType.Success" 
+    OnClick="@HandleSave" />
+
+@code {
+    private bool _inProgress;
+
+    [Parameter]
+    public string SaveText { get; set; } = "Save";
+
+    [Parameter]
+    public string CancelText { get; set; } = "Cancel";
+
+    [Parameter]
+    public Func<Task<bool>> OnSave { get; set; } = default!;
+
+    [Parameter]
+    public Func<Task> OnCancel { get; set; } = default!;
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    public async Task HandleSave()
+    {
+        _inProgress = true;
+        StateHasChanged();
+
+        var success = await OnSave();
+
+        _inProgress = false;
+        if (success)
+        {
+            IsOpen = false;
+        }
+        StateHasChanged();
+    }
+
+}
