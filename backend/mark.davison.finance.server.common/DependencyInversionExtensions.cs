@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.common.server;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+using mark.davison.finance.common.server.abstractions.CQRS;
+
+namespace mark.davison.finance.common.server;
 
 public static class DependencyInversionExtensions
 {
@@ -31,7 +34,6 @@ public static class DependencyInversionExtensions
     public static IServiceCollection UseCQRS(this IServiceCollection services, params Type[] types)
     {
         services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
-        services.AddSingleton<IQueryDispatcher, QueryDispatcher>();
 
         var commandHandlerType = typeof(ICommandHandler<,>);
 

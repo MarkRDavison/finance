@@ -5,7 +5,7 @@
     Type="ButtonType.Danger" 
     OnClick="@OnCancel"/>
 <Button
-    Disabled="@_inProgress"
+    Disabled="@_saveDisabled"
     Progress="@_inProgress"
     Label="@SaveText" 
     Variant="ButtonVariant.Outlined"
@@ -14,6 +14,8 @@
 
 @code {
     private bool _inProgress;
+
+    private bool _saveDisabled => _inProgress || IsSaveDisabled;
 
     [Parameter]
     public string SaveText { get; set; } = "Save";
@@ -29,6 +31,9 @@
 
     [Parameter]
     public bool IsOpen { get; set; }
+
+    [Parameter]
+    public bool IsSaveDisabled { get; set; }
 
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }

@@ -1,0 +1,30 @@
+﻿@inherits BlazorStateComponent
+@inject IClientHttpRepository _repository;
+@inject IMediator _mediator
+@inject IAuthenticationContext _authContext
+
+@ChildContent
+
+@code {
+
+    [Parameter, EditorRequired]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (_authContext.IsAuthenticated)
+        {
+            var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(new StartupQueryRequest {  } );
+            await _mediator.Send(new LookupState.SetLookupsAction
+            {
+                Banks = response.Banks,
+                Currencies = response.Currencies,
+                AccountTypes = response.AccountTypes,
+                TransactionTypes = response.TransactionTypes
+            });
+        }
+
+        await base.OnInitializedAsync();
+    }
+
+}

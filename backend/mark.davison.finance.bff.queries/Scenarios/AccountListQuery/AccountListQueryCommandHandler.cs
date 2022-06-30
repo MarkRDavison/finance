@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
+﻿using mark.davison.finance.common.server.abstractions.Repository;
+
+namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
 
 public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRequest, AccountListQueryResponse>
 {

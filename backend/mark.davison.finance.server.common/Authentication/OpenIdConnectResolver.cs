@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.common.server.Authentication;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+
+namespace mark.davison.finance.common.server.Authentication;
 
 public class OpenIdConnectResolver : IHostedService
 {

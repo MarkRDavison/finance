@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.common.server.Repository;
+﻿using mark.davison.finance.common.server.abstractions;
+using mark.davison.finance.common.server.abstractions.Repository;
+
+namespace mark.davison.finance.common.server.Repository;
 
 public abstract class HttpRepository : IHttpRepository
 {

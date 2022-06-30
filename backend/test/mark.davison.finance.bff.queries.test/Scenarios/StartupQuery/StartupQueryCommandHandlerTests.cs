@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.StartupQuery;
+﻿using mark.davison.finance.common.server.abstractions.Repository;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.StartupQuery;
 
 [TestClass]
 public class StartupQueryCommandHandlerTests

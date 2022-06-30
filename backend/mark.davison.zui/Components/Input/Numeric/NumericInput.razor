@@ -137,15 +137,20 @@
         }
     }
 
+    protected void UpdateDisplayText()
+    {
+        if (Formatter != null)
+        {
+            StringValue = Formatter(Value);
+        } 
+    }
+
     private async Task OnBlur()
     {
         if (!string.IsNullOrEmpty(StringValue)) {
             Value = decimal.Parse(StringValue);
             await ValueChanged.InvokeAsync(Value);
-            if (Formatter != null)
-            {
-                StringValue = Formatter(Value);
-            }
+            UpdateDisplayText();
         }
     }
 
@@ -156,10 +161,10 @@
     public int DecimalPlaces { get; set; } = 2;
 
     [Parameter]
-    public int? Min { get; set; }
+    public decimal? Min { get; set; }
 
     [Parameter]
-    public int? Max { get; set; }
+    public decimal? Max { get; set; }
 
     [Parameter]
     public Func<decimal, string>? Formatter { get; set; }

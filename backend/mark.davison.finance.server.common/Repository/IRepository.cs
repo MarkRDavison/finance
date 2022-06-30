@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.common.server.Repository;
+﻿using mark.davison.finance.common.server.abstractions;
+
+namespace mark.davison.finance.common.server.Repository;
 
 public interface IRepository
 {

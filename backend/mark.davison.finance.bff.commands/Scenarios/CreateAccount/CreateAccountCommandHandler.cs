@@ -26,7 +26,7 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
 
         var account = new Account
         {
-            Id = Guid.NewGuid(),
+            Id = query.Id,
             Created = DateTime.UtcNow,
             LastModified = DateTime.UtcNow,
             Name = query.Name,

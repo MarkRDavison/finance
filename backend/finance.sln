@@ -69,6 +69,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.zui.foundation
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.zenoui", "mark.davison.zenoui\mark.davison.zenoui.csproj", "{ED49C329-FC9F-4A35-A356-6A309942947E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E693CBD9-F93D-492A-BC2C-956DAFAC439C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui.test", "mark.davison.finance.web.ui.test\mark.davison.finance.web.ui.test.csproj", "{4DEFBE75-7474-4877-B3DD-768E078518FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.common.server.abstractions", "mark.davison.finance.common.server.abstractions\mark.davison.finance.common.server.abstractions.csproj", "{CB82B47F-B429-4DF7-96C2-04EE679FE021}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.configuration", "mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj", "{65350ED0-4896-44A4-A4E1-665E173AEDA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.configuration.sourcegenerator", "mark.davison.finance.models.configuration.sourcegenerator\mark.davison.finance.models.configuration.sourcegenerator.csproj", "{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +169,22 @@ Global
 		{ED49C329-FC9F-4A35-A356-6A309942947E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ED49C329-FC9F-4A35-A356-6A309942947E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ED49C329-FC9F-4A35-A356-6A309942947E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB82B47F-B429-4DF7-96C2-04EE679FE021}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB82B47F-B429-4DF7-96C2-04EE679FE021}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB82B47F-B429-4DF7-96C2-04EE679FE021}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB82B47F-B429-4DF7-96C2-04EE679FE021}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65350ED0-4896-44A4-A4E1-665E173AEDA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65350ED0-4896-44A4-A4E1-665E173AEDA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65350ED0-4896-44A4-A4E1-665E173AEDA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65350ED0-4896-44A4-A4E1-665E173AEDA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -188,6 +214,11 @@ Global
 		{2FD20B61-EC01-4518-A786-952265E47A2F} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
 		{5E4F49BA-08D7-45DA-9745-626D837D0BDB} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
 		{ED49C329-FC9F-4A35-A356-6A309942947E} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
+		{E693CBD9-F93D-492A-BC2C-956DAFAC439C} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
+		{4DEFBE75-7474-4877-B3DD-768E078518FC} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
+		{CB82B47F-B429-4DF7-96C2-04EE679FE021} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
+		{65350ED0-4896-44A4-A4E1-665E173AEDA4} = {E1377132-D395-45C8-8325-23A908F2DA4D}
+		{0D33C7CB-6616-4BC4-B9A4-A338A65C844A} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}

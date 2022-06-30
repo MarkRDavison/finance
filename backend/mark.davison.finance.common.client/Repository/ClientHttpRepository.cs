@@ -23,7 +23,6 @@ public class ClientHttpRepository : IClientHttpRepository
         var path = attribute.NamedArguments.First(_ => _.MemberName == nameof(GetRequestAttribute.Path));
         var pathValue = path.TypedValue.Value as string;
 
-
         var requestMessage = new HttpRequestMessage(
             HttpMethod.Get,
             $"/api/{pathValue}");
@@ -46,7 +45,6 @@ public class ClientHttpRepository : IClientHttpRepository
 
         var path = attribute.NamedArguments.First(_ => _.MemberName == nameof(PostRequestAttribute.Path));
         var pathValue = path.TypedValue.Value as string;
-
 
         var json = JsonSerializer.Serialize(request);
         var content = new StringContent(json, Encoding.UTF8, "application/json");

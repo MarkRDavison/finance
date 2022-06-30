@@ -13,7 +13,6 @@ namespace mark.davison.finance.models.sourcegenerator
         {
             var compilation = context.Compilation;
             var syntaxTrees = compilation.SyntaxTrees;
-            var financeEntityClass = compilation.GetTypeByMetadataName("mark.davison.finance.models.Entities.FinanceEntity");
 
             var generator = new NavigationPropertyDocumentGenerator("mark.davison.finance.models.Entities");
 
@@ -53,7 +52,7 @@ namespace mark.davison.finance.models.sourcegenerator
                 foreach (var typeSymbol in workpaperHashSet)
                 {
                     context.AddSource($"{typeSymbol.Name}.g.cs", generator.GenerateNavigationProperties(typeSymbol, entityNames));
-                    context.AddSource($"{typeSymbol.Name}EntityConfiguration.g.cs", generator.GenerateEntityConfiguration(typeSymbol, entityNames));
+                    //context.AddSource($"{typeSymbol.Name}EntityConfiguration.g.cs", generator.GenerateEntityConfiguration(typeSymbol, entityNames));
                 }
             }
         }

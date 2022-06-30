@@ -1,4 +1,9 @@
-﻿namespace mark.davison.finance.bff.Authentication;
+﻿using mark.davison.finance.common.Identification;
+using mark.davison.finance.common.server.abstractions.Authentication;
+using mark.davison.finance.common.server.abstractions.Identification;
+using mark.davison.finance.common.server.abstractions.Repository;
+
+namespace mark.davison.finance.bff.Authentication;
 
 public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationActions
 {

@@ -23,6 +23,7 @@
   </ItemGroup>
 	
   <ItemGroup>
+    <ProjectReference Include="..\mark.davison.finance.common.server.abstractions\mark.davison.finance.common.server.abstractions.csproj" />
     <ProjectReference Include="..\mark.davison.finance.common\mark.davison.finance.common.csproj" />
   </ItemGroup>
 

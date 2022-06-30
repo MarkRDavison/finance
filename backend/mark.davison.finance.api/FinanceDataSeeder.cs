@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api;
+﻿using mark.davison.finance.common.server.abstractions.Identification;
+
+namespace mark.davison.finance.api;
 
 public interface IFinanceDataSeeder
 {

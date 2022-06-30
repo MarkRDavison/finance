@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api.Controllers;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+
+namespace mark.davison.finance.api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]

@@ -1,7 +1,7 @@
 ﻿global using mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
 global using mark.davison.finance.bff.queries.Scenarios.StartupQuery;
-global using mark.davison.finance.common.server.Authentication;
-global using mark.davison.finance.common.server.Identification;
+global using mark.davison.finance.common.server.abstractions.Authentication;
+global using mark.davison.finance.common.server.abstractions.Identification;
 global using mark.davison.finance.common.server.Repository;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
 global using mark.davison.finance.models.Entities;

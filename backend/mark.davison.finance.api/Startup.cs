@@ -1,4 +1,8 @@
-﻿namespace mark.davison.finance.api;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+using mark.davison.finance.persistence;
+using mark.davison.finance.persistence.Repository;
+
+namespace mark.davison.finance.api;
 
 public class Startup
 {
@@ -64,8 +68,6 @@ public class Startup
                 _.GetRequiredService<IDbContextFactory<FinanceDbContext>>(),
                 _.GetRequiredService<ILogger<FinanceRepository>>())
             );
-
-        services.AddTransient<IEntityDefaulter<User>, UserDefaulter>();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

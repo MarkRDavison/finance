@@ -1,0 +1,42 @@
+﻿@using mark.davison.finance.web.ui.Pages.Accounts.AddAccount
+@attribute [Route(Routes.Accounts)]
+@inherits BlazorStateComponent
+
+<h1>Accounts</h1>
+<div>
+    <Button
+        Variant="ButtonVariant.Outlined"
+        Type="ButtonType.Primary"
+        IconStyle="IconStyle.IconOnly"
+        Icon="plus-lg"
+        OnClick="@OpenAddAccountModal" />
+    <br/>
+    <div>
+        @foreach (var account in _accountListState.Accounts)
+        {
+            <div>@account.Name</div>
+        }
+    </div>
+</div>
+<AddAccountModal @bind-IsOpen="AddAccountModalOpen" />
+
+@code {
+
+    private LookupState _lookupState { get; set; } = default!;
+    private AccountListState _accountListState { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _lookupState = GetState<LookupState>();
+        _accountListState = GetState<AccountListState>();
+        await Mediator.Send(new FetchAccountListAction());
+        await base.OnInitializedAsync();
+    }
+
+    private bool AddAccountModalOpen { get; set; }
+    private void OpenAddAccountModal()
+    {
+        AddAccountModalOpen = true;
+    }
+
+}

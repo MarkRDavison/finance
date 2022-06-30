@@ -1,0 +1,36 @@
+﻿<Modal
+    Title="Add Account"
+    CloseOnOutsideClick="false"
+    @bind-IsOpen="IsOpen">
+    <ModalContent>
+        <AddAccountForm ViewModel="@ViewModel.AddAccountFormViewModel" />
+    </ModalContent>
+    <ModalFooter>
+        <StandardModalFooter
+            SaveText="Save"
+            CancelText="Cancel"
+            OnSave="@ViewModel.OnSave"
+            OnCancel="@OnCancel"
+            IsSaveDisabled="@ViewModel.AddAccountFormViewModel.Valid"
+            @bind-IsOpen="IsOpen" />
+    </ModalFooter>
+</Modal>
+
+@code {
+
+    [Parameter]
+    public bool IsOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    [Inject]
+    public AddAccountViewModel ViewModel { get; set; } = default!;
+
+    private async Task OnCancel()
+    {
+        await ViewModel.OnCancel();
+        IsOpen = false;
+    }
+
+}

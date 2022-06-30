@@ -1,8 +1,9 @@
 ﻿global using mark.davison.finance.common.CQRS;
+global using mark.davison.finance.common.Identification;
+global using mark.davison.finance.common.server.abstractions.CQRS;
 global using mark.davison.finance.common.server.Authentication;
 global using mark.davison.finance.common.server.CQRS;
 global using mark.davison.finance.common.server.Health.Checks;
-global using mark.davison.finance.common.server.Identification;
 global using mark.davison.finance.common.server.Proxy;
 global using mark.davison.finance.common.server.Repository;
 global using mark.davison.finance.common.server.Utilities;

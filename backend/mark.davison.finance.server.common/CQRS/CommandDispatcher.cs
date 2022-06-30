@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.common.server.CQRS;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+using mark.davison.finance.common.server.abstractions.CQRS;
+
+namespace mark.davison.finance.common.server.CQRS;
 
 public class CommandDispatcher : ICommandDispatcher
 {

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+
+namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 
 public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 {

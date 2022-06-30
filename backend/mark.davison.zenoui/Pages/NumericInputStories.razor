@@ -1,4 +1,5 @@
 ﻿@page "/numeric-input"
+@using mark.davison.zui.foundations.Abstractions
 
 <h2>Numeric Input</h2>
 
@@ -26,16 +27,17 @@
     Id="ExamplePercentageInputId1"
     Label="My Currency" 
     IsLabelDisplay="true"
-    DecimalPlaces="2"
     Negative="true"
-    CurrencySymbol="CAD$"
+    CurrencyInfo="@_currencyInfo"
     @bind-Value="Currency" />
 <span>Currency: <span>@Currency</span></span>
 
 @code {
-    
+
     private decimal Number { get; set; }
     private decimal Percentage { get; set; }
     private decimal Currency { get; set; }
+
+    private CurrencyInfo _currencyInfo = new CurrencyInfo("CAD$", 2);
 
 }

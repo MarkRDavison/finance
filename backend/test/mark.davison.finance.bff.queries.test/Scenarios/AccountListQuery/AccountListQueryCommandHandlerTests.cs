@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
+﻿using mark.davison.finance.common.server.abstractions.Authentication;
+using mark.davison.finance.common.server.abstractions.Repository;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
 public class AccountListQueryCommandHandlerTests
 {

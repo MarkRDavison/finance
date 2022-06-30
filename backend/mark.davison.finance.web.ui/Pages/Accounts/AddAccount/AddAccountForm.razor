@@ -1,0 +1,66 @@
+﻿@inherits BlazorStateComponent
+
+<div>
+    <TextInput 
+        Id="add-account-form-name"
+        Label="Name" 
+        IsLabelDisplay="true"
+        Width="100%"
+        @bind-Value="ViewModel.Name"/>
+    <TextInput 
+        Id="add-account-form-account-number"
+        Label="Account Number" 
+        IsLabelDisplay="true"
+        Width="100%"
+        @bind-Value="ViewModel.AccountNumber"/>
+    <DropdownList
+        Id="add-account-form-bank"
+        Label="Bank" 
+        IsLabelDisplay="true"
+        Width="100%"
+        Placeholder="Select bank"
+        Items="@_bankItems"
+        @bind-Value="ViewModel.BankId"/>
+    <DropdownList
+        Id="add-account-form-account-type"
+        Label="Account type" 
+        IsLabelDisplay="true"
+        Width="100%"
+        Placeholder="Select account type"
+        Items="@_accountTypeItems"
+        @bind-Value="ViewModel.AccountTypeId"/>
+    <DropdownList
+        Id="add-account-form-currency"
+        Label="Currency" 
+        IsLabelDisplay="true"
+        Width="100%"
+        Placeholder="Select currency"
+        Items="@_currencyItems"
+        @bind-Value="ViewModel.CurrencyId"/>
+    <CurrencyInput
+        Id="add-account-form-virtual-balance"
+        Label="Virtual balance" 
+        IsLabelDisplay="true"
+        Width="100%"
+        CurrencyInfo="@_selectedCurrency"
+        @bind-Value="@ViewModel.VirtualBalance"/>
+</div>
+
+@code {
+    private LookupState _lookupState { get; set; } = default!;
+    private List<IDropdownItem> _bankItems => _lookupState.Banks.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+    private List<IDropdownItem> _accountTypeItems => _lookupState.AccountTypes.Select(_ => new DropdownItem(_.Id.ToString(), _.Type)).Cast<IDropdownItem>().ToList();
+    private List<IDropdownItem> _currencyItems => _lookupState.Currencies.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+    
+    private CurrencyInfo? _selectedCurrency => _lookupState.Currencies.Where(_ => _.Id.ToString() == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
+
+    [Parameter, EditorRequired]
+    public AddAccountFormViewModel ViewModel { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        _lookupState = GetState<LookupState>();
+        base.OnInitialized();
+    }
+
+}

@@ -1,4 +1,4 @@
-﻿using static mark.davison.finance.common.server.Authentication.ZenoAuthenticationConstants;
+﻿using static mark.davison.finance.common.server.abstractions.Authentication.ZenoAuthenticationConstants;
 
 namespace mark.davison.finance.common.server.Middleware;
 
