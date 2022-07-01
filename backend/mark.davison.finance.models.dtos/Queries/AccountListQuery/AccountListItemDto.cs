@@ -10,5 +10,6 @@ public class AccountListItemDto
     public bool Active { get; set; }
     public DateTime LastModified { get; set; }
     public long BalanceDifference { get; set; }
+    // TODO: Currency?
 }
 

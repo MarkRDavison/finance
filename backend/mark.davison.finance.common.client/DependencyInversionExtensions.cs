@@ -1,8 +1,4 @@
-﻿using mark.davison.finance.common.client.CQRS;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace mark.davison.finance.common.client;
+﻿namespace mark.davison.finance.common.client;
 
 public static class DependencyInversionExtensions
 {
@@ -30,30 +26,73 @@ public static class DependencyInversionExtensions
         var method = methodInfo.MakeGenericMethod(abstraction, implementation);
         method.Invoke(null, new[] { services });
     }
+    private static void InvokeAction(IServiceCollection services, MethodInfo methodInfo, Type genericType, Type type)
+    {
+        var interfaceType = type.GetInterfaces().First(__ => __.IsGenericType && __.GetGenericTypeDefinition() == genericType);
+        var genArgs = interfaceType.GetGenericArguments();
+        if (genArgs.Length != 1)
+        {
+            return;
+        }
+        var actionType = genArgs[0];
+
+        var abstraction = genericType.MakeGenericType(actionType);
+        var implementation = type;
+
+        var method = methodInfo.MakeGenericMethod(abstraction, implementation);
+        method.Invoke(null, new[] { services });
+    }
+
+    public static IServiceCollection UseState(this IServiceCollection services)
+    {
+        services.AddSingleton<IStateStore, StateStore>();
+        services.AddSingleton<IComponentSubscriptions, ComponentSubscriptions>();
+        return services;
+    }
 
     public static IServiceCollection UseCQRS(this IServiceCollection services, params Type[] types)
     {
-        services.AddSingleton<ICommandDispatcher, CommandDispatcher>();
-
-        var commandHandlerType = typeof(ICommandHandler<,>);
-
-        var assemblyTypes = types
-            .SelectMany(_ => _.Assembly.ExportedTypes)
-            .Where(_ =>
-            {
-                var interfaces = _.GetInterfaces();
-                return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
-            })
-            .ToList();
+        services.AddSingleton<ICommandDispatcher, CQRSDispatcher>();
+        services.AddSingleton<IActionDispatcher, CQRSDispatcher>();
+        services.AddSingleton<ICQRSDispatcher, CQRSDispatcher>();
 
         var thisType = typeof(DependencyInversionExtensions);
         var methodInfo = thisType.GetMethod(nameof(DependencyInversionExtensions.AddSingleton), BindingFlags.NonPublic | BindingFlags.Static)!;
 
-        foreach (var t in assemblyTypes)
-        {
-            InvokeRequestResponse(services, methodInfo, commandHandlerType, t);
-        }
 
+        {
+            var commandHandlerType = typeof(ICommandHandler<,>);
+
+            var assemblyTypes = types
+                .SelectMany(_ => _.Assembly.ExportedTypes)
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == commandHandlerType);
+                })
+                .ToList();
+
+            foreach (var t in assemblyTypes)
+            {
+                InvokeRequestResponse(services, methodInfo, commandHandlerType, t);
+            }
+        }
+        {
+            var actionHandlerType = typeof(IActionHandler<>);
+            var assemblyTypes = types
+                .SelectMany(_ => _.Assembly.ExportedTypes)
+                .Where(_ =>
+                {
+                    var interfaces = _.GetInterfaces();
+                    return interfaces.Any(__ => __.IsGenericType && __.GetGenericTypeDefinition() == actionHandlerType);
+                })
+                .ToList();
+
+            foreach (var t in assemblyTypes)
+            {
+                InvokeAction(services, methodInfo, actionHandlerType, t);
+            }
+        }
 
         return services;
     }

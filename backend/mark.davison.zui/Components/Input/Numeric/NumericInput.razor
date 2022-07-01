@@ -148,9 +148,12 @@
     private async Task OnBlur()
     {
         if (!string.IsNullOrEmpty(StringValue)) {
-            Value = decimal.Parse(StringValue);
-            await ValueChanged.InvokeAsync(Value);
-            UpdateDisplayText();
+            if (decimal.TryParse(StringValue, out var newValue))
+            {
+                Value = newValue;
+                await ValueChanged.InvokeAsync(Value);
+                UpdateDisplayText();
+            }
         }
     }
 

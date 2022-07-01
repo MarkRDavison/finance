@@ -6,17 +6,25 @@
         <AddAccountForm ViewModel="@ViewModel.AddAccountFormViewModel" />
     </ModalContent>
     <ModalFooter>
-        <StandardModalFooter
-            SaveText="Save"
-            CancelText="Cancel"
-            OnSave="@ViewModel.OnSave"
-            OnCancel="@OnCancel"
-            IsSaveDisabled="@ViewModel.AddAccountFormViewModel.Valid"
-            @bind-IsOpen="IsOpen" />
+        <Button
+            Disabled="@_inProgress"
+            Label="Cancel" 
+            Variant="ButtonVariant.Outlined"
+            Type="ButtonType.Danger" 
+            OnClick="@OnCancel"/>
+        <Button
+            Disabled="@_saveDisabled"
+            Progress="@_inProgress"
+            Label="Save" 
+            Variant="ButtonVariant.Outlined"
+            Type="ButtonType.Success" 
+            OnClick="@HandleSave" />
     </ModalFooter>
 </Modal>
 
 @code {
+    private bool _saveDisabled => _inProgress;
+    private bool _inProgress;
 
     [Parameter]
     public bool IsOpen { get; set; }
@@ -26,6 +34,21 @@
 
     [Inject]
     public AddAccountViewModel ViewModel { get; set; } = default!;
+
+    public async Task HandleSave()
+    {
+        _inProgress = true;
+        StateHasChanged();
+
+        var success = await ViewModel.OnSave();
+
+        _inProgress = false;
+        if (success)
+        {
+            IsOpen = false;
+        }
+        StateHasChanged();
+    }
 
     private async Task OnCancel()
     {

@@ -1,6 +1,4 @@
-﻿@inherits BlazorStateComponent
-@inject IClientHttpRepository _repository;
-@inject IMediator _mediator
+﻿@inject ICQRSDispatcher _actionDispatcher;
 @inject IAuthenticationContext _authContext
 
 @ChildContent
@@ -14,14 +12,7 @@
     {
         if (_authContext.IsAuthenticated)
         {
-            var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(new StartupQueryRequest {  } );
-            await _mediator.Send(new LookupState.SetLookupsAction
-            {
-                Banks = response.Banks,
-                Currencies = response.Currencies,
-                AccountTypes = response.AccountTypes,
-                TransactionTypes = response.TransactionTypes
-            });
+            await _actionDispatcher.Dispatch<UpdateLookupsAction>(CancellationToken.None);
         }
 
         await base.OnInitializedAsync();

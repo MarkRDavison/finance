@@ -17,17 +17,8 @@ builder.Services.AddHttpClient("API").AddHttpMessageHandler(_ => new CookieHandl
 builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(bffRoot, _.GetRequiredService<IHttpClientFactory>()));
-builder.Services.AddBlazorState
-(
-    (aOptions) =>
-        aOptions.Assemblies =
-        new Assembly[]
-        {
-            typeof(Program).GetTypeInfo().Assembly,
-        }
-);
-builder.Services.AddSingleton<AddAccountViewModel>();
-
+builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program));
+builder.Services.AddSingleton<AddAccountViewModel>();
 
 await builder.Build().RunAsync();

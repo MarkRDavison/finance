@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
+﻿using mark.davison.finance.web.ui.Features.Lookup;
+
+namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
+
 
 public partial class AddAccountFormViewModel : ObservableObject
 {
@@ -15,9 +18,12 @@ public partial class AddAccountFormViewModel : ObservableObject
     [ObservableProperty]
     private decimal _virtualBalance;
 
+
+    public StateInstance<LookupState> LookupState { get; set; } = default!;
+
     public bool Valid =>
-        !string.IsNullOrEmpty(_name) &&
-        !string.IsNullOrEmpty(_bankId) &&
-        !string.IsNullOrEmpty(_accountTypeId) &&
-        !string.IsNullOrEmpty(_currencyId);
+        !string.IsNullOrEmpty(Name) &&
+        !string.IsNullOrEmpty(BankId) &&
+        !string.IsNullOrEmpty(AccountTypeId) &&
+        !string.IsNullOrEmpty(CurrencyId);
 }

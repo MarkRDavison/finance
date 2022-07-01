@@ -1,7 +1,16 @@
-﻿namespace mark.davison.finance.web.ui.Features.Lookup;
+﻿using mark.davison.zui.foundations.Abstractions;
 
-public partial class LookupState : State<LookupState>
+namespace mark.davison.finance.web.ui.Features.Lookup;
+
+public class LookupState : IState
 {
+    public LookupState()
+    {
+        Banks = Enumerable.Empty<BankDto>();
+        AccountTypes = Enumerable.Empty<AccountTypeDto>();
+        Currencies = Enumerable.Empty<CurrencyDto>();
+        TransactionTypes = Enumerable.Empty<TransactionTypeDto>();
+    }
     public LookupState(
         IEnumerable<BankDto> banks,
         IEnumerable<AccountTypeDto> accountTypes,
@@ -24,7 +33,14 @@ public partial class LookupState : State<LookupState>
 
     public IEnumerable<TransactionTypeDto> TransactionTypes { get; init; }
 
-    public override void Initialize()
+    public List<IDropdownItem> BankItems => Banks.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+
+    public List<IDropdownItem> AccountTypeItems => AccountTypes.Select(_ => new DropdownItem(_.Id.ToString(), _.Type)).Cast<IDropdownItem>().ToList();
+
+    public List<IDropdownItem> CurrencyItems => Currencies.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+
+
+    public void Initialise()
     {
     }
 }
