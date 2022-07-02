@@ -9,6 +9,7 @@ global using mark.davison.finance.models.dtos.Queries.StartupQuery;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.web.ui;
 global using mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
+global using mark.davison.zui.foundations.Abstractions;
 global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 global using Microsoft.Toolkit.Mvvm.ComponentModel;

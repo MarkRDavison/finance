@@ -1,19 +1,43 @@
 ﻿<tr>
     <td colspan="100">
         <div class="z-table-pager">
-            <Button Type="ButtonType.Secondary" IconStyle="IconStyle.IconOnly" Icon="chevron-bar-left" OnClick="@SetStart" />
-            <Button Type="ButtonType.Secondary" IconStyle="IconStyle.IconOnly" Icon="chevron-left" OnClick="@SetPrev" />
+            @* TODO: Disable these buttons plz *@
+            <Button
+                Type="ButtonType.Secondary"
+                IconStyle="IconStyle.IconOnly"
+                Icon="chevron-bar-left"
+                OnClick="@SetStart"
+                Disabled="@_leftDisabled" />
+            <Button
+                Type="ButtonType.Secondary"
+                IconStyle="IconStyle.IconOnly"
+                Icon="chevron-left"
+                OnClick="@SetPrev"
+                Disabled="@_leftDisabled" />
             <div>@_positionText</div>
-            <Button Type="ButtonType.Secondary" IconStyle="IconStyle.IconOnly" Icon="chevron-right" OnClick="@SetNext" />
-            <Button Type="ButtonType.Secondary" IconStyle="IconStyle.IconOnly" Icon="chevron-bar-right" OnClick="@SetEnd" />
+            <Button
+                Type="ButtonType.Secondary"
+                IconStyle="IconStyle.IconOnly"
+                Icon="chevron-right"
+                OnClick="@SetNext"
+                Disabled="@_rightDisabled" />
+            <Button
+                Type="ButtonType.Secondary"
+                IconStyle="IconStyle.IconOnly"
+                Icon="chevron-bar-right"
+                OnClick="@SetEnd"
+                Disabled="@_rightDisabled" />
         </div>
     </td>
 </tr>
 
 @code {
+
     private string _positionText => $"{_currentPageNumber} of {_maxPageNumber} pages";
     private int _currentPageNumber;
     private int _maxPageNumber;
+    private bool _leftDisabled;
+    private bool _rightDisabled;
 
     [Parameter]
     public int PageSize { get; set; }
@@ -30,10 +54,17 @@
     [Parameter]
     public bool PagingEnabled { get; set; }
 
+    private void UpdateButtonDisabled()
+    {
+        _leftDisabled = PageIndex <= 1;
+        _rightDisabled = PageIndex + 1 >= _maxPageNumber;
+    }
+
     protected override void OnParametersSet()
     {
         _currentPageNumber = PageIndex + 1;
-        _maxPageNumber = (int)Math.Ceiling((decimal)RowCount / (decimal)PageSize);
+        _maxPageNumber = Math.Max(1, (int)Math.Ceiling((decimal)RowCount / (decimal)PageSize));
+        UpdateButtonDisabled();
 
         base.OnParametersSet();
     }
@@ -44,6 +75,7 @@
         {
             _currentPageNumber = value + 1;
             PageIndex = value;
+            UpdateButtonDisabled();
             await PageIndexChanged.InvokeAsync(value);
         }
     }

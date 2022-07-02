@@ -1,23 +1,26 @@
 ﻿@using mark.davison.finance.web.ui.Features.Account
 @using mark.davison.finance.web.ui.Features.Account.List
+@using mark.davison.zui.Components.Table
 @attribute [Route(Routes.Accounts)]
 @inherits ComponentWithState
 
-<h1>Accounts</h1>
-<div>
-    <Button
-        Variant="ButtonVariant.Outlined"
-        Type="ButtonType.Primary"
-        IconStyle="IconStyle.IconOnly"
-        Icon="plus-lg"
-        OnClick="@OpenAddAccountModal" />
-    <br/>
+<div style="display: flex; flex-direction: column;">
     <div>
-        @foreach (var account in _accountListState.Instance.Accounts)
-        {
-            <div>@account.Name</div>
-        }
+        <h1>Accounts</h1>
+        <Button
+            Variant="ButtonVariant.Outlined"
+            Type="ButtonType.Primary"
+            IconStyle="IconStyle.IconOnly"
+            Icon="plus-lg"
+            OnClick="@OpenAddAccountModal" />
     </div>
+    <Table
+        TRow="AccountListItemViewModel"
+        TKey="Guid"
+        PagingEnabled="true"
+        Rows="@_rows"
+        ColumnDefinitions="@_columns"
+        />
 </div>
 <AddAccountModal @bind-IsOpen="AddAccountModalOpen" />
 
@@ -25,9 +28,30 @@
 
     private StateInstance<AccountListState> _accountListState { get; set; } = default!;
 
+    private IEnumerable<AccountListItemViewModel> _rows => _accountListState.Instance.Accounts.Select(_ => new AccountListItemViewModel
+    {
+        Id = _.Id,
+        Name = _.Name,
+        AccountNumber = _.AccountNumber,
+        AccountType = _.AccountType,
+        CurrentBalance = _.CurrentBalance,
+        BalanceDifference = _.BalanceDifference,
+        Active = _.Active,
+        LastModified = _.LastModified
+    });
+    private IEnumerable<TableColumDefinition<AccountListItemViewModel>> _columns { get; set; }= Enumerable.Empty<TableColumDefinition<AccountListItemViewModel>>();
 
     protected override async Task OnInitializedAsync()
     {
+        _columns = new List<TableColumDefinition<AccountListItemViewModel>>
+        {
+            new(){ Title = "Name", Field = nameof(AccountListItemViewModel.Name) },
+            new(){ Title = "Account Type", Field = nameof(AccountListItemViewModel.AccountType) },
+            new(){ Title = "Account Number", Field = nameof(AccountListItemViewModel.AccountNumber) },
+            new(){ Title = "Current Balance", Field = nameof(AccountListItemViewModel.CurrentBalance) },
+            new(){ Title = "Balance Difference", Field = nameof(AccountListItemViewModel.BalanceDifference) },
+            new(){ Title = "Last Modified", Field = nameof(AccountListItemViewModel.LastModified) },
+        };
         _accountListState = GetState<AccountListState>();
         await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
         await base.OnInitializedAsync();
