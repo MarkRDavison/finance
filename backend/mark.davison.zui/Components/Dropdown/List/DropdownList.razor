@@ -1,4 +1,5 @@
-﻿@inherits BaseInput<string>
+﻿@typeparam TId
+@inherits BaseInput<TId>
 
 <div class="z-col" style="width: @Width;">
     @if (IsLabelDisplay)
@@ -21,7 +22,7 @@
                 <div class="z-dropdownlist-content">
                     @foreach (var item in Items)
                     {
-                        var selected = item.Id == Value ? "selected" : string.Empty;
+                        var selected = item.Id.Equals(Value) ? "selected" : string.Empty;
                         <div key=@item.Id class="z-dropdownlist-item @selected" onclick="@(() => OnItemClicked(item))">
                             <div>
                                 <span>@item.PrimaryText</span>
@@ -47,9 +48,9 @@
     private string extraclass => _open ? "focused" : "";
 
     [Parameter]
-    public List<IDropdownItem> Items { get; set; } = new();
+    public List<IDropdownItem<TId>> Items { get; set; } = new();
 
-    private async void OnItemClicked(IDropdownItem item)
+    private async void OnItemClicked(IDropdownItem<TId> item)
     {
         Value = item.Id;
         await ValueChanged.InvokeAsync(item.Id);
@@ -58,12 +59,12 @@
 
     private string GetSelectedValue()
     {
-        var selected = Items.FirstOrDefault(_ => _.Id == Value);
+        var selected = Items.FirstOrDefault(_ => _.Id.Equals(Value));
         return selected?.PrimaryText ?? Placeholder ?? string.Empty;
     }
     private string GetSelectedSecondaryValue()
     {
-        var selected = Items.FirstOrDefault(_ => _.Id == Value);
+        var selected = Items.FirstOrDefault(_ => _.Id.Equals(Value));
         return selected?.SecondaryText ??  string.Empty;
     }
 

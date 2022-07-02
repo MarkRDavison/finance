@@ -1,21 +1,21 @@
 ﻿namespace mark.davison.zui.foundations.Abstractions;
 
-public interface IDropdownItem
+public interface IDropdownItem<TId>
 {
-    public string Id { get; set; }
+    public TId Id { get; set; }
     public string? Code { get; set; }
     public string PrimaryText { get; set; }
     public string? SecondaryText { get; set; }
 }
-public class DropdownItem : IDropdownItem
+public class DropdownItem<TId> : IDropdownItem<TId>
 {
-    public DropdownItem(string id, string primaryText)
+    public DropdownItem(TId id, string primaryText)
     {
         Id = id;
         PrimaryText = primaryText;
     }
 
-    public string Id { get; set; }
+    public TId Id { get; set; }
     public string? Code { get; set; }
     public string PrimaryText { get; set; }
     public string? SecondaryText { get; set; }

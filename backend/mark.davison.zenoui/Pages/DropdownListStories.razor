@@ -5,6 +5,7 @@
 <h1>Dropdown List</h1>
 
 <DropdownList
+    TId="Guid"
     Id="DropdownListId"
     IsLabelDisplay="true"
     Label="Select the value"
@@ -12,7 +13,7 @@
     Items="@Items"
     @bind-Value="@Selected" />
 
-@if (!string.IsNullOrEmpty(Selected))
+@if (Selected != Guid.Empty)
 {
     var selectedItem = Items.FirstOrDefault(_ => _.Id == Selected);
     <span>Selected Id: @Selected</span><br/>
@@ -22,23 +23,17 @@
 }
 
 @code {
-    class DropdownItem : IDropdownItem
-    {
-        public string Id { get; set; } = string.Empty;
-        public string PrimaryText { get; set; } = string.Empty;
-        public string? SecondaryText { get; set; } = string.Empty;
-        public string? Code { get; set; } = string.Empty;
-    }
 
-    private List<IDropdownItem> Items = new()
+
+    private List<IDropdownItem<Guid>> Items = new()
     {
-        new DropdownItem { Id = Guid.NewGuid().ToString(), PrimaryText = "Item 1", SecondaryText = string.Empty },
-        new DropdownItem { Id = Guid.NewGuid().ToString(), PrimaryText = "Item 2", SecondaryText = string.Empty, Code = "HQS" },
-        new DropdownItem { Id = Guid.NewGuid().ToString(), PrimaryText = "Item 3", SecondaryText = "description", Code = "PBT" },
-        new DropdownItem { Id = Guid.NewGuid().ToString(), PrimaryText = "Item 4", SecondaryText = string.Empty },
-        new DropdownItem { Id = Guid.NewGuid().ToString(), PrimaryText = "Item 5", SecondaryText = "secondary" },
+        new DropdownItem<Guid>(Guid.NewGuid(), "Item 1") { SecondaryText = string.Empty },
+        new DropdownItem<Guid>(Guid.NewGuid(), "Item 2") { SecondaryText = string.Empty, Code = "HQS" },
+        new DropdownItem<Guid>(Guid.NewGuid(), "Item 3") { SecondaryText = "description", Code = "PBT" },
+        new DropdownItem<Guid>(Guid.NewGuid(), "Item 4") { SecondaryText = string.Empty },
+        new DropdownItem<Guid>(Guid.NewGuid(), "Item 5") { SecondaryText = "secondary" },
     };
 
-    private string? Selected { get; set; }
+    private Guid Selected { get; set; }
 
 }

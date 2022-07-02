@@ -33,11 +33,11 @@ public class LookupState : IState
 
     public IEnumerable<TransactionTypeDto> TransactionTypes { get; init; }
 
-    public List<IDropdownItem> BankItems => Banks.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+    public List<IDropdownItem<Guid>> BankItems => Banks.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
 
-    public List<IDropdownItem> AccountTypeItems => AccountTypes.Select(_ => new DropdownItem(_.Id.ToString(), _.Type)).Cast<IDropdownItem>().ToList();
+    public List<IDropdownItem<Guid>> AccountTypeItems => AccountTypes.Select(_ => new DropdownItem<Guid>(_.Id, _.Type)).Cast<IDropdownItem<Guid>>().ToList();
 
-    public List<IDropdownItem> CurrencyItems => Currencies.Select(_ => new DropdownItem(_.Id.ToString(), _.Name)).Cast<IDropdownItem>().ToList();
+    public List<IDropdownItem<Guid>> CurrencyItems => Currencies.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
 
 
     public void Initialise()

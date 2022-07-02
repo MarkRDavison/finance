@@ -14,6 +14,7 @@
         Width="100%"
         @bind-Value="ViewModel.AccountNumber"/>
     <DropdownList
+        TId="Guid"
         Id="add-account-form-bank"
         Label="Bank" 
         IsLabelDisplay="true"
@@ -22,6 +23,7 @@
         Items="@ViewModel.LookupState.Instance.BankItems"
         @bind-Value="ViewModel.BankId"/>
     <DropdownList
+        TId="Guid"
         Id="add-account-form-account-type"
         Label="Account type" 
         IsLabelDisplay="true"
@@ -30,6 +32,7 @@
         Items="@ViewModel.LookupState.Instance.AccountTypeItems"
         @bind-Value="ViewModel.AccountTypeId"/>
     <DropdownList
+        TId="Guid"
         Id="add-account-form-currency"
         Label="Currency" 
         IsLabelDisplay="true"
@@ -48,7 +51,7 @@
 
 @code {
 
-    private CurrencyInfo? _selectedCurrency => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id.ToString() == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
+    private CurrencyInfo? _selectedCurrency => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
 
     [Parameter, EditorRequired]
     public AddAccountFormViewModel ViewModel { get; set; } = default!;

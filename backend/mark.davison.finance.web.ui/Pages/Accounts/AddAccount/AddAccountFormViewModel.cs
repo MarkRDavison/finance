@@ -10,11 +10,11 @@ public partial class AddAccountFormViewModel : ObservableObject
     [ObservableProperty]
     private string _accountNumber = string.Empty;
     [ObservableProperty]
-    private string _bankId = string.Empty;
+    private Guid _bankId;
     [ObservableProperty]
-    private string _accountTypeId = string.Empty;
+    private Guid _accountTypeId;
     [ObservableProperty]
-    private string _currencyId = string.Empty;
+    private Guid _currencyId;
     [ObservableProperty]
     private decimal _virtualBalance;
 
@@ -23,7 +23,7 @@ public partial class AddAccountFormViewModel : ObservableObject
 
     public bool Valid =>
         !string.IsNullOrEmpty(Name) &&
-        !string.IsNullOrEmpty(BankId) &&
-        !string.IsNullOrEmpty(AccountTypeId) &&
-        !string.IsNullOrEmpty(CurrencyId);
+        BankId != Guid.Empty &&
+        AccountTypeId != Guid.Empty &&
+        CurrencyId != Guid.Empty;
 }
