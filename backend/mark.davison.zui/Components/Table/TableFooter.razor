@@ -1,0 +1,31 @@
+﻿<tfoot>
+    @if (PagingEnabled)
+    {
+        <TablePager 
+            PageSize="@PageSize"
+            PageIndex="@PageIndex"
+            PageIndexChanged="@PageIndexChanged"
+            PagingEnabled="@PagingEnabled"
+            RowCount="@RowCount" />
+    }
+</tfoot>
+
+
+@code {
+    
+    [Parameter]
+    public int PageSize { get; set; }
+
+    [Parameter]
+    public int PageIndex { get; set; }
+
+    [Parameter]
+    public int RowCount { get; set; }
+
+    [Parameter]
+    public EventCallback<int> PageIndexChanged { get; set; }
+
+    [Parameter]
+    public bool PagingEnabled { get; set; }
+
+}

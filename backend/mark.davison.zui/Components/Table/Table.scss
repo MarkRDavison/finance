@@ -1,0 +1,31 @@
+﻿@import '../../_variables.scss';
+
+.z-table {
+    border-spacing: 0px;
+
+    th {
+        text-align: right;
+        color: $grey-500;
+        border-top: 0.5px solid $grey-300;
+        border-bottom: 0.5px solid $grey-300;
+        padding: 5px 0px;
+    }
+
+    td {
+        border-bottom: 0.5px solid $grey-300;
+        padding: 5px 0px;
+    }
+
+    tbody {
+        tr:hover {
+            background-color: $grey-200;
+        }
+    }
+}
+
+.z-table-pager {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}

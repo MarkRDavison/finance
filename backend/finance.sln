@@ -73,11 +73,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E693CBD9-F
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui.test", "mark.davison.finance.web.ui.test\mark.davison.finance.web.ui.test.csproj", "{4DEFBE75-7474-4877-B3DD-768E078518FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.common.server.abstractions", "mark.davison.finance.common.server.abstractions\mark.davison.finance.common.server.abstractions.csproj", "{CB82B47F-B429-4DF7-96C2-04EE679FE021}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.server.abstractions", "mark.davison.finance.common.server.abstractions\mark.davison.finance.common.server.abstractions.csproj", "{CB82B47F-B429-4DF7-96C2-04EE679FE021}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.configuration", "mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj", "{65350ED0-4896-44A4-A4E1-665E173AEDA4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration", "mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj", "{65350ED0-4896-44A4-A4E1-665E173AEDA4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.models.configuration.sourcegenerator", "mark.davison.finance.models.configuration.sourcegenerator\mark.davison.finance.models.configuration.sourcegenerator.csproj", "{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration.sourcegenerator", "mark.davison.finance.models.configuration.sourcegenerator\mark.davison.finance.models.configuration.sourcegenerator.csproj", "{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

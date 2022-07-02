@@ -1,0 +1,56 @@
+﻿@page "/table"
+
+<h1>Table</h1>
+
+<Table 
+    TRow="ExampleTableRow"
+    TKey="string"
+    Rows="@_data"
+    ColumnDefinitions="@_columns"
+    PageSize="10"
+    PagingEnabled="true" />
+
+@code {
+
+    public class ExampleTableRow : ITableRow<string>
+    {
+        public string Id { get; set; } = string.Empty;
+        public int CustomerId { get; set; }
+        public decimal Freight { get; set; }
+        public DateTime OrderDate { get; set; }
+    }
+
+    private List<TableColumDefinition<ExampleTableRow>> _columns = new()
+    {
+        new (){ Title = "Order Id", Width = "25%", Align = Alignment.Right, Field = nameof(ExampleTableRow.Id) },
+        new (){ Title = "Customer Id", Width = "25%", Align = Alignment.Right, Field = nameof(ExampleTableRow.CustomerId) },
+        new (){ Title = "Frieght", Width = "25%", Align = Alignment.Right, Field = nameof(ExampleTableRow.Freight) },
+        new (){ Title = "Order Date", Width = "25%", Align = Alignment.Right, Field = nameof(ExampleTableRow.OrderDate) },
+    };
+
+    private List<ExampleTableRow> _data = new()
+    {
+        new() { Id = "01", CustomerId = 1, Freight = 13212.65M, OrderDate = DateTime.Now },
+        new() { Id = "02", CustomerId = 2, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "03", CustomerId = 3, Freight = 00232.21M, OrderDate = DateTime.Now },
+        new() { Id = "04", CustomerId = 1, Freight = 13212.65M, OrderDate = DateTime.Now },
+        new() { Id = "05", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "06", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "07", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "08", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "09", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "10", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "11", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "12", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "13", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "14", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "15", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "16", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "17", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "18", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "19", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "20", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+        new() { Id = "21", CustomerId = 3, Freight = 02232.65M, OrderDate = DateTime.Now },
+    };
+
+}
