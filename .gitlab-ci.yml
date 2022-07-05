@@ -15,10 +15,11 @@ build:
     - cd src
     - dotnet restore
     - dotnet build
-    - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration" --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" -l:"trx;LogFileName={assembly}-test-result.trx;MethodFormat=Class;FailureBodyFormat=Verbose"
+    - dotnet test --collect:"XPlat Code Coverage" --results-directory:"artifacts" -l:"trx;LogFileName=mark.davison.zui-test-result.trx"
+    - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration" --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" -l:"trx;MethodFormat=Class;FailureBodyFormat=Verbose"
     - dotnet tool install -g trx2junit -v q
     - export PATH="$PATH:/root/.dotnet/tools"
-    - trx2junit ./artifacts/*-test-result.trx --output ./artifacts
+    - trx2junit ./artifacts/*.trx --output ./artifacts
   artifacts:
     when: always
     reports:
