@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY / /app/
 RUN dotnet restore
-RUN dotnet publish -c Release -o out mark.davison.finance.web.ui/mark.davison.finance.web.ui.csproj
+RUN dotnet publish -c Release -o /app/publish/ mark.davison.finance.web.ui/mark.davison.finance.web.ui.csproj
 
 FROM nginx:alpine AS FINAL
 WORKDIR /usr/share/nginx/html

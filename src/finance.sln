@@ -35,6 +35,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitlab-ci.yml = ..\.gitlab-ci.yml
 		api.Dockerfile = api.Dockerfile
 		bff.Dockerfile = bff.Dockerfile
+		e2e.Dockerfile = e2e.Dockerfile
 		nginx.conf = nginx.conf
 		nuget.config = nuget.config
 		Todo.md = Todo.md
@@ -76,6 +77,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration", "mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj", "{65350ED0-4896-44A4-A4E1-665E173AEDA4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration.sourcegenerator", "mark.davison.finance.models.configuration.sourcegenerator\mark.davison.finance.models.configuration.sourcegenerator.csproj", "{0D33C7CB-6616-4BC4-B9A4-A338A65C844A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "E2E", "E2E", "{1DE73634-4D30-4C5B-BEA3-7D6FCBCA4A0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

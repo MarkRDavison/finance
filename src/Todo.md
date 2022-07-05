@@ -19,3 +19,9 @@ CQRS - Create/recreate and use ICommand and IQuery instead of only ICommand with
 
 
 dotnet test --filter "TestCategory!=UI"
+
+
+docker build -t zeno15/zeno-finance-api -f .\api.Dockerfile .
+docker build -t zeno15/zeno-finance-bff -f .\bff.Dockerfile .
+docker build -t zeno15/zeno-finance-web -f .\web.Dockerfile .
+docker build -t zeno15/zeno-finance-e2e -f .\e2e.Dockerfile .
