@@ -7,169 +7,178 @@ stages:
   - test
   - package
   - deploy
-  
-build web:
-  stage: build
-  image: node:alpine
-  rules:
-    - changes:
-      - Zeno.Torrent.Web/**/*
-      when: always
-    - when: never
-  script:
-    - npm --prefix Zeno.Torrent.Web ci
-    - npm --prefix Zeno.Torrent.Web run build
-  #  - npm --prefix Zeno.Torrent.Web run test:ci
-  # artifacts:
-  #     when: always
-  #     reports:
-  #       cobertura:
-  #         - ./Zeno.Torrent.Web/coverage/cobertura-coverage.xml
-  #       junit:
-  #         - ./Zeno.Torrent.Web/junit.xml
 
-build bff:
+build:
   stage: build
-  image: node:alpine
-  rules:
-    - changes:
-      - Zeno.Torrent.Bff/**/*
-      when: always
-    - when: never
+  image: mcr.microsoft.com/dotnet/sdk:6.0
   script:
-    - npm --prefix Zeno.Torrent.Bff ci
-    - npm --prefix Zeno.Torrent.Bff run build
-  #  - npm --prefix Zeno.Torrent.Bff run test:ci
-  # artifacts:
-  #     when: always
-  #     reports:
-  #       cobertura:
-  #         - ./Zeno.Torrent.Bff/coverage/cobertura-coverage.xml
-  #       junit:
-  #         - ./Zeno.Torrent.Bff/junit.xml
-
-build api:
-  stage: build
-  image: mcr.microsoft.com/dotnet/sdk:5.0
-  rules:
-    - changes:
-      - Zeno.Torrent.API/**/*
-      when: always
-    - when: never
-  script:
-    - cd Zeno.Torrent.API
+    - cd src
     - dotnet restore
-    - dotnet test --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
-  artifacts:
-    when: always
-    reports:
-      cobertura:
-       - ./Zeno.Torrent.API/artifacts/*/coverage.cobertura.xml
-      junit: 
-       - ./**/*test-result.xml
+    - dotnet build
+    - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration"
 
-end to end tests:
-  stage: test
-  image: alpine
-  rules:
-    - when: always
-  script:
-    - echo 'hi'
+#build web:
+#  stage: build
+#  image: node:alpine
+#  rules:
+#    - changes:
+#      - Zeno.Torrent.Web/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - npm --prefix Zeno.Torrent.Web ci
+#    - npm --prefix Zeno.Torrent.Web run build
+#  #  - npm --prefix Zeno.Torrent.Web run test:ci
+#  # artifacts:
+#  #     when: always
+#  #     reports:
+#  #       cobertura:
+#  #         - ./Zeno.Torrent.Web/coverage/cobertura-coverage.xml
+#  #       junit:
+#  #         - ./Zeno.Torrent.Web/junit.xml
 
-publish web:
-  stage: package
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  needs:
-    - job: "build web"
-      optional: true
-    - job: "build bff"
-      optional: true
-    - job: "build api"
-      optional: true
-    - job: "end to end tests"
-      optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-      - Zeno.Torrent.Web/**/*
-      when: always
-    - when: never
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./Zeno.Torrent.Web/ --dockerfile ./Zeno.Torrent.Web/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-web
+#build bff:
+#  stage: build
+#  image: node:alpine
+#  rules:
+#    - changes:
+#      - Zeno.Torrent.Bff/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - npm --prefix Zeno.Torrent.Bff ci
+#    - npm --prefix Zeno.Torrent.Bff run build
+#  #  - npm --prefix Zeno.Torrent.Bff run test:ci
+#  # artifacts:
+#  #     when: always
+#  #     reports:
+#  #       cobertura:
+#  #         - ./Zeno.Torrent.Bff/coverage/cobertura-coverage.xml
+#  #       junit:
+#  #         - ./Zeno.Torrent.Bff/junit.xml
 
-publish bff:
-  stage: package
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  needs:
-    - job: "build web"
-      optional: true
-    - job: "build bff"
-      optional: true
-    - job: "build api"
-      optional: true
-    - job: "end to end tests"
-      optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-      - Zeno.Torrent.Bff/**/*
-      when: always
-    - when: never
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./Zeno.Torrent.Bff/ --dockerfile ./Zeno.Torrent.Bff/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-bff
+#build api:
+#  stage: build
+#  image: mcr.microsoft.com/dotnet/sdk:5.0
+#  rules:
+#    - changes:
+#      - Zeno.Torrent.API/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - cd Zeno.Torrent.API
+#    - dotnet restore
+#    - dotnet test --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+#  artifacts:
+#    when: always
+#    reports:
+#      cobertura:
+#       - ./Zeno.Torrent.API/artifacts/*/coverage.cobertura.xml
+#      junit: 
+#       - ./**/*test-result.xml
 
-publish api:
-  stage: package
-  image:
-    name: gcr.io/kaniko-project/executor:debug
-    entrypoint: [""]
-  needs:
-    - job: "build web"
-      optional: true
-    - job: "build bff"
-      optional: true
-    - job: "build api"
-      optional: true
-    - job: "end to end tests"
-      optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      changes:
-      - Zeno.Torrent.API/**/*
-      when: always
-    - when: never
-  script:
-    - mkdir -p /kaniko/.docker
-    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./Zeno.Torrent.API/ --dockerfile ./Zeno.Torrent.API/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-api
+#end to end tests:
+#  stage: test
+#  image: alpine
+#  rules:
+#    - when: always
+#  script:
+#    - echo 'hi'
 
-deploy to production:
-  stage: deploy
-  image:
-    name: alpine/helm:3.2.1
-    entrypoint: [""] 
-  needs: 
-    - job: "publish web"
-      optional: true
-    - job: "publish bff"
-      optional: true
-    - job: "publish api"
-      optional: true
-    - job: "end to end tests"
-      optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-  script:
-    - helm version
-    - helm upgrade ${APP_NAME} ./charts --install --atomic --namespace ${APP_NAME} --kubeconfig "$KUBE_CONFIG"
-  environment:
-    name: "$ENV_NAME"
-    url: "$ENV_ADDRESS"
+#publish web:
+#  stage: package
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [""]
+#  needs:
+#    - job: "build web"
+#      optional: true
+#    - job: "build bff"
+#      optional: true
+#    - job: "build api"
+#      optional: true
+#    - job: "end to end tests"
+#      optional: false
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      changes:
+#      - Zeno.Torrent.Web/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - mkdir -p /kaniko/.docker
+#    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+#    - /kaniko/executor --context ./Zeno.Torrent.Web/ --dockerfile ./Zeno.Torrent.Web/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-web
+
+#publish bff:
+#  stage: package
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [""]
+#  needs:
+#    - job: "build web"
+#      optional: true
+#    - job: "build bff"
+#      optional: true
+#    - job: "build api"
+#      optional: true
+#    - job: "end to end tests"
+#      optional: false
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      changes:
+#      - Zeno.Torrent.Bff/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - mkdir -p /kaniko/.docker
+#    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+#    - /kaniko/executor --context ./Zeno.Torrent.Bff/ --dockerfile ./Zeno.Torrent.Bff/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-bff
+
+#publish api:
+#  stage: package
+#  image:
+#    name: gcr.io/kaniko-project/executor:debug
+#    entrypoint: [""]
+#  needs:
+#    - job: "build web"
+#      optional: true
+#    - job: "build bff"
+#      optional: true
+#    - job: "build api"
+#      optional: true
+#    - job: "end to end tests"
+#      optional: false
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#      changes:
+#      - Zeno.Torrent.API/**/*
+#      when: always
+#    - when: never
+#  script:
+#    - mkdir -p /kaniko/.docker
+#    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+#    - /kaniko/executor --context ./Zeno.Torrent.API/ --dockerfile ./Zeno.Torrent.API/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-api
+
+#deploy to production:
+#  stage: deploy
+#  image:
+#    name: alpine/helm:3.2.1
+#    entrypoint: [""] 
+#  needs: 
+#    - job: "publish web"
+#      optional: true
+#    - job: "publish bff"
+#      optional: true
+#    - job: "publish api"
+#      optional: true
+#    - job: "end to end tests"
+#      optional: false
+#  rules:
+#    - if: '$CI_COMMIT_BRANCH == "main"'
+#  script:
+#    - helm version
+#    - helm upgrade ${APP_NAME} ./charts --install --atomic --namespace ${APP_NAME} --kubeconfig "$KUBE_CONFIG"
+#  environment:
+#    name: "$ENV_NAME"
+#    url: "$ENV_ADDRESS"

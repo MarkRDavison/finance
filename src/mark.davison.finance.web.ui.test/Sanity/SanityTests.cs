@@ -1,6 +1,7 @@
 ﻿namespace mark.davison.finance.web.ui.test.Sanity;
 
 [TestClass]
+[TestCategory("UI")]
 public class SanityTests
 {
     [TestMethod]

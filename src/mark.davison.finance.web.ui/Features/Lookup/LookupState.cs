@@ -9,6 +9,7 @@ public class LookupState : IState
         Currencies = Enumerable.Empty<CurrencyDto>();
         TransactionTypes = Enumerable.Empty<TransactionTypeDto>();
     }
+
     public LookupState(
         IEnumerable<BankDto> banks,
         IEnumerable<AccountTypeDto> accountTypes,

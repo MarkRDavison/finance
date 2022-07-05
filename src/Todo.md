@@ -15,3 +15,7 @@ Move away from using mediatR & blazor state - roll your own?
 Move self written CQRS to common - not server - re-use request/response 
 	-	Client > BFF > API > BFF > Client > State
 CQRS - Create/recreate and use ICommand and IQuery instead of only ICommand with different naming convention
+
+
+
+dotnet test --filter "TestCategory!=UI"
