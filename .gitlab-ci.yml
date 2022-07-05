@@ -15,7 +15,6 @@ build:
     - cd src
     - dotnet restore
     - dotnet build
-    - dotnet test --collect:"XPlat Code Coverage" --results-directory:"artifacts" -l:"trx;LogFileName=mark.davison.zui-test-result.trx"
     - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration" --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" -l:"trx;MethodFormat=Class;FailureBodyFormat=Verbose"
     - dotnet tool install -g trx2junit -v q
     - export PATH="$PATH:/root/.dotnet/tools"
