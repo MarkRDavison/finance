@@ -1,0 +1,16 @@
+﻿@attribute [Route(Routes.Account)]
+@inherits ComponentWithState
+
+<h1>View Account</h1>
+
+@code {
+
+    [Parameter]
+    public Guid Id { get; set; }
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        return base.OnAfterRenderAsync(firstRender);
+    }
+
+}

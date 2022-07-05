@@ -1,8 +1,0 @@
-dist
-.env
-.idea
-node_modules
-coverage
-junit.xml
-.npmrc
-build

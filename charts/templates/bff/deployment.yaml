@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.bff.app}}-dep
+  labels:
+    app: {{ .Values.bff.app }}
+spec:
+  replicas: {{ .Values.bff.replicas }}
+  selector:
+    matchLabels:
+      app:  {{ .Values.bff.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.bff.app }}
+        date: "{{ now | unixEpoch }}"
+    spec:
+      containers:
+      - name: {{ .Values.bff.name }}
+        image: {{ .Values.bff.image }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.bff.port }}
+        env:
+        {{- include "helpers.list-bff-deployment-env-variables" . | indent 10 }}
