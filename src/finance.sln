@@ -33,7 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 		..\.gitlab-ci.yml = ..\.gitlab-ci.yml
+		bff.Dockerfile = bff.Dockerfile
+		nginx.conf = nginx.conf
 		Todo.md = Todo.md
+		api.Dockerfile = api.Dockerfile
+		web.Dockerfile = web.Dockerfile
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.sourcegenerator", "mark.davison.finance.models.sourcegenerator\mark.davison.finance.models.sourcegenerator.csproj", "{B0F39DEF-8054-408D-A82A-C003D2121CA5}"
@@ -58,17 +62,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.client", "mark.davison.finance.common.client\mark.davison.finance.common.client.csproj", "{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ZUI", "ZUI", "{1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.client.components", "mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj", "{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common", "mark.davison.finance.common\mark.davison.finance.common.csproj", "{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.zui", "mark.davison.zui\mark.davison.zui.csproj", "{2FD20B61-EC01-4518-A786-952265E47A2F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.zui.foundations", "mark.davison.zui.foundations\mark.davison.zui.foundations.csproj", "{5E4F49BA-08D7-45DA-9745-626D837D0BDB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.zenoui", "mark.davison.zenoui\mark.davison.zenoui.csproj", "{ED49C329-FC9F-4A35-A356-6A309942947E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E693CBD9-F93D-492A-BC2C-956DAFAC439C}"
 EndProject
@@ -158,18 +154,6 @@ Global
 		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FD20B61-EC01-4518-A786-952265E47A2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FD20B61-EC01-4518-A786-952265E47A2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FD20B61-EC01-4518-A786-952265E47A2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FD20B61-EC01-4518-A786-952265E47A2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E4F49BA-08D7-45DA-9745-626D837D0BDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E4F49BA-08D7-45DA-9745-626D837D0BDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E4F49BA-08D7-45DA-9745-626D837D0BDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E4F49BA-08D7-45DA-9745-626D837D0BDB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ED49C329-FC9F-4A35-A356-6A309942947E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ED49C329-FC9F-4A35-A356-6A309942947E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ED49C329-FC9F-4A35-A356-6A309942947E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ED49C329-FC9F-4A35-A356-6A309942947E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4DEFBE75-7474-4877-B3DD-768E078518FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -212,9 +196,6 @@ Global
 		{99F4A92F-A853-4FEC-93B4-8134EFFD6A4E} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 		{9756B3C0-471E-463F-ADD5-CCD9F30A8AE9} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 		{7C231E25-9ADB-4AF3-B6F7-D0F495D8FCB9} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
-		{2FD20B61-EC01-4518-A786-952265E47A2F} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
-		{5E4F49BA-08D7-45DA-9745-626D837D0BDB} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
-		{ED49C329-FC9F-4A35-A356-6A309942947E} = {1BB97AF0-51A6-4E9D-BCB8-1A83629A451B}
 		{E693CBD9-F93D-492A-BC2C-956DAFAC439C} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
 		{4DEFBE75-7474-4877-B3DD-768E078518FC} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
 		{CB82B47F-B429-4DF7-96C2-04EE679FE021} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}

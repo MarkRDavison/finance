@@ -1,6 +1,4 @@
-﻿using mark.davison.zui.foundations.Abstractions;
-
-namespace mark.davison.finance.web.ui.Features.Lookup;
+﻿namespace mark.davison.finance.web.ui.Features.Lookup;
 
 public class LookupState : IState
 {

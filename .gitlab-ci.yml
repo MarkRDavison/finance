@@ -1,6 +1,6 @@
 variables:
   GIT_STRATEGY: clone
-  APP_NAME: zeno-torrent
+  APP_NAME: zeno-finance
 
 stages:
   - build

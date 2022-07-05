@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Zeno Finance</title>
+    <base href="/" />
+    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="mark.davison.finance.web.ui.styles.css" rel="stylesheet" />
+    <link href="mark.davison.zenoui.styles.css" rel="stylesheet" />
+    <link href="css/zeno-ui.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.3/font/bootstrap-icons.css" rel="stylesheet">
+    <style media="screen" type="text/css">
+        :root {
+            min-width: 250px;
+        }
+
+        .entire-app-loading {
+            -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
+            animation: sk-scaleout 1.0s infinite ease-in-out;
+            background-color: #3f51b5;
+            border-radius: 100%;
+            height: 6em;
+            width: 6em;
+            margin: auto;
+        }
+
+        @keyframes sk-scaleout {
+            0% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+
+            100% {
+                -webkit-transform: scale(1.0);
+                opacity: 0;
+                transform: scale(1.0);
+            }
+        }
+
+        html,
+        body {
+            min-height: 100%;
+        }
+
+        html {
+            position: relative;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+        }
+
+        #root {
+            height: 100%;
+            width: 100%;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="entire-app-loading">
+        </div>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/zeno-ui.js"></script>
+</body>
+
+</html>

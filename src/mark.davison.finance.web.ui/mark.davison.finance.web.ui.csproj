@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="wwwroot\css\bootstrap\bootstrap.min.css.map" />
+    <None Include="wwwroot\css\open-iconic\FONT-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\font\fonts\open-iconic.svg" />
+    <None Include="wwwroot\css\open-iconic\ICON-LICENSE" />
+    <None Include="wwwroot\css\open-iconic\README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="mark.davison.zui" Version="1.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.4" PrivateAssets="all" />
   </ItemGroup>
@@ -15,7 +24,15 @@
     <ProjectReference Include="..\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
     <ProjectReference Include="..\mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
-    <ProjectReference Include="..\mark.davison.zui\mark.davison.zui.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\css\zeno-ui.min.css">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
+    <Content Update="wwwroot\js\zeno-ui.js">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
