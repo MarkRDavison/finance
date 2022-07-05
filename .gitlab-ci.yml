@@ -15,7 +15,14 @@ build:
     - cd src
     - dotnet restore
     - dotnet build
-    - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration"
+    - dotnet test --filter "TestCategory!=UI&TestCategory!=Integration" --test-adapter-path:. --collect:"XPlat Code Coverage" --results-directory:"artifacts" --logger:"junit;LogFilePath=..\artifacts\{assembly}-test-result.xml;MethodFormat=Class;FailureBodyFormat=Verbose"
+  artifacts:
+    when: always
+    reports:
+      cobertura:
+       - ./**/coverage.cobertura.xml
+      junit: 
+       - ./**/*test-result.xml
 
 #build web:
 #  stage: build
