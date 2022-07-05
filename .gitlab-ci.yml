@@ -1,6 +1,8 @@
 variables:
   GIT_STRATEGY: clone
+  GIT_SUBMODULE_STRATEGY: recursive
   APP_NAME: zeno-finance
+  IMAGE_TAG: latest
 
 stages:
   - build
@@ -61,31 +63,23 @@ build:
        - ./**/coverage.cobertura.xml
       junit: 
        - ./**/*test-result.xml
-
-#publish web:
-#  stage: package
-#  image:
-#    name: gcr.io/kaniko-project/executor:debug
-#    entrypoint: [""]
-#  needs:
-#    - job: "build web"
-#      optional: true
-#    - job: "build bff"
-#      optional: true
-#    - job: "build api"
-#      optional: true
-#    - job: "end to end tests"
-#      optional: false
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "main"'
-#      changes:
-#      - Zeno.Torrent.Web/**/*
-#      when: always
-#    - when: never
-#  script:
-#    - mkdir -p /kaniko/.docker
-#    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-#    - /kaniko/executor --context ./Zeno.Torrent.Web/ --dockerfile ./Zeno.Torrent.Web/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-web
+       
+publish api:
+  stage: package
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  needs:
+    - job: "build"
+      optional: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context ./src/ --dockerfile ./api.Dockerfile --destination "$CR_USERNAME"/zeno-finance-api
 
 publish bff:
   stage: package
@@ -104,30 +98,39 @@ publish bff:
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context ./src/ --dockerfile ./bff.Dockerfile --destination "$CR_USERNAME"/zeno-finance-bff
 
-#publish api:
-#  stage: package
-#  image:
-#    name: gcr.io/kaniko-project/executor:debug
-#    entrypoint: [""]
-#  needs:
-#    - job: "build web"
-#      optional: true
-#    - job: "build bff"
-#      optional: true
-#    - job: "build api"
-#      optional: true
-#    - job: "end to end tests"
-#      optional: false
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "main"'
-#      changes:
-#      - Zeno.Torrent.API/**/*
-#      when: always
-#    - when: never
-#  script:
-#    - mkdir -p /kaniko/.docker
-#    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-#    - /kaniko/executor --context ./Zeno.Torrent.API/ --dockerfile ./Zeno.Torrent.API/Dockerfile --destination "$CR_USERNAME"/zeno-torrent-api
+publish web:
+  stage: package
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  needs:
+    - job: "build"
+      optional: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context ./src/ --dockerfile ./web.Dockerfile --destination "$CR_USERNAME"/zeno-finance-web
+
+publish e2e:
+  stage: package
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  needs:
+    - job: "build"
+      optional: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+    - when: never
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context ./src/ --dockerfile ./e2e.Dockerfile --destination "$CR_USERNAME"/zeno-finance-e2e
 
 #deploy to production:
 #  stage: deploy
