@@ -5,48 +5,49 @@ variables:
   IMAGE_TAG: latest
 
 stages:
+  - configure
   - build
   - test
   - package
   - deploy
 
-#configure tags:
-#  stage: configure
-#  image: python:3
-#  rules:
-#    - when: always
-#  artifacts:
-#    expire_in: "1h"
-#    paths:
-#      - variables
-#    when: always
-#  script:
-#    - pip install requests
-#    - WEB_HASH=$(python3 ./cicd/Image/determinetagfrompath.py --modulepath ./web/)
-#    - BFF_HASH=$(python3 ./cicd/Image/determinetagfrompath.py --modulepath ./bff/)
-#    - API_HASH=$(python3 ./cicd/Image/determinetagfrompath.py --modulepath ./api/)
-#    - E2E_HASH=$(python3 ./cicd/Image/determinetagfrompath.py --modulepath ./e2e/)
-#    - WEB_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${WEB_HASH}" --imagename zeno-finance-web --crusername "${CR_USERNAME}")
-#    - BFF_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${BFF_HASH}" --imagename zeno-finance-bff --crusername "${CR_USERNAME}")
-#    - API_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${API_HASH}" --imagename zeno-finance-api --crusername "${CR_USERNAME}")
-#    - E2E_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${E2E_HASH}" --imagename zeno-finance-e2e --crusername "${CR_USERNAME}")
-#    - mkdir -p variables
-#    - echo $WEB_HASH >> variables/web_image_tag
-#    - echo $BFF_HASH >> variables/bff_image_tag
-#    - echo $API_HASH >> variables/api_image_tag
-#    - echo $E2E_HASH >> variables/e2e_image_tag
-#    - echo $WEB_BUILD >> variables/web_image_build
-#    - echo $BFF_BUILD >> variables/bff_image_build
-#    - echo $API_BUILD >> variables/api_image_build
-#    - echo $E2E_BUILD >> variables/e2e_image_build
-#    - cat variables/web_image_tag
-#    - cat variables/bff_image_tag
-#    - cat variables/api_image_tag
-#    - cat variables/e2e_image_tag
-#    - cat variables/web_image_build
-#    - cat variables/bff_image_build
-#    - cat variables/api_image_build
-#    - cat variables/e2e_image_build
+configure tags:
+  stage: configure
+  image: python:3
+  rules:
+    - when: always
+  artifacts:
+    expire_in: "1h"
+    paths:
+      - variables
+    when: always
+  script:
+    - pip install requests
+    - WEB_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./web/ -m ./shared/ -m ./common/)
+    - BFF_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./bff/ -m ./shared/ -m ./common/)
+    - API_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./api/ -m ./shared/ -m ./common/)
+    - E2E_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./e2e/ -m ./shared/ -m ./common/)
+    - WEB_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${WEB_HASH}" --imagename zeno-finance-web --crusername "${CR_USERNAME}")
+    - BFF_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${BFF_HASH}" --imagename zeno-finance-bff --crusername "${CR_USERNAME}")
+    - API_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${API_HASH}" --imagename zeno-finance-api --crusername "${CR_USERNAME}")
+    - E2E_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${E2E_HASH}" --imagename zeno-finance-e2e --crusername "${CR_USERNAME}")
+    - mkdir -p variables
+    - echo $WEB_HASH >> variables/web_image_tag
+    - echo $BFF_HASH >> variables/bff_image_tag
+    - echo $API_HASH >> variables/api_image_tag
+    - echo $E2E_HASH >> variables/e2e_image_tag
+    - echo $WEB_BUILD >> variables/web_image_build
+    - echo $BFF_BUILD >> variables/bff_image_build
+    - echo $API_BUILD >> variables/api_image_build
+    - echo $E2E_BUILD >> variables/e2e_image_build
+    - cat variables/web_image_tag
+    - cat variables/bff_image_tag
+    - cat variables/api_image_tag
+    - cat variables/e2e_image_tag
+    - cat variables/web_image_build
+    - cat variables/bff_image_build
+    - cat variables/api_image_build
+    - cat variables/e2e_image_build
 
 build:
   stage: build
