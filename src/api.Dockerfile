@@ -3,7 +3,7 @@ WORKDIR /app
 
 COPY / /app/
 RUN dotnet restore
-RUN dotnet publish -c Release -o out mark.davison.finance.api/mark.davison.finance.api.csproj
+RUN dotnet publish -c Release -o out api/mark.davison.finance.api/mark.davison.finance.api.csproj
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
