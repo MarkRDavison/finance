@@ -83,7 +83,7 @@ publish api:
     - if [ "$API_IMAGE_TAG" == '' ]; then exit 0; fi
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./src/ --dockerfile ./api.Dockerfile --destination "$CR_USERNAME"/zeno-finance-api
+    - /kaniko/executor --context ./src/ --dockerfile ./api.Dockerfile --destination "$CR_USERNAME"/zeno-finance-api:$API_IMAGE_TAG --force
 
 publish bff:
   stage: package
@@ -103,7 +103,7 @@ publish bff:
     - if [ "$BFF_IMAGE_TAG" == '' ]; then exit 0; fi
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./src/ --dockerfile ./bff.Dockerfile --destination "$CR_USERNAME"/zeno-finance-bff
+    - /kaniko/executor --context ./src/ --dockerfile ./bff.Dockerfile --destination "$CR_USERNAME"/zeno-finance-bff:$BFF_IMAGE_TAG --force
 
 publish web:
   stage: package
@@ -123,7 +123,7 @@ publish web:
     - if [ "$WEB_IMAGE_TAG" == '' ]; then exit 0; fi
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./src/ --dockerfile ./web.Dockerfile --destination "$CR_USERNAME"/zeno-finance-web
+    - /kaniko/executor --context ./src/ --dockerfile ./web.Dockerfile --destination "$CR_USERNAME"/zeno-finance-web:$WEB_IMAGE_TAG --force
 
 publish e2e:
   stage: package
@@ -143,7 +143,7 @@ publish e2e:
     - if [ "$E2E_IMAGE_TAG" == '' ]; then exit 0; fi
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
-    - /kaniko/executor --context ./src/ --dockerfile ./e2e.Dockerfile --destination "$CR_USERNAME"/zeno-finance-e2e
+    - /kaniko/executor --context ./src/ --dockerfile ./e2e.Dockerfile --destination "$CR_USERNAME"/zeno-finance-e2e:$E2E_IMAGE_TAG --force
 
 
     
