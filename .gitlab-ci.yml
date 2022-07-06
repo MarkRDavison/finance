@@ -52,6 +52,8 @@ configure tags:
 build:
   stage: build
   image: mcr.microsoft.com/dotnet/sdk:6.0
+  needs:
+    - job: "configure tags"
   script:
     - cd src
     - dotnet restore
@@ -73,6 +75,8 @@ publish api:
   needs:
     - job: "build"
       optional: true
+    - job: "configure tags"
+      optional: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
@@ -93,6 +97,8 @@ publish bff:
   needs:
     - job: "build"
       optional: true
+    - job: "configure tags"
+      optional: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
@@ -113,6 +119,8 @@ publish web:
   needs:
     - job: "build"
       optional: true
+    - job: "configure tags"
+      optional: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
@@ -133,6 +141,8 @@ publish e2e:
   needs:
     - job: "build"
       optional: true
+    - job: "configure tags"
+      optional: false
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
