@@ -1,5 +1,5 @@
 apiVersion: v2
-name: zeno-torrent
+name: zeno-finance
 description: A Helm chart for Kubernetes
 
 type: application

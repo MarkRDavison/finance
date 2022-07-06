@@ -52,13 +52,20 @@ public class Startup
                 .Build()
             ));
 
-        if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
+        if (AppSettings.DATABASE_TYPE == "sqlite")
         {
-            services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite($"Data Source={Guid.NewGuid()}.db"));
+            if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
+            {
+                services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite($"Data Source={Guid.NewGuid()}.db"));
+            }
+            else
+            {
+                services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite(AppSettings.CONNECTION_STRING));
+            }
         }
         else
         {
-            services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite(AppSettings.CONNECTION_STRING));
+            throw new NotImplementedException($"Cannot handle this database type: {AppSettings.DATABASE_TYPE}");
         }
 
         services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();

@@ -17,8 +17,27 @@ spec:
     spec:
       containers:
       - name: {{ .Values.bff.name }}
-        image: {{ .Values.bff.image }}
+        image: {{ .Values.bff.image }}:{{ .Values.bff.tag }}
         imagePullPolicy: Always
+        startupProbe:
+          httpGet:
+            path: /health/startup
+            port: {{ .Values.bff.port }}
+          failureThreshold: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health/liveness
+            port: {{ .Values.bff.port }}
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health/readiness
+            port: {{ .Values.bff.port }}
+          successThreshold: 3
         ports:
         - containerPort: {{ .Values.bff.port }}
         env:

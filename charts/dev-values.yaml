@@ -11,7 +11,7 @@ api: {
   tag: latest,
   port: 50000,
   ingress: {
-    host: finance-api.markdavison.kiwi
+    host: finance-api-dev.markdavison.kiwi
   },
   env: {
     secret: [
@@ -37,7 +37,7 @@ bff: {
   tag: latest,
   port: 40000,
   ingress: {
-    host: finance-bff.markdavison.kiwi
+    host: finance-bff-dev.markdavison.kiwi
   },
   env: {
     secret: [
@@ -49,9 +49,9 @@ bff: {
     public: {
       FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi',
       FINANCE__REDIS_PORT: '6379',
-      FINANCE__WEB_ORIGIN: 'https://finance-web.markdavison.kiwi',
-      FINANCE__BFF_ORIGIN: 'https://finance-bff.markdavison.kiwi',
-      FINANCE__API_ORIGIN: 'https://finance-api.markdavison.kiwi',
+      FINANCE__WEB_ORIGIN: 'https://finance-web-dev.markdavison.kiwi',
+      FINANCE__BFF_ORIGIN: 'https://finance-bff-dev.markdavison.kiwi',
+      FINANCE__API_ORIGIN: 'https://finance-api-dev.markdavison.kiwi',
       FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
       FINANCE__REDIS_HOST: 'redis.markdavison.kiwi',
       FINANCE__CLIENT_ID: 'zeno-finance',
@@ -69,7 +69,7 @@ web: {
   tag: latest,
   port: 80,
   ingress: {
-    host: finance-web.markdavison.kiwi
+    host: finance-web-dev.markdavison.kiwi
   },
   env: {
     secret: [
@@ -77,7 +77,7 @@ web: {
     ],
     public: {
       WEB_PORT: '80',
-      FINANCE_BFF_BASE_URI: 'https://finance-bff.markdavison.kiwi'
+      FINANCE_BFF_BASE_URI: 'https://finance-bff-dev.markdavison.kiwi'
     }
   }
 }

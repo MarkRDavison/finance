@@ -154,8 +154,6 @@ publish e2e:
     - mkdir -p /kaniko/.docker
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context ./src/ --dockerfile ./e2e.Dockerfile --destination "$CR_USERNAME"/zeno-finance-e2e:$E2E_IMAGE_TAG --force
-
-
     
 #end to end tests:
 #  stage: test
@@ -212,13 +210,13 @@ publish e2e:
 #    - envsubst < ./e2e/e2e-dep.yaml | tee ./e2e/dep-subst.yaml
 #    - kubectl delete namespace ${APP_NAME}-dev --ignore-not-found=true --kubeconfig "$KUBE_CONFIG"
 #    - kubectl create namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl apply -f ./e2e/zeno-todo-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+#    - kubectl apply -f ./e2e/zeno-finance-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 #    - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 #    - kubectl wait --for=condition=Ready pods --timeout=600s --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 #    - kubectl apply -f ./e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 #    - kubectl wait --for=condition=Ready --timeout=600s pods --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl logs -f job/zeno-todo-e2e-job -n zeno-todo-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl wait --for=condition=Complete --timeout=5s job/zeno-todo-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+#    - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
+#    - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 
 #deploy to production:
 #  stage: deploy

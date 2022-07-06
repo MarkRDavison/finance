@@ -7,10 +7,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
 spec:
+  {{ if .Values.tls.enabled }}
   tls:
     - hosts:
-      - {{ .Values.web.ingress.host }}
+      - {{ .Values.bff.ingress.host }}
       secretName: {{ .Values.tls.secretName }}
+  {{ end }}
   rules:
   - host: {{ .Values.bff.ingress.host }}
     http:
