@@ -191,6 +191,7 @@ end to end tests:
      when: always
    - when: never
  script:
+   - cd src
    - cat variables/web_image_tag
    - cat variables/bff_image_tag
    - cat variables/api_image_tag
