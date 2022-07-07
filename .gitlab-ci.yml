@@ -210,27 +210,27 @@ end to end tests:
    - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 
-#deploy to production:
-#  stage: deploy
-#  image:
-#    name: alpine/helm:3.2.1
-#    entrypoint: [""]
-#  needs:
-#    - job: "publish web"
-#      optional: true
-#    - job: "publish bff"
-#      optional: true
-#    - job: "publish api"
-#      optional: true
-#    - job: "publish e2e"
-#      optional: true
-#    - job: "end to end tests"
-#      optional: true
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "main"'
-#  script:
-#    - helm version
-#    - helm upgrade ${APP_NAME} ./charts --install --atomic --namespace ${APP_NAME} --kubeconfig "$KUBE_CONFIG"
-#  environment:
-#    name: "$ENV_NAME"
-#    url: "$ENV_ADDRESS"
+deploy to production:
+  stage: deploy
+  image:
+    name: alpine/helm:3.2.1
+    entrypoint: [""]
+  needs:
+    - job: "publish web"
+      optional: true
+    - job: "publish bff"
+      optional: true
+    - job: "publish api"
+      optional: true
+    - job: "publish e2e"
+      optional: true
+    - job: "end to end tests"
+      optional: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+  script:
+    - helm version
+    - helm upgrade ${APP_NAME} ./charts --install --atomic --namespace ${APP_NAME} --kubeconfig "$KUBE_CONFIG"
+  environment:
+    name: "$ENV_NAME"
+    url: "$ENV_ADDRESS"
