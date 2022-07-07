@@ -8,4 +8,18 @@ RUN dotnet publish -c Release -o /app/publish/ web/mark.davison.finance.web.ui/m
 FROM nginx:alpine AS FINAL
 WORKDIR /usr/share/nginx/html
 COPY --from=BUILD /app/publish/wwwroot .
+COPY entry.sh /usr/share/nginx/html/entry.sh
 COPY nginx.conf /etc/nginx/nginx.conf
+
+RUN chmod +x /usr/share/nginx/html/entry.sh
+
+WORKDIR /usr/share/nginx/html
+
+RUN ls
+
+RUN ls /usr/share/nginx/html
+
+RUN cat /etc/nginx/nginx.conf
+RUN cat /usr/share/nginx/html/entry.sh
+
+CMD ["sh", "entry.sh"]
