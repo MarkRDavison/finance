@@ -12,7 +12,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddHttpClient("API").AddHttpMessageHandler(_ => new CookieHandler());
 builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
-builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(bffRoot, _.GetRequiredService<IHttpClientFactory>()));
+builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program));
 builder.Services.AddSingleton<AddAccountViewModel>();

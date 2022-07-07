@@ -1,7 +1,9 @@
 ﻿@inject IAuthenticationConfig _authConfig
 @inject IJSRuntime js
 
-<AuthProvider AuthenticationConfig="_authConfig">
+@if (_initialised)
+{
+    <AuthProvider AuthenticationConfig="_authConfig">
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
@@ -15,8 +17,11 @@
         </NotFound>
     </Router>
 </AuthProvider>
+}
 
 @code {
+    private bool _initialised;
+
     protected override async Task OnInitializedAsync()
     {
         var bffUri = await js.InvokeAsync<string>("GetBffUri");
@@ -25,6 +30,7 @@
             _authConfig.SetBffBase(bffUri);
         }
 
+        _initialised = true;
         await base.OnInitializedAsync();
     }
 }
