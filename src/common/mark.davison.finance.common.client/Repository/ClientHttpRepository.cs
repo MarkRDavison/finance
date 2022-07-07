@@ -7,6 +7,7 @@ public class ClientHttpRepository : IClientHttpRepository
 
     public ClientHttpRepository(string remoteEndpoint, IHttpClientFactory _httpClientFactory)
     {
+        Console.WriteLine("Creating ClientHttpRepository - {0}", remoteEndpoint);
         _remoteEndpoint = remoteEndpoint;
         _httpClient = _httpClientFactory.CreateClient("API");
         _httpClient.BaseAddress = new Uri(_remoteEndpoint);
