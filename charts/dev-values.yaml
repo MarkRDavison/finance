@@ -43,7 +43,6 @@ bff: {
     secret: [
       'REDIS_PASSWORD',
       'CLIENT_SECRET',
-      'API_CLIENT_SECRET',
       'SESSION_SECRET'
     ],
     public: {

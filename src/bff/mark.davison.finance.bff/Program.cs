@@ -7,11 +7,13 @@ public class Program
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => {
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls(urls: Environment.GetEnvironmentVariable("ZENO_FINANCE_URL") ?? "https://0.0.0.0:40000");
+                    webBuilder.UseUrls(urls: Environment.GetEnvironmentVariable("FINANCE__URL") ?? "https://0.0.0.0:40000");
                 })
-                .ConfigureAppConfiguration((hostingContext, configurationBuilder) => {
+                .ConfigureAppConfiguration((hostingContext, configurationBuilder) =>
+                {
                     configurationBuilder.AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
                     configurationBuilder.AddJsonFile("appsettings.development.json", optional: true, reloadOnChange: true);
                     configurationBuilder.AddEnvironmentVariables();

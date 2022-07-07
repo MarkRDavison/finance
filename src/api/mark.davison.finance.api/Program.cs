@@ -10,7 +10,7 @@ public class Program
             .ConfigureWebHostDefaults(webBuilder =>
             {
                 webBuilder.UseStartup<Startup>();
-                webBuilder.UseUrls(urls: Environment.GetEnvironmentVariable("ZENO_FINANCE_URL") ?? "https://0.0.0.0:50000");
+                webBuilder.UseUrls(urls: Environment.GetEnvironmentVariable("FINANCE__URL") ?? "https://0.0.0.0:50000");
             })
             .ConfigureAppConfiguration((hostingContext, configurationBuilder) =>
             {
