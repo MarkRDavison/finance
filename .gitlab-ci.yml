@@ -227,14 +227,13 @@ end to end tests:
    - echo $BFF_IMAGE_TAG
    - echo $API_IMAGE_TAG
    - echo $E2E_IMAGE_TAG
-   - cd src
-   - envsubst < ./e2e/e2e-dep.yaml | tee ./e2e/dep-subst.yaml
+   - envsubst < ./src/e2e/e2e-dep.yaml | tee ./src/e2e/dep-subst.yaml
    - kubectl delete namespace ${APP_NAME}-dev --ignore-not-found=true --kubeconfig "$KUBE_CONFIG"
    - kubectl create namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-   - kubectl apply -f ./e2e/zeno-finance-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl apply -f ./src/e2e/zeno-finance-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl wait --for=condition=Ready pods --timeout=600s --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-   - kubectl apply -f ./e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl apply -f ./src/e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl wait --for=condition=Ready --timeout=600s pods --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
