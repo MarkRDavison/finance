@@ -1,6 +1,6 @@
 #!/bin/sh
 echo 'entry.sh - starting - 1'
-cat /usr/share/nginx/html/index.html
+cat ./index.html
 echo 'entry.sh - starting - 2'
 echo 'entry.sh - starting - 3'
 echo 'entry.sh - starting - 4'
