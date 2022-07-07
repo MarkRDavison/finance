@@ -77,10 +77,6 @@ publish api:
       optional: true
     - job: "configure tags"
       optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
-    - when: never
   artifacts:
     expire_in: "1h"
     paths:
@@ -104,10 +100,6 @@ publish bff:
       optional: true
     - job: "configure tags"
       optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
-    - when: never
   artifacts:
     expire_in: "1h"
     paths:
@@ -131,10 +123,6 @@ publish web:
       optional: true
     - job: "configure tags"
       optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
-    - when: never
   artifacts:
     expire_in: "1h"
     paths:
@@ -158,10 +146,6 @@ publish e2e:
       optional: true
     - job: "configure tags"
       optional: false
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
-    - when: never
   artifacts:
     expire_in: "1h"
     paths:
@@ -199,9 +183,6 @@ end to end tests:
  artifacts:
    expire_in: "1h"
  rules:
-   - if: '$CI_COMMIT_BRANCH == "main"'
-     variables:
-       IMAGE_TAG: "latest"
    - changes:
        - web/**/*
        - bff/**/*
