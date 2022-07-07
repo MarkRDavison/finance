@@ -9,18 +9,21 @@ public class AuthController : ControllerBase
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger _logger;
     private readonly ZenoAuthOptions _zenoAuthOptions;
 
     public AuthController(
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         IServiceProvider serviceProvider,
+        ILogger<AuthController> logger,
         IOptions<ZenoAuthOptions> options
     )
     {
         _httpClientFactory = httpClientFactory;
         _httpContextAccessor = httpContextAccessor;
         _serviceProvider = serviceProvider;
+        _logger = logger;
         _zenoAuthOptions = options.Value;
     }
 
@@ -140,13 +143,17 @@ public class AuthController : ControllerBase
         zenoAuthenticationSession.SetString(SessionNames.RefreshToken, tokens.refresh_token!);
         zenoAuthenticationSession.SetString(SessionNames.UserProfile, JsonSerializer.Serialize(userProfile));
 
+        _logger.LogInformation("Logged in: {0}", JsonSerializer.Serialize(userProfile));
         var customActions = _serviceProvider.GetService<ICustomZenoAuthenticationActions>();
         if (customActions != null)
         {
+            _logger.LogInformation("Logged in - custom actions: {0} - start", userProfile.name);
             await customActions.OnUserAuthenticated(userProfile, cancellationToken);
+            _logger.LogInformation("Logged in - custom actions: {0} - end", userProfile.name);
         }
 
         await zenoAuthenticationSession.CommitSessionAsync(cancellationToken);
+        _logger.LogInformation("Logged into session, redirecting to: {0}", _zenoAuthOptions.WebOrigin + redirect);
 
         return WebUtilities.RedirectPreserveMethod(_zenoAuthOptions.WebOrigin + redirect);
     }

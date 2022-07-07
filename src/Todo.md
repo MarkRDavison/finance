@@ -25,3 +25,8 @@ docker build -t zeno15/zeno-finance-api -f .\api.Dockerfile .
 docker build -t zeno15/zeno-finance-bff -f .\bff.Dockerfile .
 docker build -t zeno15/zeno-finance-web -f .\web.Dockerfile .
 docker build -t zeno15/zeno-finance-e2e -f .\e2e.Dockerfile .
+
+=========
+
+e2e tests needs to be a container that ends, not nginx
+bff redirect is doing localhost:40000 things
