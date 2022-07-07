@@ -31,7 +31,6 @@ public partial class AuthenticationContext : ObservableObject, IAuthenticationCo
     {
         try
         {
-            Console.WriteLine("Validating Auth State against: {0}", _authenticationConfig.UserEndpoint);
             var request = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
