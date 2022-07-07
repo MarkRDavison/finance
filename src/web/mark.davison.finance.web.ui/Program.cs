@@ -1,12 +1,8 @@
 using mark.davison.finance.common.client;
 
 var bffRoot = "https://localhost:40000";
-var authConfig = new AuthenticationConfig
-{
-    LoginEndpoint = bffRoot + "/auth/login",
-    LogoutEndpoint = bffRoot + "/auth/logout",
-    UserEndpoint = bffRoot + "/auth/user"
-};
+var authConfig = new AuthenticationConfig();
+authConfig.SetBffBase(bffRoot);
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

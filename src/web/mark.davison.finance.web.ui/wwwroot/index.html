@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Zeno Finance</title>
     <script type="text/javascript">
-        window.ENV = {};
+        
+        function GetBffUri() {
+            window.ENV = {};
+            return window.ENV.FINANCE_BFF_BASE_URI;
+        }
     </script>
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
