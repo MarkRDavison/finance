@@ -155,68 +155,68 @@ publish e2e:
     - echo "{\"auths\":{\"$CR_REGISTRY\":{\"auth\":\"$(echo -n ${CR_USERNAME}:${CR_PASSWORD} | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context ./src/ --dockerfile ./e2e.Dockerfile --destination "$CR_USERNAME"/zeno-finance-e2e:$E2E_IMAGE_TAG --force
     
-#end to end tests:
-#  stage: test
-#  image:
-#    name: dtzar/helm-kubectl
-#    entrypoint: [""]
-#  needs:
-#    - job: "publish e2e"
-#      optional: true
-#      artifacts: true
-#    - job: "publish web"
-#      optional: true
-#      artifacts: true
-#    - job: "publish bff"
-#      optional: true
-#      artifacts: true
-#    - job: "publish api"
-#      optional: true
-#      artifacts: true
-#    - job: "configure tags"
-#      optional: false
-#      artifacts: true
-#  artifacts:
-#    expire_in: "1h"
-#  rules:
-#    - if: '$CI_COMMIT_BRANCH == "main"'
-#      variables:
-#        IMAGE_TAG: "latest"
-#    - changes:
-#        - web/**/*
-#        - bff/**/*
-#        - api/**/*
-#        - e2e/**/*
-#        - charts/**/*
-#      when: always
-#    - when: never
-#  script:
-#    - cat variables/web_image_tag
-#    - cat variables/bff_image_tag
-#    - cat variables/api_image_tag
-#    - cat variables/e2e_image_tag
-#    - cat variables/web_image_build
-#    - cat variables/bff_image_build
-#    - cat variables/api_image_build
-#    - cat variables/e2e_image_build
-#    - export WEB_IMAGE_TAG=`cat variables/web_image_build 2> /dev/null || echo latest`
-#    - export BFF_IMAGE_TAG=`cat variables/bff_image_build 2> /dev/null || echo latest`
-#    - export API_IMAGE_TAG=`cat variables/api_image_build 2> /dev/null || echo latest`
-#    - export E2E_IMAGE_TAG=`cat variables/e2e_image_build 2> /dev/null || echo latest`
-#    - echo $WEB_IMAGE_TAG
-#    - echo $BFF_IMAGE_TAG
-#    - echo $API_IMAGE_TAG
-#    - echo $E2E_IMAGE_TAG
-#    - envsubst < ./e2e/e2e-dep.yaml | tee ./e2e/dep-subst.yaml
-#    - kubectl delete namespace ${APP_NAME}-dev --ignore-not-found=true --kubeconfig "$KUBE_CONFIG"
-#    - kubectl create namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl apply -f ./e2e/zeno-finance-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl wait --for=condition=Ready pods --timeout=600s --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl apply -f ./e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl wait --for=condition=Ready --timeout=600s pods --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
-#    - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+end to end tests:
+ stage: test
+ image:
+   name: dtzar/helm-kubectl
+   entrypoint: [""]
+ needs:
+   - job: "publish e2e"
+     optional: true
+     artifacts: true
+   - job: "publish web"
+     optional: true
+     artifacts: true
+   - job: "publish bff"
+     optional: true
+     artifacts: true
+   - job: "publish api"
+     optional: true
+     artifacts: true
+   - job: "configure tags"
+     optional: false
+     artifacts: true
+ artifacts:
+   expire_in: "1h"
+ rules:
+   - if: '$CI_COMMIT_BRANCH == "main"'
+     variables:
+       IMAGE_TAG: "latest"
+   - changes:
+       - web/**/*
+       - bff/**/*
+       - api/**/*
+       - e2e/**/*
+       - charts/**/*
+     when: always
+   - when: never
+ script:
+   - cat variables/web_image_tag
+   - cat variables/bff_image_tag
+   - cat variables/api_image_tag
+   - cat variables/e2e_image_tag
+   - cat variables/web_image_build
+   - cat variables/bff_image_build
+   - cat variables/api_image_build
+   - cat variables/e2e_image_build
+   - export WEB_IMAGE_TAG=`cat variables/web_image_build 2> /dev/null || echo latest`
+   - export BFF_IMAGE_TAG=`cat variables/bff_image_build 2> /dev/null || echo latest`
+   - export API_IMAGE_TAG=`cat variables/api_image_build 2> /dev/null || echo latest`
+   - export E2E_IMAGE_TAG=`cat variables/e2e_image_build 2> /dev/null || echo latest`
+   - echo $WEB_IMAGE_TAG
+   - echo $BFF_IMAGE_TAG
+   - echo $API_IMAGE_TAG
+   - echo $E2E_IMAGE_TAG
+   - envsubst < ./e2e/e2e-dep.yaml | tee ./e2e/dep-subst.yaml
+   - kubectl delete namespace ${APP_NAME}-dev --ignore-not-found=true --kubeconfig "$KUBE_CONFIG"
+   - kubectl create namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl apply -f ./e2e/zeno-finance-dev-secret.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl wait --for=condition=Ready pods --timeout=600s --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl apply -f ./e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl wait --for=condition=Ready --timeout=600s pods --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 
 #deploy to production:
 #  stage: deploy
