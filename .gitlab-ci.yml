@@ -182,15 +182,6 @@ end to end tests:
      artifacts: true
  artifacts:
    expire_in: "1h"
- rules:
-   - changes:
-       - web/**/*
-       - bff/**/*
-       - api/**/*
-       - e2e/**/*
-       - charts/**/*
-     when: always
-   - when: never
  script:
    - cat variables/web_image_tag
    - cat variables/bff_image_tag
