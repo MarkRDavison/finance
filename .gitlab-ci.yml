@@ -81,6 +81,11 @@ publish api:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
     - when: never
+  artifacts:
+    expire_in: "1h"
+    paths:
+      - variables
+    when: always
   script:
     - cat variables/api_image_build
     - export API_IMAGE_TAG=`cat variables/api_image_build 2> /dev/null`
@@ -103,6 +108,11 @@ publish bff:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
     - when: never
+  artifacts:
+    expire_in: "1h"
+    paths:
+      - variables
+    when: always
   script:
     - cat variables/bff_image_build
     - export BFF_IMAGE_TAG=`cat variables/bff_image_build 2> /dev/null`
@@ -125,6 +135,11 @@ publish web:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
     - when: never
+  artifacts:
+    expire_in: "1h"
+    paths:
+      - variables
+    when: always
   script:
     - cat variables/web_image_build
     - export WEB_IMAGE_TAG=`cat variables/web_image_build 2> /dev/null`
@@ -147,6 +162,11 @@ publish e2e:
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
     - when: never
+  artifacts:
+    expire_in: "1h"
+    paths:
+      - variables
+    when: always
   script:
     - cat variables/e2e_image_build
     - export E2E_IMAGE_TAG=`cat variables/e2e_image_build 2> /dev/null`
