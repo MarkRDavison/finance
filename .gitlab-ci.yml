@@ -7,8 +7,8 @@ variables:
 stages:
   - configure
   - build
-  - test
   - package
+  - test
   - deploy
 
 configure tags:
