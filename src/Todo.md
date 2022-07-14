@@ -5,17 +5,15 @@ Per user options
 	-	Default currency
 	-	Edit User object
 	-	Home screen/dashboard layout
+	-	Per account options?  What summaries to show?
 
 https://timewarpengineering.github.io/blazor-state/Tutorial.html
 https://playwright.dev/dotnet/docs/intro
 
-
-Stupid no pack type thing > Referencing bff commands from client fucks the world
-Move away from using mediatR & blazor state - roll your own?
-Move self written CQRS to common - not server - re-use request/response 
-	-	Client > BFF > API > BFF > Client > State
 CQRS - Create/recreate and use ICommand and IQuery instead of only ICommand with different naming convention
-
+Feature naming convention
+	-	Includes action vs command etc
+Move features to a separate assembly (and tests)
 
 
 dotnet test --filter "TestCategory!=UI"
@@ -26,7 +24,3 @@ docker build -t zeno15/zeno-finance-bff -f .\bff.Dockerfile .
 docker build -t zeno15/zeno-finance-web -f .\web.Dockerfile .
 docker build -t zeno15/zeno-finance-e2e -f .\e2e.Dockerfile .
 
-=========
-
-e2e tests needs to be a container that ends, not nginx
-bff redirect is doing localhost:40000 things

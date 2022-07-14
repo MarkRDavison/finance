@@ -28,7 +28,11 @@
     private IEnumerable<AccountListItemViewModel> _rows => _accountListState.Instance.Accounts.Select(_ => new AccountListItemViewModel
     {
         Id = _.Id,
-        Name = _.Name,
+        Name = new LinkDefinition
+        {
+            Text = _.Name,
+            Href = RouteHelpers.Account(_.Id)
+        },
         AccountNumber = _.AccountNumber,
         AccountType = _.AccountType,
         CurrentBalance = _.CurrentBalance,
@@ -36,13 +40,14 @@
         Active = _.Active,
         LastModified = _.LastModified
     });
+
     private IEnumerable<TableColumDefinition<AccountListItemViewModel>> _columns { get; set; }= Enumerable.Empty<TableColumDefinition<AccountListItemViewModel>>();
 
     protected override async Task OnInitializedAsync()
     {
         _columns = new List<TableColumDefinition<AccountListItemViewModel>>
         {
-            new(){ Title = "Name", Field = nameof(AccountListItemViewModel.Name) },
+            new(){ Title = "Name", Field = nameof(AccountListItemViewModel.Name), Type = TableCellType.Link },
             new(){ Title = "Account Type", Field = nameof(AccountListItemViewModel.AccountType) },
             new(){ Title = "Account Number", Field = nameof(AccountListItemViewModel.AccountNumber) },
             new(){ Title = "Current Balance", Field = nameof(AccountListItemViewModel.CurrentBalance) },

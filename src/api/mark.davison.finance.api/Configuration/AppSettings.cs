@@ -11,4 +11,5 @@ public class AppSettings
     public string SCOPE { get; set; } = "openid profile email offline_access zeno zeno-finance";
     public string CONNECTION_STRING { get; set; } = "Data Source=C:/temp/finance-current.db";
     public string DATABASE_TYPE { get; set; } = "sqlite";
+    public bool PRODUCTION_MODE { get; set; } = false;
 }

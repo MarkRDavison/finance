@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Identification;
-
-namespace mark.davison.finance.api;
+﻿namespace mark.davison.finance.api;
 
 public interface IFinanceDataSeeder
 {
@@ -10,10 +8,15 @@ public interface IFinanceDataSeeder
 public class FinanceDataSeeder : IFinanceDataSeeder
 {
     protected readonly IRepository _repository;
+    protected readonly AppSettings _appSettings;
 
-    public FinanceDataSeeder(IRepository repository)
+    public FinanceDataSeeder(
+        IRepository repository,
+        IOptions<AppSettings> options
+    )
     {
         _repository = repository;
+        _appSettings = options.Value;
     }
 
     public virtual async Task EnsureDataSeeded(CancellationToken cancellationToken)

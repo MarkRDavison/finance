@@ -1,16 +1,28 @@
 ﻿@attribute [Route(Routes.Account)]
 @inherits ComponentWithState
 
-<h1>View Account</h1>
+<div style="display: flex; flex-direction: column;">
+    <h1>View Account</h1>
+    <span>@Id</span>
+    <div>@_currentAccount?.Name</div>
+</div>
 
 @code {
+    private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
+
+    private StateInstance<AccountListState> _accountListState { get; set; } = default!;
 
     [Parameter]
     public Guid Id { get; set; }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnAfterRenderAsync(firstRender);
-    }
+        _accountListState = GetState<AccountListState>();
+        if (_currentAccount == null)
+        {
+            await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
+        }
 
+        await base.OnInitializedAsync();
+    }
 }

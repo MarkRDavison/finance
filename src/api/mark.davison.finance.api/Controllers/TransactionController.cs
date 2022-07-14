@@ -2,9 +2,9 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class TransactionTypeController : BaseController<TransactionType>
+public class TransactionController : BaseController<Transaction>
 {
-    public TransactionTypeController(
+    public TransactionController(
         ILogger<UserController> logger,
         IRepository repository,
         IServiceScopeFactory serviceScopeFactory,
@@ -18,7 +18,7 @@ public class TransactionTypeController : BaseController<TransactionType>
     {
     }
 
-    protected override void PatchUpdate(TransactionType persisted, TransactionType patched)
+    protected override void PatchUpdate(Transaction persisted, Transaction patched)
     {
         throw new NotImplementedException();
     }
