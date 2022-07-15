@@ -1,2 +1,14 @@
-﻿global using Microsoft.Playwright;
+﻿global using mark.davison.finance.bff.commands.Scenarios.CreateLocation;
+global using mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
+global using mark.davison.finance.common.client.Repository;
+global using mark.davison.finance.common.client.State;
+global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
+global using mark.davison.finance.models.dtos.Queries.StartupQuery;
+global using mark.davison.finance.web.ui.Features.Account;
+global using mark.davison.finance.web.ui.Features.Account.Create;
+global using mark.davison.finance.web.ui.Features.Account.List;
+global using mark.davison.finance.web.ui.Features.Lookup;
+global using mark.davison.finance.web.ui.Features.Transaction.QueryByAccount;
+global using Microsoft.Playwright;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
+global using Moq;

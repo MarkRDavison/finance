@@ -6,6 +6,7 @@ global using mark.davison.finance.common.client.State;
 global using mark.davison.finance.common.CQRS;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
+global using mark.davison.finance.models.dtos.Queries.TransactionByAccountQuery;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.web.ui;
 global using mark.davison.finance.web.ui.Pages.Accounts.AddAccount;

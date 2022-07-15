@@ -2,10 +2,5 @@
 
 public class TransactionQueryByAccountAction : IAction<TransactionQueryByAccountAction>
 {
-    public TransactionQueryByAccountAction(IEnumerable<TransactionDto> transactions)
-    {
-        Transactions = transactions.ToList();
-    }
-
-    public List<TransactionDto> Transactions { get; }
+    public Guid AccountId { get; set; }
 }
