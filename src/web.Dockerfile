@@ -15,11 +15,4 @@ RUN chmod +x /usr/share/nginx/html/entry.sh
 
 WORKDIR /usr/share/nginx/html
 
-RUN ls
-
-RUN ls /usr/share/nginx/html
-
-RUN cat /etc/nginx/nginx.conf
-RUN cat /usr/share/nginx/html/entry.sh
-
 CMD ["sh", "entry.sh"]
