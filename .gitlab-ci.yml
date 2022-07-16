@@ -207,8 +207,9 @@ end to end tests:
    - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl wait --for=condition=Ready pods --timeout=600s --all --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl apply -f ./src/e2e/dep-subst.yaml -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl wait --for=condition=Ready --timeout=600s pods job/zeno-finance-e2e-job --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - kubectl logs -f job/zeno-finance-e2e-job -n zeno-finance-dev --kubeconfig "$KUBE_CONFIG"
-   - kubectl wait --for=condition=Succeeded --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
+   - kubectl wait --for=condition=Complete --timeout=5s job/zeno-finance-e2e-job -n ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
 
 deploy to production:
   stage: deploy
