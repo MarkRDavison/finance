@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.ui.Features.Lookup;
+﻿namespace mark.davison.finance.web.features.Lookup;
 
 public class UpdateLookupsActionHandler : IActionHandler<UpdateLookupsAction>
 {

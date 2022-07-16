@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.ui.Features.Account.Add;
+﻿namespace mark.davison.finance.web.features.Account.Add;
 
 public class UpdateAccountListItemsAction : IAction<UpdateAccountListItemsAction>
 {

@@ -1,9 +1,11 @@
-﻿namespace mark.davison.finance.web.ui.Pages.Accounts;
+﻿using mark.davison.zui.Core;
+
+namespace mark.davison.finance.web.ui.Pages.Accounts;
 
 public class AccountListItemViewModel : ITableRow<Guid>
 {
     public Guid Id { get; set; }
-    public string Name { get; set; } = string.Empty;
+    public LinkDefinition? Name { get; set; }
     public string AccountType { get; set; } = string.Empty;
     public string AccountNumber { get; set; } = string.Empty;
     public long CurrentBalance { get; set; }

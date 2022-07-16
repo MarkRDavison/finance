@@ -1,16 +1,45 @@
-﻿@attribute [Route(Routes.Account)]
+﻿@using mark.davison.finance.models.dtos.Shared
+@using mark.davison.zui.Components.Loading
+@attribute [Route(Routes.Account)]
 @inherits ComponentWithState
 
-<h1>View Account</h1>
+@if (_currentAccount == null)
+{
+    <Loading Type="LoadingType.CircularInfinite" Size="64px" />
+}
+else {
+    <div style="display: flex; flex-direction: column;">
+        <h1>View Account</h1>
+        <span>@Id</span>
+        <div>@_currentAccount?.Name</div>
+        @foreach (var transaction in _transactionState.Instance.Transactions)
+        {
+            <span>@transaction.Description (@transaction.Id)</span><br/>
+        }
+    </div>
+}
 
 @code {
+    private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
+
+    private StateInstance<AccountListState> _accountListState { get; set; } = default!;
+    private StateInstance<TransactionState> _transactionState { get; set; } = default!;
 
     [Parameter]
     public Guid Id { get; set; }
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnInitializedAsync()
     {
-        return base.OnAfterRenderAsync(firstRender);
-    }
+        _accountListState = GetState<AccountListState>();
+        _transactionState = GetState<TransactionState>();
 
+        if (_currentAccount == null)
+        {
+            await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
+        }
+
+        await Dispatcher.Dispatch(new TransactionQueryByAccountAction() { AccountId = Id }, CancellationToken.None);
+
+        await base.OnInitializedAsync();
+    }
 }

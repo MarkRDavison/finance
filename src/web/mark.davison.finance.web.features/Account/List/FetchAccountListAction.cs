@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.ui.Features.Account.List;
+﻿namespace mark.davison.finance.web.features.Account.List;
 
 public class FetchAccountListAction : IAction<FetchAccountListAction>
 {

@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Authentication;
-using mark.davison.finance.common.server.abstractions.Repository;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
 public class AccountListQueryCommandHandlerTests
 {
@@ -17,6 +14,12 @@ public class AccountListQueryCommandHandlerTests
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
         _handler = new AccountListQueryCommandHandler(_httpRepositoryMock.Object);
+    }
+
+    [TestMethod]
+    public void TODO()
+    {
+        Assert.Fail();
     }
 }
 

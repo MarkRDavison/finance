@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.ui.Features.Account;
+﻿namespace mark.davison.finance.web.features.Account;
 
 public class AccountListState : IState
 {
