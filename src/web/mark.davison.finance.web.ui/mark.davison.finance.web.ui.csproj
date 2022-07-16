@@ -14,8 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.web.features\mark.davison.finance.web.features.csproj" />
   </ItemGroup>
 
   <ItemGroup>

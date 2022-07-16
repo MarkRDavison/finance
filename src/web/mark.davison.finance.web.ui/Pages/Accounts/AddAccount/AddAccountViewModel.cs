@@ -1,5 +1,5 @@
-﻿using mark.davison.finance.web.ui.Features.Account.Add;
-using mark.davison.finance.web.ui.Features.Account.Create;
+﻿using mark.davison.finance.web.features.Account.Add;
+using mark.davison.finance.web.features.Account.Create;
 
 namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
 

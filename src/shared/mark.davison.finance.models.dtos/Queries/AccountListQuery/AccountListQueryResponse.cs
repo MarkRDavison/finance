@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Queries.AccountListQuery;
-
-namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
+﻿namespace mark.davison.finance.models.dtos.Queries.AccountListQuery;
 
 public class AccountListQueryResponse
 {

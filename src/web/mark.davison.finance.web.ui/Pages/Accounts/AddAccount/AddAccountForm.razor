@@ -20,7 +20,7 @@
         IsLabelDisplay="true"
         Width="100%"
         Placeholder="Select bank"
-        Items="@ViewModel.LookupState.Instance.BankItems"
+        Items="@_bankItems"
         @bind-Value="ViewModel.BankId"/>
     <DropdownList
         TId="Guid"
@@ -29,7 +29,7 @@
         IsLabelDisplay="true"
         Width="100%"
         Placeholder="Select account type"
-        Items="@ViewModel.LookupState.Instance.AccountTypeItems"
+        Items="@_accountTypeItems"
         @bind-Value="ViewModel.AccountTypeId"/>
     <DropdownList
         TId="Guid"
@@ -38,7 +38,7 @@
         IsLabelDisplay="true"
         Width="100%"
         Placeholder="Select currency"
-        Items="@ViewModel.LookupState.Instance.CurrencyItems"
+        Items="@_currencyItems"
         @bind-Value="ViewModel.CurrencyId"/>
     <CurrencyInput
         Id="add-account-form-virtual-balance"
@@ -50,6 +50,13 @@
 </div>
 
 @code {
+
+    private List<IDropdownItem<Guid>> _bankItems => ViewModel.LookupState.Instance.Banks.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
+
+    private List<IDropdownItem<Guid>> _accountTypeItems => ViewModel.LookupState.Instance.AccountTypes.Select(_ => new DropdownItem<Guid>(_.Id, _.Type)).Cast<IDropdownItem<Guid>>().ToList();
+
+    private List<IDropdownItem<Guid>> _currencyItems => ViewModel.LookupState.Instance.Currencies.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
+
 
     private CurrencyInfo? _selectedCurrency => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
 
