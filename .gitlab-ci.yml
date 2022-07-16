@@ -1,6 +1,7 @@
 variables:
   GIT_STRATEGY: clone
   GIT_SUBMODULE_STRATEGY: recursive
+  GIT_DEPTH: '10'
   APP_NAME: zeno-finance
   IMAGE_TAG: latest
 
