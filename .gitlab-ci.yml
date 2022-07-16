@@ -192,10 +192,10 @@ end to end tests:
    - cat variables/bff_image_build
    - cat variables/api_image_build
    - cat variables/e2e_image_build
-   - export WEB_IMAGE_TAG=`cat variables/web_image_tag 2> /dev/null || echo latest`
-   - export BFF_IMAGE_TAG=`cat variables/bff_image_tag 2> /dev/null || echo latest`
-   - export API_IMAGE_TAG=`cat variables/api_image_tag 2> /dev/null || echo latest`
-   - export E2E_IMAGE_TAG=`cat variables/e2e_image_tag 2> /dev/null || echo latest`
+   - export WEB_IMAGE_TAG=`cat variables/web_image_build 2> /dev/null || echo latest`
+   - export BFF_IMAGE_TAG=`cat variables/bff_image_build 2> /dev/null || echo latest`
+   - export API_IMAGE_TAG=`cat variables/api_image_build 2> /dev/null || echo latest`
+   - export E2E_IMAGE_TAG=`cat variables/e2e_image_build 2> /dev/null || echo latest`
    - echo $WEB_IMAGE_TAG
    - echo $BFF_IMAGE_TAG
    - echo $API_IMAGE_TAG
