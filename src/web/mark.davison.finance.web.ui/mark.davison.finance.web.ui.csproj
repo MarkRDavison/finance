@@ -7,15 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="mark.davison.zui" Version="1.0.3" />
+    <PackageReference Include="mark.davison.zui" Version="1.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.4" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\common\mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.web.features\mark.davison.finance.web.features.csproj" />
   </ItemGroup>
 
   <ItemGroup>

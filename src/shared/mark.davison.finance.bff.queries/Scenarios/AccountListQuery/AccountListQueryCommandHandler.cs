@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Repository;
-
-namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
+﻿namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
 
 public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRequest, AccountListQueryResponse>
 {
@@ -16,7 +14,7 @@ public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRe
         var response = new AccountListQueryResponse();
 
         var accounts = await _httpRepository.GetEntitiesAsync<AccountSummary>(
-            "account/summary",
+            "account/summary", // TODO: magic string
             new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellation);

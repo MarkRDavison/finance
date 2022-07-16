@@ -22,7 +22,8 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
     {
         services.AddTransient<IFinanceDataSeeder, TestFinanceDataSeeder>(_ =>
             new TestFinanceDataSeeder(
-                _.GetRequiredService<IRepository>()
+                _.GetRequiredService<IRepository>(),
+                _.GetRequiredService<IOptions<AppSettings>>()
             )
             {
                 SeedData = SeedDataFunc

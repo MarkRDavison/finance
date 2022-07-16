@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.web.ui.Features.Lookup;
-
-namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
+﻿namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
 
 
 public partial class AddAccountFormViewModel : ObservableObject

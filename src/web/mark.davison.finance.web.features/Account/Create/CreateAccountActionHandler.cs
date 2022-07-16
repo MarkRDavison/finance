@@ -1,21 +1,18 @@
 ﻿using mark.davison.finance.bff.commands.Scenarios.CreateLocation;
 
-namespace mark.davison.finance.web.ui.Features.Account.Create;
+namespace mark.davison.finance.web.features.Account.Create;
 
-public class CreateAccountCommandHandler : ICommandHandler<CreateAccountCommand, CreateAccountCommandResult>
+public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, CreateAccountCommandResult>
 {
     private readonly IClientHttpRepository _repository;
-    private readonly IStateStore _stateStore;
 
-    public CreateAccountCommandHandler(
-        IClientHttpRepository repository,
-        IStateStore stateStore)
+    public CreateAccountActionHandler(
+        IClientHttpRepository repository)
     {
         _repository = repository;
-        _stateStore = stateStore;
     }
 
-    public async Task<CreateAccountCommandResult> Handle(CreateAccountCommand command, CancellationToken cancellation)
+    public async Task<CreateAccountCommandResult> Handle(CreateAccountAction command, CancellationToken cancellation)
     {
         var request = new CreateAccountRequest
         {

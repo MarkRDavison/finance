@@ -1,5 +1,5 @@
-﻿using mark.davison.finance.web.ui.Features.Account.Add;
-using mark.davison.finance.web.ui.Features.Account.Create;
+﻿using mark.davison.finance.web.features.Account.Add;
+using mark.davison.finance.web.features.Account.Create;
 
 namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
 
@@ -28,7 +28,7 @@ public partial class AddAccountViewModel : ObservableObject
         var currency = AddAccountFormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == AddAccountFormViewModel.CurrencyId);
         var accountType = AddAccountFormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == AddAccountFormViewModel.AccountTypeId);
 
-        var response = await _dispatcher.Dispatch<CreateAccountCommand, CreateAccountCommandResult>(new CreateAccountCommand
+        var response = await _dispatcher.Dispatch<CreateAccountAction, CreateAccountCommandResult>(new CreateAccountAction
         {
             Name = AddAccountFormViewModel.Name,
             AccountNumber = AddAccountFormViewModel.AccountNumber,

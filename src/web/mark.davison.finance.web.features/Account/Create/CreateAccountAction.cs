@@ -1,6 +1,6 @@
-﻿namespace mark.davison.finance.web.ui.Features.Account.Create;
+﻿namespace mark.davison.finance.web.features.Account.Create;
 
-public class CreateAccountCommand : ICommand<CreateAccountCommand, CreateAccountCommandResult>
+public class CreateAccountAction : ICommand<CreateAccountAction, CreateAccountCommandResult>
 {
     public string Name { get; set; } = string.Empty;
     public long? VirtualBalance { get; set; }

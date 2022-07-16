@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.ui.Features.Lookup;
+﻿namespace mark.davison.finance.web.features.Lookup;
 
 public class LookupState : IState
 {
@@ -31,13 +31,6 @@ public class LookupState : IState
     public IEnumerable<CurrencyDto> Currencies { get; init; }
 
     public IEnumerable<TransactionTypeDto> TransactionTypes { get; init; }
-
-    public List<IDropdownItem<Guid>> BankItems => Banks.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
-
-    public List<IDropdownItem<Guid>> AccountTypeItems => AccountTypes.Select(_ => new DropdownItem<Guid>(_.Id, _.Type)).Cast<IDropdownItem<Guid>>().ToList();
-
-    public List<IDropdownItem<Guid>> CurrencyItems => Currencies.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
-
 
     public void Initialise()
     {

@@ -1,5 +1,3 @@
-using mark.davison.finance.common.client;
-
 var bffRoot = "https://localhost:40000";
 var authConfig = new AuthenticationConfig();
 authConfig.SetBffBase(bffRoot);
@@ -14,7 +12,7 @@ builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
-builder.Services.UseCQRS(typeof(Program));
+builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
 builder.Services.AddSingleton<AddAccountViewModel>();
 
 await builder.Build().RunAsync();
