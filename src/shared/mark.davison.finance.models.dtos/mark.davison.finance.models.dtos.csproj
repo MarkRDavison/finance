@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\mark.davison.finance.common\mark.davison.finance.common.csproj" />
+    <PackageReference Include="mark.davison.common" Version="1.3.4" />
   </ItemGroup>
 
 </Project>

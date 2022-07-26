@@ -2,7 +2,7 @@
 
 public class FinanceHttpRepository : HttpRepository
 {
-    public FinanceHttpRepository(string baseUri) : base(baseUri)
+    public FinanceHttpRepository(string baseUri) : base(baseUri, new HttpClient())
     {
 
     }

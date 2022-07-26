@@ -42,7 +42,8 @@ public class TransactionQueryByAccountActionHandlerTests
         _repository
             .Setup(_ => _
                 .Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(
-                    It.IsAny<TransactionByAccountQueryRequest>()))
+                    It.IsAny<TransactionByAccountQueryRequest>(),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync((TransactionByAccountQueryRequest req) => new TransactionByAccountQueryResponse()
             {
                 Transactions = transactions
@@ -57,7 +58,8 @@ public class TransactionQueryByAccountActionHandlerTests
         _repository
             .Verify(_ => _
                 .Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(
-                    It.IsAny<TransactionByAccountQueryRequest>()),
+                    It.IsAny<TransactionByAccountQueryRequest>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
 
         _stateStore

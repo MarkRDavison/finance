@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.queries.Scenarios.TransactionByAccountQuery;
 
-public class TransactionByAccountQueryHandler : ICommandHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
+public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {
     private readonly IHttpRepository _httpRepository;
 

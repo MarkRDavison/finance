@@ -1,6 +1,5 @@
 ﻿namespace mark.davison.finance.models.Entities;
 
-[Lookup(PhaseName = "Startup", Phase = 0)]
 public partial class Bank : FinanceEntity
 {
     public static Guid KiwibankId = new Guid("6A9BF196-405F-4E3B-ABDE-28CC737A4B73");

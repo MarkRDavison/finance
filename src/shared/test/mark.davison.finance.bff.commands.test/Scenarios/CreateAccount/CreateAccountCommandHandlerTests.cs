@@ -1,4 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Repository;
+﻿using mark.davison.common.server.abstractions.Repository;
 
 namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount;
 

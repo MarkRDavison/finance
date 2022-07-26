@@ -7,13 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="mark.davison.common.client" Version="1.3.4" />
     <PackageReference Include="mark.davison.zui" Version="1.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.4" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.4" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.7" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\mark.davison.finance.common.client.components\mark.davison.finance.common.client.components.csproj" />
     <ProjectReference Include="..\mark.davison.finance.web.features\mark.davison.finance.web.features.csproj" />
   </ItemGroup>
 

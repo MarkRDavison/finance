@@ -18,7 +18,7 @@ public class FetchAccountListActionHandler : IActionHandler<FetchAccountListActi
         var response = await _repository.Get<AccountListQueryResponse, AccountListQueryRequest>(new AccountListQueryRequest
         {
             ShowActive = action.ShowActive
-        });
+        }, cancellationToken);
 
         _stateStore.SetState(new AccountListState(response.Accounts));
     }

@@ -20,7 +20,8 @@ public class UpdateLookupsActionHandlerTests
         _repository
             .Setup(_ => _
                 .Get<StartupQueryResponse, StartupQueryRequest>(
-                    It.IsAny<StartupQueryRequest>()))
+                    It.IsAny<StartupQueryRequest>(),
+                    It.IsAny<CancellationToken>()))
             .ReturnsAsync((StartupQueryRequest req) => new StartupQueryResponse())
             .Verifiable();
 
@@ -41,7 +42,8 @@ public class UpdateLookupsActionHandlerTests
         _repository
             .Verify(_ => _
                 .Get<StartupQueryResponse, StartupQueryRequest>(
-                    It.IsAny<StartupQueryRequest>()),
+                    It.IsAny<StartupQueryRequest>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 }

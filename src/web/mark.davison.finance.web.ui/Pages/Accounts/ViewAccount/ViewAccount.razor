@@ -1,6 +1,4 @@
-﻿@using mark.davison.finance.models.dtos.Shared
-@using mark.davison.zui.Components.Loading
-@attribute [Route(Routes.Account)]
+﻿@attribute [Route(Routes.Account)]
 @inherits ComponentWithState
 
 @if (_currentAccount == null)
@@ -22,8 +20,8 @@ else {
 @code {
     private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
 
-    private StateInstance<AccountListState> _accountListState { get; set; } = default!;
-    private StateInstance<TransactionState> _transactionState { get; set; } = default!;
+    private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
+    private IStateInstance<TransactionState> _transactionState { get; set; } = default!;
 
     [Parameter]
     public Guid Id { get; set; }

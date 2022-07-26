@@ -1,6 +1,6 @@
-﻿global using mark.davison.finance.common.server.abstractions.Authentication;
-global using mark.davison.finance.common.server.abstractions.CQRS;
-global using mark.davison.finance.common.server.abstractions.Repository;
+﻿global using mark.davison.common.server.abstractions.Authentication;
+global using mark.davison.common.server.abstractions.CQRS;
+global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
 global using mark.davison.finance.models.dtos.Queries.TransactionByAccountQuery;

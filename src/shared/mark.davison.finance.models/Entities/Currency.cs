@@ -1,6 +1,5 @@
 ﻿namespace mark.davison.finance.models.Entities;
 
-[Lookup(PhaseName = "Startup", Phase = 0)]
 public partial class Currency : FinanceEntity
 {
     public static Guid NZD = new Guid("746249E4-2DFA-483A-862F-6A9D4A86BC69");

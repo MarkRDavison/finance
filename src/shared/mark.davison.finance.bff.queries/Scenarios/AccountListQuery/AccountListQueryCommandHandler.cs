@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
 
-public class AccountListQueryCommandHandler : ICommandHandler<AccountListQueryRequest, AccountListQueryResponse>
+public class AccountListQueryCommandHandler : IQueryHandler<AccountListQueryRequest, AccountListQueryResponse>
 {
     private readonly IHttpRepository _httpRepository;
 
