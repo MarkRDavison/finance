@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\common\mark.davison.finance.common.client\mark.davison.finance.common.client.csproj" />
     <ProjectReference Include="..\..\mark.davison.finance.web.ui\mark.davison.finance.web.ui.csproj" />
   </ItemGroup>
 

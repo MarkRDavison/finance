@@ -16,7 +16,7 @@ public class UpdateLookupsActionHandler : IActionHandler<UpdateLookupsAction>
 
     public async Task Handle(UpdateLookupsAction action, CancellationToken cancellation)
     {
-        var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(new StartupQueryRequest { });
+        var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(cancellation);
         _stateStore.SetState(new LookupState(
             response.Banks,
             response.AccountTypes,

@@ -1,7 +1,6 @@
-﻿global using mark.davison.finance.bff.Configuration;
+﻿global using mark.davison.common.server.Authentication;
+global using mark.davison.finance.bff.Configuration;
 global using mark.davison.finance.bff.test.Framework;
-global using mark.davison.finance.common.server.Authentication;
-global using mark.davison.finance.common.server.Identification;
 global using Microsoft.AspNetCore.Hosting;
 global using Microsoft.AspNetCore.Mvc.Testing;
 global using Microsoft.AspNetCore.TestHost;

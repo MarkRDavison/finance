@@ -19,16 +19,16 @@ spec:
         image: zeno15/zeno-finance-e2e:$E2E_IMAGE_TAG
         imagePullPolicy: Always
         env:
-        - name: CYPRESS_WEB_URL
+        - name: WEB_URL
           value: 'https://finance-web-dev.markdavison.kiwi/'
-        - name: CYPRESS_BFF_URL
+        - name: BFF_URL
           value: 'https://finance-bff-dev.markdavison.kiwi/'
-        - name: CYPRESS_KC_USERNAME
+        - name: KC_USERNAME
           valueFrom:
             secretKeyRef:
               name: 'zeno-finance-dev-secret'
               key: KC_USERNAME
-        - name: CYPRESS_KC_PASSWORD
+        - name: KC_PASSWORD
           valueFrom:
             secretKeyRef:
               name: 'zeno-finance-dev-secret'

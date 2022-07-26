@@ -43,8 +43,9 @@ public class FetchAccountListActionHandlerTests
         _repository
             .Setup(_ => _
                 .Get<AccountListQueryResponse, AccountListQueryRequest>(
-                    It.IsAny<AccountListQueryRequest>()))
-            .ReturnsAsync((AccountListQueryRequest req) => new AccountListQueryResponse()
+                    It.IsAny<AccountListQueryRequest>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((AccountListQueryRequest req, CancellationToken cancellationToken) => new AccountListQueryResponse()
             {
                 Accounts = accountListItems
             })
@@ -55,7 +56,8 @@ public class FetchAccountListActionHandlerTests
         _repository
             .Verify(_ => _
                 .Get<AccountListQueryResponse, AccountListQueryRequest>(
-                    It.IsAny<AccountListQueryRequest>()),
+                    It.IsAny<AccountListQueryRequest>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
 
         _stateStore

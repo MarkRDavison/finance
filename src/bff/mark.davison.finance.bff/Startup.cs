@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Authentication;
-using mark.davison.finance.common.server.abstractions.Repository;
-using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
+﻿using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
 
 namespace mark.davison.finance.bff;
 
@@ -17,12 +15,6 @@ public class Startup
     {
         var AppSettings = services.ConfigureSettingsServices(Configuration);
         if (AppSettings == null) { throw new InvalidOperationException(); }
-
-        ProxyOptions = new()
-        {
-            RouteBase = "/api",
-            ProxyAddress = AppSettings.API_ORIGIN
-        };
 
         services
             .AddControllers()
@@ -79,7 +71,6 @@ public class Startup
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.AddProxyServices(ProxyOptions);
         services.UseCQRS(
             typeof(BffRootType),
             typeof(CommandsRootType),
@@ -123,6 +114,4 @@ public class Startup
 
     public IConfiguration Configuration { get; }
     public AppSettings AppSettings { get; set; } = null!;
-
-    ProxyOptions ProxyOptions { get; set; } = null!;
 }

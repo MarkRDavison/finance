@@ -1,9 +1,6 @@
-﻿using mark.davison.finance.common.server.abstractions.Authentication;
-using mark.davison.finance.common.server.abstractions.Repository;
+﻿namespace mark.davison.finance.bff.queries.Scenarios.StartupQuery;
 
-namespace mark.davison.finance.bff.queries.Scenarios.StartupQuery;
-
-public class StartupQueryCommandHandler : ICommandHandler<StartupQueryRequest, StartupQueryResponse>
+public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
 {
     private readonly IHttpRepository _httpRepository;
 

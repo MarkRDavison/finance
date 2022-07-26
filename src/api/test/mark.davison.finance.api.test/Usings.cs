@@ -1,7 +1,7 @@
-﻿global using mark.davison.finance.api.Configuration;
+﻿global using mark.davison.common.server.abstractions.Repository;
+global using mark.davison.common.server.test.Framework;
+global using mark.davison.finance.api.Configuration;
 global using mark.davison.finance.api.test.Framework;
-global using mark.davison.finance.common.server.Repository;
-global using mark.davison.finance.common.test.Framework;
 global using mark.davison.finance.models.Entities;
 global using mark.davison.finance.models.Models;
 global using Microsoft.AspNetCore.Hosting;

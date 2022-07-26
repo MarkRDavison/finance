@@ -24,7 +24,7 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, C
             Name = command.Name,
             VirtualBalance = command.VirtualBalance
         };
-        var response = await _repository.Post<CreateAccountResponse, CreateAccountRequest>(request);
+        var response = await _repository.Post<CreateAccountResponse, CreateAccountRequest>(request, cancellation);
         if (!response.Success)
         {
             return new CreateAccountCommandResult { Success = false };

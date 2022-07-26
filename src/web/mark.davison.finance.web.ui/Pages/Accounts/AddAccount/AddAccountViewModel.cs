@@ -1,9 +1,6 @@
-﻿using mark.davison.finance.web.features.Account.Add;
-using mark.davison.finance.web.features.Account.Create;
+﻿namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
 
-namespace mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
-
-public partial class AddAccountViewModel : ObservableObject
+public partial class AddAccountViewModel
 {
 
     private readonly ICQRSDispatcher _dispatcher;
@@ -15,8 +12,7 @@ public partial class AddAccountViewModel : ObservableObject
         _dispatcher = dispatcher;
     }
 
-    [ObservableProperty]
-    private AddAccountFormViewModel _addAccountFormViewModel = new();
+    public AddAccountFormViewModel AddAccountFormViewModel { get; set; } = new();
 
     public async Task<bool> OnSave()
     {

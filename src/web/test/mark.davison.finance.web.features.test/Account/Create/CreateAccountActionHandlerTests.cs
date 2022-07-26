@@ -26,8 +26,9 @@ public class CreateAccountActionHandlerTests
         _repository
             .Setup(_ => _
                 .Post<CreateAccountResponse, CreateAccountRequest>(
-                    It.IsAny<CreateAccountRequest>()))
-            .ReturnsAsync((CreateAccountRequest req) => new CreateAccountResponse()
+                    It.IsAny<CreateAccountRequest>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync((CreateAccountRequest req, CancellationToken cancellationToken) => new CreateAccountResponse()
             {
                 Success = true
             })
@@ -40,7 +41,8 @@ public class CreateAccountActionHandlerTests
         _repository
             .Verify(_ => _
                 .Post<CreateAccountResponse, CreateAccountRequest>(
-                    It.IsAny<CreateAccountRequest>()),
+                    It.IsAny<CreateAccountRequest>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 }

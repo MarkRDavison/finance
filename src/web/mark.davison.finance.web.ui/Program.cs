@@ -1,3 +1,6 @@
+using mark.davison.common.client.abstractions.Authentication;
+using mark.davison.common.client.abstractions.Repository;
+
 var bffRoot = "https://localhost:40000";
 var authConfig = new AuthenticationConfig();
 authConfig.SetBffBase(bffRoot);
@@ -10,7 +13,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddHttpClient("API").AddHttpMessageHandler(_ => new CookieHandler());
 builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
-builder.Services.AddSingleton<IClientHttpRepository>(_ => new ClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
+builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
 builder.Services.AddSingleton<AddAccountViewModel>();

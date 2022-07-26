@@ -23,7 +23,7 @@
 
 @code {
 
-    private StateInstance<AccountListState> _accountListState { get; set; } = default!;
+    private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
 
     private IEnumerable<AccountListItemViewModel> _rows => _accountListState.Instance.Accounts.Select(_ => new AccountListItemViewModel
     {

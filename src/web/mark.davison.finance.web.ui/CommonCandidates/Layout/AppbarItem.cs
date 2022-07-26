@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.common.client.components.Layout;
+﻿namespace mark.davison.finance.web.ui.CommonCandidates.Layout;
 
 public class AppbarItem
 {
@@ -10,4 +10,3 @@ public class AppbarItem
     public string Name { get; set; }
     public string Route { get; set; }
 }
-

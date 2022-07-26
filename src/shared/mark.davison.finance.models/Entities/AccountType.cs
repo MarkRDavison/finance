@@ -1,6 +1,5 @@
 ﻿namespace mark.davison.finance.models.Entities;
 
-[Lookup(PhaseName = "Startup", Phase = 0)]
 public partial class AccountType : FinanceEntity
 {
     public static Guid Default = new Guid("8C5DE266-C026-4550-A24B-F79CE91A529A");

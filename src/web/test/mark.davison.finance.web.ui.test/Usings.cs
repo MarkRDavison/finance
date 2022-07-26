@@ -1,7 +1,7 @@
 ﻿global using mark.davison.finance.bff.commands.Scenarios.CreateLocation;
 global using mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
-global using mark.davison.finance.common.client.Repository;
-global using mark.davison.finance.common.client.State;
+global using mark.davison.common.client.Repository;
+global using mark.davison.common.client.State;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
 global using mark.davison.finance.web.features.Account;

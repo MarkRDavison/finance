@@ -20,7 +20,7 @@ public class TransactionQueryByAccountActionHandler : IActionHandler<Transaction
         var response = await _repository.Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(new TransactionByAccountQueryRequest
         {
             AccountId = action.AccountId
-        });
+        }, cancellationToken);
 
         foreach (var item in response.Transactions)
         {

@@ -15,7 +15,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\common\mark.davison.finance.server.common\mark.davison.finance.common.server.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.models\mark.davison.finance.models.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj" />
   </ItemGroup>

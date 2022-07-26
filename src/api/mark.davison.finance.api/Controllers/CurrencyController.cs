@@ -1,4 +1,4 @@
-﻿using mark.davison.finance.common.server.abstractions.Authentication;
+﻿using mark.davison.common.server.abstractions.Authentication;
 
 namespace mark.davison.finance.api.Controllers;
 

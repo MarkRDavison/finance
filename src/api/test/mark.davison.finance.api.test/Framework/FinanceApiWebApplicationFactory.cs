@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.api.test.Framework;
 
-public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, IFinanceWebApplicationFactory<AppSettings>
+public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
     public virtual Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
 
