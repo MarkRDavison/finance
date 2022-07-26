@@ -1,4 +1,6 @@
 ﻿global using mark.davison.common.server;
+global using mark.davison.common.server.abstractions.Authentication;
+global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.Middleware;
 global using mark.davison.common.server.Repository;

@@ -45,7 +45,7 @@ public class FetchAccountListActionHandlerTests
                 .Get<AccountListQueryResponse, AccountListQueryRequest>(
                     It.IsAny<AccountListQueryRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AccountListQueryRequest req) => new AccountListQueryResponse()
+            .ReturnsAsync((AccountListQueryRequest req, CancellationToken cancellationToken) => new AccountListQueryResponse()
             {
                 Accounts = accountListItems
             })

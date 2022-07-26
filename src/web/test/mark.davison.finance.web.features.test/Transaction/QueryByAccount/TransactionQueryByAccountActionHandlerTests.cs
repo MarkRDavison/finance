@@ -44,7 +44,7 @@ public class TransactionQueryByAccountActionHandlerTests
                 .Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(
                     It.IsAny<TransactionByAccountQueryRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionByAccountQueryRequest req) => new TransactionByAccountQueryResponse()
+            .ReturnsAsync((TransactionByAccountQueryRequest req, CancellationToken cancellationToken) => new TransactionByAccountQueryResponse()
             {
                 Transactions = transactions
             })

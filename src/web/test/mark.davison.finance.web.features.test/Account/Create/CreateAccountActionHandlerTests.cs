@@ -28,7 +28,7 @@ public class CreateAccountActionHandlerTests
                 .Post<CreateAccountResponse, CreateAccountRequest>(
                     It.IsAny<CreateAccountRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateAccountRequest req) => new CreateAccountResponse()
+            .ReturnsAsync((CreateAccountRequest req, CancellationToken cancellationToken) => new CreateAccountResponse()
             {
                 Success = true
             })
