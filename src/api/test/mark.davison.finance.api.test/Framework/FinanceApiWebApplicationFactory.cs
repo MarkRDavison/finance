@@ -4,6 +4,7 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
 {
     public virtual Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
 
+    public IServiceProvider ServiceProvider => base.Services;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {

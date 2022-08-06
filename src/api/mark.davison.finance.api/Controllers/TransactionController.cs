@@ -2,10 +2,10 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class TransactionController : BaseController<Transaction>
+public class TransactionController : BaseFinanceController<Transaction>
 {
     public TransactionController(
-        ILogger<UserController> logger,
+        ILogger<TransactionController> logger,
         IRepository repository,
         IServiceScopeFactory serviceScopeFactory,
         ICurrentUserContext currentUserContext

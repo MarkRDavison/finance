@@ -15,9 +15,9 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
         _createAccountCommandValidator = createAccountCommandValidator;
     }
 
-    public async Task<CreateAccountResponse> Handle(CreateAccountRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateAccountResponse> Handle(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
     {
-        var response = await _createAccountCommandValidator.Validate(query, currentUserContext, cancellation);
+        var response = await _createAccountCommandValidator.Validate(request, currentUserContext, cancellation);
 
         if (!response.Success)
         {
@@ -26,16 +26,16 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
 
         var account = new Account
         {
-            Id = query.Id,
+            Id = request.CreateAccountDto.Id,
             Created = DateTime.UtcNow,
             LastModified = DateTime.UtcNow,
-            Name = query.Name,
+            Name = request.CreateAccountDto.Name,
             IsActive = true,
-            VirtualBalance = query.VirtualBalance,
-            AccountNumber = query.AccountNumber,
-            AccountTypeId = query.AccountTypeId,
-            BankId = query.BankId,
-            CurrencyId = query.CurrencyId,
+            VirtualBalance = request.CreateAccountDto.VirtualBalance,
+            AccountNumber = request.CreateAccountDto.AccountNumber,
+            AccountTypeId = request.CreateAccountDto.AccountTypeId,
+            BankId = request.CreateAccountDto.BankId,
+            CurrencyId = request.CreateAccountDto.CurrencyId,
             Order = -1,
             UserId = currentUserContext.CurrentUser.Id
         };

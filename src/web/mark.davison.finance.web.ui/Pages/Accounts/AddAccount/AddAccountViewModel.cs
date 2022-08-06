@@ -24,7 +24,7 @@ public partial class AddAccountViewModel
         var currency = AddAccountFormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == AddAccountFormViewModel.CurrencyId);
         var accountType = AddAccountFormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == AddAccountFormViewModel.AccountTypeId);
 
-        var response = await _dispatcher.Dispatch<CreateAccountAction, CreateAccountCommandResult>(new CreateAccountAction
+        var response = await _dispatcher.Dispatch<CreateAccountAction, CreateAccountCommandResponse>(new CreateAccountAction
         {
             Name = AddAccountFormViewModel.Name,
             AccountNumber = AddAccountFormViewModel.AccountNumber,

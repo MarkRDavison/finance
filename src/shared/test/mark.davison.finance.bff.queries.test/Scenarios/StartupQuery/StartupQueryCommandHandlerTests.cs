@@ -1,4 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Repository;
+﻿using mark.davison.finance.accounting.constants;
 
 namespace mark.davison.finance.bff.queries.test.Scenarios.StartupQuery;
 
@@ -29,20 +29,20 @@ public class StartupQueryCommandHandlerTests
             new Bank { Id = Guid.NewGuid(), Name = "Westpac" }
         };
         var accountTypes = new List<AccountType> {
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Default) },
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Debt) },
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Asset) },
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Beneficiary) },
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Cash) },
-            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountType.Expense) }
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Default) },
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Debt) },
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Asset) },
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Beneficiary) },
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Cash) },
+            new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Expense) }
         };
         var currencies = new List<Currency> {
             new Currency { Id = Guid.NewGuid(), Code = "NZD", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 }
         };
         var transactionTypes = new List<TransactionType> {
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.OpeningBalance) },
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.Invalid) },
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionType.Deposit) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.OpeningBalance) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Invalid) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Deposit) },
         };
 
         _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<Bank>(

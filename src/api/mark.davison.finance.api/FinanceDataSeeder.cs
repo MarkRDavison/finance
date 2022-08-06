@@ -66,19 +66,19 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     {
         var seededAccountTypes = new List<AccountType>
         {
-            new AccountType{ Id = AccountType.Default, Type = "Default", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Cash, Type = "Cash", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Asset, Type = "Asset", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Expense, Type = "Expense", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Revenue, Type = "Revenue", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.InitialBalance, Type = "Initial balance", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Beneficiary, Type = "Beneficiary", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Import, Type = "Import", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Loan, Type = "Loan", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Reconcilation, Type = "Reconcilation", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Debt, Type = "Debt", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.Mortgage, Type = "Mortgage", UserId = Guid.Empty },
-            new AccountType{ Id = AccountType.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Default, Type = "Default", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Cash, Type = "Cash", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Asset, Type = "Asset", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Expense, Type = "Expense", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Revenue, Type = "Revenue", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.InitialBalance, Type = "Initial balance", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Beneficiary, Type = "Beneficiary", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Import, Type = "Import", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Loan, Type = "Loan", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Reconciliation, Type = "Reconcilation", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Debt, Type = "Debt", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.Mortgage, Type = "Mortgage", UserId = Guid.Empty },
+            new AccountType{ Id = AccountConstants.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
         };
 
         await EnsureSeeded(seededAccountTypes, cancellationToken);
@@ -98,13 +98,13 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     {
         var seededTransactionTypes = new List<TransactionType>
         {
-            new TransactionType{ Id = TransactionType.Withdrawal, Type = "Withdrawal", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.Deposit, Type = "Deposit", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.Transfer, Type = "Transfer", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.OpeningBalance, Type = "Opening balance", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.Reconciliation, Type = "Reconciliation", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.Invalid, Type = "Invalid", UserId = Guid.Empty },
-            new TransactionType{ Id = TransactionType.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.Withdrawal, Type = "Withdrawal", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.Deposit, Type = "Deposit", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.Transfer, Type = "Transfer", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.OpeningBalance, Type = "Opening balance", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.Reconciliation, Type = "Reconciliation", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.Invalid, Type = "Invalid", UserId = Guid.Empty },
+            new TransactionType{ Id = TransactionConstants.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
         };
         await EnsureSeeded(seededTransactionTypes, cancellationToken);
     }

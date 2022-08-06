@@ -2,7 +2,7 @@
 
 [ApiController]
 [Route("api/[controller]")]
-public class AccountController : BaseController<Account>
+public class AccountController : BaseFinanceController<Account>
 {
     public AccountController(
         ILogger<UserController> logger,

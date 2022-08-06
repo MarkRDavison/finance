@@ -7,6 +7,7 @@ global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.Health;
 global using mark.davison.common.server.Middleware;
+global using mark.davison.finance.accounting.constants;
 global using mark.davison.finance.api;
 global using mark.davison.finance.api.Configuration;
 global using mark.davison.finance.models.Entities;

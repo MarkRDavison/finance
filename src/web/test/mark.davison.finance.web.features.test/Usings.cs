@@ -12,6 +12,7 @@ global using mark.davison.finance.web.features.Account.Create;
 global using mark.davison.finance.web.features.Account.List;
 global using mark.davison.finance.web.features.Lookup;
 global using mark.davison.finance.web.features.Transaction;
+global using mark.davison.finance.web.features.Transaction.Create;
 global using mark.davison.finance.web.features.Transaction.QueryByAccount;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;
 global using Moq;

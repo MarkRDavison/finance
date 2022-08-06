@@ -1,11 +1,9 @@
-﻿using mark.davison.common.server.abstractions.Authentication;
-
-namespace mark.davison.finance.api.Controllers;
+﻿namespace mark.davison.finance.api.Controllers;
 
 
 [ApiController]
 [Route("api/[controller]")]
-public class CurrencyController : BaseController<Currency>
+public class CurrencyController : BaseFinanceController<Currency>
 {
     public CurrencyController(
         ILogger<UserController> logger,

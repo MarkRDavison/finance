@@ -1,6 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Authentication;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 
 public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 {
@@ -29,7 +27,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var authHeaders = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
 
         var bank = await _httpRepository.GetEntityAsync<Bank>(
-            request.BankId,
+            request.CreateAccountDto.BankId,
             authHeaders,
             cancellation);
 
@@ -41,7 +39,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         }
 
         var accountType = await _httpRepository.GetEntityAsync<AccountType>(
-            request.AccountTypeId,
+            request.CreateAccountDto.AccountTypeId,
             authHeaders,
             cancellation);
 
@@ -53,7 +51,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         }
 
         var currency = await _httpRepository.GetEntityAsync<Currency>(
-            request.CurrencyId,
+            request.CreateAccountDto.CurrencyId,
             authHeaders,
             cancellation);
 
@@ -64,7 +62,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
             return response;
         }
 
-        if (string.IsNullOrEmpty(request.Name))
+        if (string.IsNullOrEmpty(request.CreateAccountDto.Name))
         {
             response.Success = false;
             response.Error.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
@@ -82,25 +80,25 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 
     internal async Task<bool> ValidateDuplicateAccount(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
     {
-        if (string.IsNullOrEmpty(request.AccountNumber))
+        if (string.IsNullOrEmpty(request.CreateAccountDto.AccountNumber))
         {
             return true;
         }
 
         Guid opposingGuid = Guid.Empty;
-        if (request.AccountTypeId == AccountType.Expense)
+        if (request.CreateAccountDto.AccountTypeId == AccountConstants.Expense)
         {
-            opposingGuid = AccountType.Revenue;
+            opposingGuid = AccountConstants.Revenue;
         }
-        else if (request.AccountTypeId == AccountType.Revenue)
+        else if (request.CreateAccountDto.AccountTypeId == AccountConstants.Revenue)
         {
-            opposingGuid = AccountType.Expense;
+            opposingGuid = AccountConstants.Expense;
         }
 
         var query = new QueryParameters
         {
             { nameof(Account.UserId), currentUserContext.CurrentUser.Id.ToString() },
-            { nameof(Account.AccountNumber), request.AccountNumber }
+            { nameof(Account.AccountNumber), request.CreateAccountDto.AccountNumber }
         };
 
         var duplicateAccounts = await _httpRepository.GetEntitiesAsync<Account>(

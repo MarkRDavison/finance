@@ -52,11 +52,13 @@ public class Startup
         {
             if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite($"Data Source={Guid.NewGuid()}.db"));
+                services.AddDbContextFactory<FinanceDbContext>(_ => _
+                    .UseSqlite($"Data Source={Guid.NewGuid()}.db"));
             }
             else
             {
-                services.AddDbContextFactory<FinanceDbContext>(_ => _.UseSqlite(AppSettings.CONNECTION_STRING));
+                services.AddDbContextFactory<FinanceDbContext>(_ => _
+                    .UseSqlite(AppSettings.CONNECTION_STRING));
             }
         }
         else
@@ -71,6 +73,8 @@ public class Startup
                 _.GetRequiredService<IDbContextFactory<FinanceDbContext>>(),
                 _.GetRequiredService<ILogger<FinanceRepository>>())
             );
+
+        services.UseFinancePersistence();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -9,6 +9,7 @@ global using mark.davison.finance.bff.Authentication;
 global using mark.davison.finance.bff.commands;
 global using mark.davison.finance.bff.Configuration;
 global using mark.davison.finance.bff.queries;
+global using mark.davison.finance.common.candidates.Converters;
 global using mark.davison.finance.models.dtos;
 global using Microsoft.AspNetCore.Mvc.ApplicationParts;
 global using System.Text;

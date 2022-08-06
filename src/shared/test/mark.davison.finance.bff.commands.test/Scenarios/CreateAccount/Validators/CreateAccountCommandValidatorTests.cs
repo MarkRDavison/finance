@@ -1,8 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Authentication;
-using mark.davison.common.server.abstractions.Identification;
-using mark.davison.common.server.abstractions.Repository;
-
-namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount.Validators;
+﻿namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount.Validators;
 
 [TestClass]
 public class CreateAccountCommandValidatorTests
@@ -27,10 +23,10 @@ public class CreateAccountCommandValidatorTests
         };
         _accountTypes = new()
         {
-            new AccountType { Id = AccountType.Asset, Type = "Asset" },
-            new AccountType { Id = AccountType.Expense, Type = "Expense" },
-            new AccountType { Id = AccountType.Revenue, Type = "Revenue" },
-            new AccountType { Id = AccountType.Cash, Type = "Cash" }
+            new AccountType { Id = AccountConstants.Asset, Type = "Asset" },
+            new AccountType { Id = AccountConstants.Expense, Type = "Expense" },
+            new AccountType { Id = AccountConstants.Revenue, Type = "Revenue" },
+            new AccountType { Id = AccountConstants.Cash, Type = "Cash" }
         };
         _currencies = new()
         {
@@ -57,7 +53,7 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((Bank?)null);
 
-        var request = new CreateAccountRequest { BankId = Guid.NewGuid() };
+        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid() } };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -85,7 +81,14 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((AccountType?)null);
 
-        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() };
+        var request = new CreateAccountRequest
+        {
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = Guid.NewGuid()
+            }
+        };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -121,7 +124,7 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((Currency?)null);
 
-        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() };
+        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() } };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -157,7 +160,7 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(_currencies[0]);
 
-        var request = new CreateAccountRequest { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() };
+        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -213,11 +216,14 @@ public class CreateAccountCommandValidatorTests
 
         var request = new CreateAccountRequest
         {
-            BankId = Guid.NewGuid(),
-            AccountTypeId = Guid.NewGuid(),
-            CurrencyId = Guid.NewGuid(),
-            Name = "Name",
-            AccountNumber = AccountNumber
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = Guid.NewGuid(),
+                CurrencyId = Guid.NewGuid(),
+                Name = "Name",
+                AccountNumber = AccountNumber
+            }
         };
         var response = await _createAccountCommandValidator.Validate(
             request,
@@ -267,17 +273,20 @@ public class CreateAccountCommandValidatorTests
                 {
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
-                    AccountTypeId = AccountType.Revenue
+                    AccountTypeId = AccountConstants.Revenue
                 }
             });
 
         var request = new CreateAccountRequest
         {
-            BankId = Guid.NewGuid(),
-            AccountTypeId = AccountType.Expense,
-            CurrencyId = Guid.NewGuid(),
-            Name = "Name",
-            AccountNumber = AccountNumber
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = AccountConstants.Expense,
+                CurrencyId = Guid.NewGuid(),
+                Name = "Name",
+                AccountNumber = AccountNumber
+            }
         };
         var response = await _createAccountCommandValidator.Validate(
             request,
@@ -326,17 +335,20 @@ public class CreateAccountCommandValidatorTests
                 {
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
-                    AccountTypeId = AccountType.Expense
+                    AccountTypeId = AccountConstants.Expense
                 }
             });
 
         var request = new CreateAccountRequest
         {
-            BankId = Guid.NewGuid(),
-            AccountTypeId = AccountType.Revenue,
-            CurrencyId = Guid.NewGuid(),
-            Name = "Name",
-            AccountNumber = AccountNumber
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = AccountConstants.Revenue,
+                CurrencyId = Guid.NewGuid(),
+                Name = "Name",
+                AccountNumber = AccountNumber
+            }
         };
         var response = await _createAccountCommandValidator.Validate(
             request,
@@ -385,23 +397,26 @@ public class CreateAccountCommandValidatorTests
                 {
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
-                    AccountTypeId = AccountType.Expense
+                    AccountTypeId = AccountConstants.Expense
                 },
                 new Account
                 {
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
-                    AccountTypeId = AccountType.Revenue
+                    AccountTypeId = AccountConstants.Revenue
                 }
             });
 
         var request = new CreateAccountRequest
         {
-            BankId = Guid.NewGuid(),
-            AccountTypeId = AccountType.Revenue,
-            CurrencyId = Guid.NewGuid(),
-            Name = "Name",
-            AccountNumber = AccountNumber
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = AccountConstants.Revenue,
+                CurrencyId = Guid.NewGuid(),
+                Name = "Name",
+                AccountNumber = AccountNumber
+            }
         };
         var response = await _createAccountCommandValidator.Validate(
             request,
@@ -450,11 +465,14 @@ public class CreateAccountCommandValidatorTests
 
         var request = new CreateAccountRequest
         {
-            BankId = Guid.NewGuid(),
-            AccountTypeId = Guid.NewGuid(),
-            CurrencyId = Guid.NewGuid(),
-            Name = "Name",
-            AccountNumber = AccountNumber
+            CreateAccountDto = new CreateAccountDto
+            {
+                BankId = Guid.NewGuid(),
+                AccountTypeId = Guid.NewGuid(),
+                CurrencyId = Guid.NewGuid(),
+                Name = "Name",
+                AccountNumber = AccountNumber
+            }
         };
         var response = await _createAccountCommandValidator.Validate(
             request,
