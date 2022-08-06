@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.finance.persistence.Controllers;
 
+// TODO: Common candidate class?
 public abstract class BaseController<T> : ControllerBase where T : BaseEntity, new()
 {
     protected readonly ILogger _logger;

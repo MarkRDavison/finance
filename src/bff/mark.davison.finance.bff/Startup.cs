@@ -37,8 +37,8 @@ public class Startup
         services.AddAuthentication(ZenoAuthenticationConstants.ZenoAuthenticationScheme);
         services.AddAuthorization();
         services.AddTransient<ICustomZenoAuthenticationActions, FinanceCustomZenoAuthenticationActions>();
-        services.AddScoped<ICurrentUserContext>(_ => new CurrentUserContext());
-        services.AddSingleton<IHttpRepository>(_ => new FinanceHttpRepository(AppSettings.API_ORIGIN));
+
+        services.UseFinanceBff(AppSettings);
 
         services
             .AddSession(o =>
@@ -67,16 +67,6 @@ public class Startup
             _.OpenIdConnectWellKnownUri = AppSettings.AUTHORITY + KeycloakRealmToWellKnown;
         });
 
-        services
-            .AddHttpClient()
-            .AddHttpContextAccessor();
-
-        services.UseCQRS(
-            typeof(BffRootType),
-            typeof(CommandsRootType),
-            typeof(QueriesRootType),
-            typeof(DtosRootType));
-        services.AddCommandCQRS();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

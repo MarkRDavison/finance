@@ -11,6 +11,17 @@ public partial class Currency : FinanceEntity
     public static Guid JPY = new Guid("E63BF389-D189-46B1-B5DC-A6594D7A91C2");
     public static Guid RMB = new Guid("62812AF7-2079-4D61-BE2A-D320AFE938BF");
 
+    public static IList<Guid> Ids => new List<Guid>
+    {
+        NZD,
+        AUD,
+        USD,
+        CAD,
+        EUR,
+        GBP,
+        JPY,
+        RMB
+    };
 
     public string Code { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;

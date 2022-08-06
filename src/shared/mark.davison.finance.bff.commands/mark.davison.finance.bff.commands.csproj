@@ -11,6 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.accounting.rules\mark.davison.finance.accounting.rules.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models\mark.davison.finance.models.csproj" />
   </ItemGroup>
 

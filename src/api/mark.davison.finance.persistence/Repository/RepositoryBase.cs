@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.finance.persistence.Repository;
 
+// TODO: Use common
 public abstract class RepositoryBase<TContext> : IRepository
     where TContext : DbContext
 {

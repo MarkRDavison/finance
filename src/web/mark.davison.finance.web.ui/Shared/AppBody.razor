@@ -1,7 +1,13 @@
 ﻿@inject ICQRSDispatcher _actionDispatcher;
 @inject IAuthenticationContext _authContext
 
-@ChildContent
+@if (_authContext.IsAuthenticated)
+{
+    <div class="z-app-body">
+    <ContextBar />
+    @ChildContent
+    </div>
+}
 
 @code {
 
