@@ -1,0 +1,103 @@
+﻿<Form 
+    TViewModel="AddTransactionFormViewModel"
+    TModel="AddTransactionFormModel"
+    Id="@Id"
+    ViewModel="@ViewModel">
+
+    <TextInput
+        Id="@($"{Id}_Description")"
+        IsLabelDisplay="true"
+        Label="Description"
+        @bind-Value="ViewModel.Model.Description" />
+
+    <DropdownList
+        TId="Guid"
+        Id="@($"{Id}_SourceAccountId")"
+        IsLabelDisplay="true"
+        Label="Source account"
+        Items="@_sourceAccountItems"
+        @bind-Value="ViewModel.Model.SourceAccountId" />
+
+    <DropdownList
+        TId="Guid"
+        Id="@($"{Id}_DestinationAccountId")"
+        IsLabelDisplay="true"
+        Label="Destination account"
+        Items="@_destinationAccountItems"
+        @bind-Value="ViewModel.Model.DestinationAccountId" />
+
+    <DateInput
+        Id="@($"{Id}_Date")"
+        IsLabelDisplay="true"
+        Label="Date"
+        @bind-Value="ViewModel.Model.Date" />
+
+    <CurrencyInput
+        Id="@($"{Id}_Amount")"
+        IsLabelDisplay="true"
+        Label="Amount"
+        CurrencyInfo="@_amountCurrencyInfo"
+        @bind-Value="ViewModel.Model.Amount" />
+
+    <DropdownList
+        TId="Guid"
+        Id="@($"{Id}_ForeignCurrencyId")"
+        IsLabelDisplay="true"
+        Label="Foreign currency"
+        Items="@_currencyItems"
+        @bind-Value="ViewModel.Model.ForeignCurrencyId" />
+
+    <CurrencyInput
+        Id="@($"{Id}_ForeignAmount")"
+        IsLabelDisplay="true"
+        Label="Foreign amount"
+        CurrencyInfo="@_foreignAmountCurrencyInfo"
+        @bind-Value="ViewModel.Model.ForeignAmount" />
+</Form>
+
+@code {
+
+    private ICurrencyInfo _amountCurrencyInfo => LookupState.Currencies
+        .Where(_ => _.Id == _sourceAccount?.CurrencyId)
+        .Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces))
+        .FirstOrDefault() ?? new CurrencyInfo("", 0);
+
+    private ICurrencyInfo _foreignAmountCurrencyInfo => LookupState.Currencies
+        .Where(_ => _.Id == ViewModel.Model.ForeignCurrencyId)
+        .Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces))
+        .FirstOrDefault() ?? new CurrencyInfo("", 0);
+
+    private AccountListItemDto? _sourceAccount => AccountListState.Accounts.FirstOrDefault(_ => _.Id == ViewModel.Model.SourceAccountId);
+
+    private List<IDropdownItem<Guid>> _sourceAccountItems => AccountListState.Accounts
+        .Where(_ => AllowableSourceDestinationAccounts.GetSourceAccountTypes(TransactionType).Contains(_.AccountTypeId))
+        .Select(_ => new DropdownItem<Guid>(_.Id, _.Name))
+        .Cast<IDropdownItem<Guid>>()
+        .ToList();
+
+    private List<IDropdownItem<Guid>> _destinationAccountItems => AccountListState.Accounts
+        .Where(_ => AllowableSourceDestinationAccounts.GetDestinationAccountTypes(TransactionType).Contains(_.AccountTypeId))
+        .Select(_ => new DropdownItem<Guid>(_.Id, _.Name))
+        .Cast<IDropdownItem<Guid>>()
+        .ToList();
+
+    private List<IDropdownItem<Guid>> _currencyItems => LookupState.Currencies
+        .Select(_ => new DropdownItem<Guid>(_.Id, _.Name))
+        .Cast<IDropdownItem<Guid>>()
+        .ToList();
+
+    [Parameter, EditorRequired]
+    public string Id { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Guid TransactionType { get; set; }
+
+    [Parameter, EditorRequired]
+    public AddTransactionFormViewModel ViewModel { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public LookupState LookupState { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public AccountListState AccountListState { get; set; } = default!;
+}

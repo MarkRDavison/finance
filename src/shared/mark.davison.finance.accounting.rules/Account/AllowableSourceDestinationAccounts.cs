@@ -17,6 +17,26 @@ public static class AllowableSourceDestinationAccounts
         return false;
     }
 
+    public static HashSet<Guid> GetSourceAccountTypes(Guid transactionTypeId)
+    {
+        if (!_allowableSourceDestinations.ContainsKey(transactionTypeId))
+        {
+            return new HashSet<Guid>();
+        }
+
+        return _allowableSourceDestinations[transactionTypeId].Keys.ToHashSet();
+    }
+
+    public static HashSet<Guid> GetDestinationAccountTypes(Guid transactionTypeId)
+    {
+        if (!_allowableSourceDestinations.ContainsKey(transactionTypeId))
+        {
+            return new HashSet<Guid>();
+        }
+
+        return _allowableSourceDestinations[transactionTypeId].Values.SelectMany(_ => _.AsEnumerable()).ToHashSet();
+    }
+
     static AllowableSourceDestinationAccounts()
     {
         _allowableSourceDestinations = new Dictionary<Guid, IDictionary<Guid, HashSet<Guid>>>

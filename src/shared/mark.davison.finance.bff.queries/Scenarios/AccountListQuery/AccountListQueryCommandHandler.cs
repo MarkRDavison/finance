@@ -25,7 +25,9 @@ public class AccountListQueryCommandHandler : IQueryHandler<AccountListQueryRequ
             AccountNumber = _.AccountNumber,
             Name = _.Name,
             AccountType = _.AccountType,
+            AccountTypeId = _.AccountTypeId,
             Active = _.IsActive,
+            CurrencyId = _.CurrencyId,
             LastModified = _.LastActivity
         }));
 

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.accounting.constants;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.StartupQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.StartupQuery;
 
 [TestClass]
 public class StartupQueryCommandHandlerTests

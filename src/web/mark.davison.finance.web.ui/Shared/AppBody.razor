@@ -1,18 +1,40 @@
-﻿@inject ICQRSDispatcher _actionDispatcher;
+﻿@using mark.davison.zui.Components.OutsideAlerter
+@inject ICQRSDispatcher _actionDispatcher;
 @inject IAuthenticationContext _authContext
 
 @if (_authContext.IsAuthenticated)
 {
     <div class="z-app-body">
-    <ContextBar />
-    @ChildContent
+    <ContextBar @bind-QuickCreateOpen="_quickCreateOpen" />
+        <div class="z-app-body-middle">
+            <div class="z-app-body-inner">
+            @ChildContent
+            </div>
+            @if (_quickCreateOpen)
+            {
+                <OutsideAlerter OnClickOutside="@CloseQuickCreate">
+                    @*
+                        TODO: Flyover, dont push everything else out of the way
+                              also, clean up the excess styles on app body / inner / middle
+                    *@
+                    <QuickCreate IsOpenChanged="@(e => CloseQuickCreate())"  />
+                </OutsideAlerter>
+            }
+        </div>
     </div>
 }
 
 @code {
+    private bool _quickCreateOpen;
 
     [Parameter, EditorRequired]
     public RenderFragment? ChildContent { get; set; }
+
+    private void CloseQuickCreate()
+    {
+        _quickCreateOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
 
     protected override async Task OnInitializedAsync()
     {

@@ -2,7 +2,12 @@
 
 public class FinanceClientHttpRepository : ClientHttpRepository
 {
-    public FinanceClientHttpRepository(string remoteEndpoint, IHttpClientFactory httpClientFactory) : base(remoteEndpoint, httpClientFactory.CreateClient())
+    public FinanceClientHttpRepository(
+        string remoteEndpoint,
+        IHttpClientFactory httpClientFactory
+    ) : base(
+        remoteEndpoint,
+        httpClientFactory.CreateClient(WebConstants.ApiClientName))
     {
     }
 }

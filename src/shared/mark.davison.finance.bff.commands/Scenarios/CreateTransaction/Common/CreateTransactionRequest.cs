@@ -28,6 +28,7 @@
 
 */
 
+[PostRequest(Path = "create-transaction")]
 public class CreateTransactionRequest : ICommand<CreateTransactionRequest, CreateTransactionResponse>
 {
     public Guid TransactionTypeId { get; set; }

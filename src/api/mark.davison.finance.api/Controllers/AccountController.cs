@@ -36,7 +36,9 @@ public class AccountController : BaseFinanceController<Account>
                 Name = _.Name,
                 AccountNumber = _.AccountNumber,
                 AccountType = _.AccountType!.Type,
+                AccountTypeId = _.AccountTypeId,
                 IsActive = _.IsActive,
+                CurrencyId = _.CurrencyId,
                 LastActivity = _.LastModified
             });
 

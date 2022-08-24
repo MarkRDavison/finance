@@ -1,0 +1,30 @@
+﻿@typeparam TModel where TModel : IFormModel
+@typeparam TViewModel where TViewModel : IFormViewModel<TModel>
+
+@if (ViewModel?.EditContext != null)
+{
+    <EditForm id="@Id" EditContext="@ViewModel.EditContext" OnSubmit="@ViewModel.Submit">
+        @ChildContent
+    </EditForm>
+}
+
+@code {
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter, EditorRequired]
+    public TViewModel ViewModel { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (ViewModel != null)
+        {
+            await ViewModel.InitialiseAsync();
+        }
+    }
+
+}

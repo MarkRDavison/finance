@@ -31,13 +31,17 @@ else {
         _accountListState = GetState<AccountListState>();
         _transactionState = GetState<TransactionState>();
 
+        await base.OnInitializedAsync();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+
         if (_currentAccount == null)
         {
             await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
         }
 
         await Dispatcher.Dispatch(new TransactionQueryByAccountAction() { AccountId = Id }, CancellationToken.None);
-
-        await base.OnInitializedAsync();
     }
 }
