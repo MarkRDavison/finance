@@ -1,0 +1,25 @@
+﻿@inject NavigationManager _navigationManager
+
+<div class="z-quick-create">
+    <Button
+        CssClass="z-quick-create-item"
+        Variant="ButtonVariant.Text"
+        Type="ButtonType.Secondary"
+        IconStyle="zui.Core.IconStyle.IconLeft" 
+        Icon="plus-lg"
+        Label="Deposit"
+        OnClick="@DepositClick"/>
+</div>
+
+@code {
+
+    [Parameter]
+    public EventCallback<bool> IsOpenChanged { get; set; }
+
+    private async Task DepositClick()
+    {
+        await IsOpenChanged.InvokeAsync(false);
+        _navigationManager.NavigateTo(RouteHelpers.TransactionNew(TransactionConstants.Deposit));
+    }
+
+}

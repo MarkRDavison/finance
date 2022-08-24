@@ -46,6 +46,7 @@ public partial class AddAccountViewModel
                     Active = true,
                     BalanceDifference = 0, // TODO: Understand this
                     CurrentBalance = 0, // TODO: Understand this
+                    CurrencyId = currency.Id,
                     LastModified = DateTime.UtcNow
                 }
             }), CancellationToken.None); ;

@@ -9,8 +9,27 @@ public class TransactionCreateCommandHandler : ICommandHandler<TransactionCreate
     {
         _repository = repository;
     }
-    public Task<TransactionCreateCommandResponse> Handle(TransactionCreateCommand command, CancellationToken cancellation)
+    public async Task<TransactionCreateCommandResponse> Handle(TransactionCreateCommand command, CancellationToken cancellation)
     {
-        throw new NotImplementedException();
+        var request = new CreateTransactionRequest
+        {
+            Description = command.Description,
+            TransactionTypeId = command.TransactionTypeId,
+            Transactions = command.CreateTransactionDtos
+        };
+        try
+        {
+            var response = await _repository.Post<CreateTransactionResponse, CreateTransactionRequest>(request, cancellation);
+            if (!response.Success)
+            {
+                return new TransactionCreateCommandResponse();
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
+
+        return new TransactionCreateCommandResponse();
     }
 }

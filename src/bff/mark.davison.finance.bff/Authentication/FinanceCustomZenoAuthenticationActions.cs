@@ -1,9 +1,4 @@
-﻿using mark.davison.common.Identification;
-using mark.davison.common.server.abstractions.Authentication;
-using mark.davison.common.server.abstractions.Identification;
-using mark.davison.common.server.abstractions.Repository;
-
-namespace mark.davison.finance.bff.Authentication;
+﻿namespace mark.davison.finance.bff.Authentication;
 
 public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationActions
 {
@@ -46,13 +41,9 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
                 cancellationToken);
     }
 
-    public async Task OnUserAuthenticated(UserProfile userProfile, CancellationToken cancellationToken)
+    public async Task OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
     {
-        var token = _httpContextAccessor
-            ?.HttpContext
-            ?.Session
-            ?.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
-        // TODO: Wrapper service around session access
+        var token = zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
         var user = await GetUser(userProfile.sub, cancellationToken);
 
         if (user == null && !string.IsNullOrEmpty(token))
@@ -62,7 +53,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
 
         if (user != null)
         {
-            _httpContextAccessor!.HttpContext!.Session.SetString(ZenoAuthenticationConstants.SessionNames.User, JsonSerializer.Serialize(user));
+            zenoAuthenticationSession.SetString(ZenoAuthenticationConstants.SessionNames.User, JsonSerializer.Serialize(user));
         }
     }
 }

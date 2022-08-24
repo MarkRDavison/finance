@@ -1,0 +1,9 @@
+﻿.z-quick-create {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.z-quick-create-item {
+    width: 100px;
+}

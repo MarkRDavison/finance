@@ -1,6 +1,4 @@
-﻿@using mark.davison.zui.Components.Button
-@using mark.davison.zui.Core
-@inject IAuthenticationContext _authContext
+﻿@inject IAuthenticationContext _authContext
 
 <div class="z-context">
     <p>@_start.ToString("MMMM d, yyyy") - @_end.ToString("MMMM dd, yyyy")</p>
@@ -9,11 +7,26 @@
         Variant="ButtonVariant.Text"
         Type="ButtonType.Secondary"
         IconStyle="IconStyle.IconOnly"
-        Icon="plus-lg"  />
+        Icon="plus-lg"
+        OnClick="@OnQuickCreateClicked"/>
 </div>
 
 @code {
+
     private DateOnly _start = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month, 1);
     private DateOnly _end = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month + 1, 1).AddDays(-1);
+
+    [Parameter]
+    public bool QuickCreateOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> QuickCreateOpenChanged { get; set; }
+
+
+    private async Task OnQuickCreateClicked()
+    {
+        QuickCreateOpen = !QuickCreateOpen;
+        await QuickCreateOpenChanged.InvokeAsync(QuickCreateOpen);
+    }
 
 }

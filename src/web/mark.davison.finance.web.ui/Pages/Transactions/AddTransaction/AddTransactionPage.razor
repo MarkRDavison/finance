@@ -1,0 +1,76 @@
+﻿@attribute [Route(Routes.TransactionNew)]
+@inherits ComponentWithState
+@inject AddTransactionPageViewModel _viewModel
+
+<div>
+
+@{
+    int i = 1;
+}
+
+@foreach (var transactionViewModel in _viewModel.AddTransactionFormViewModels)
+{
+    @if (_viewModel.AddTransactionFormViewModels.Count == 1)
+    {
+        <h3>Transaction info</h3>
+    }
+    else {
+        <h3>Split @i / @_viewModel.AddTransactionFormViewModels.Count</h3>
+
+        <Button Label="Remove"
+            Variant="ButtonVariant.Text"
+            Type="ButtonType.Danger"
+            OnClick="@(() => _viewModel.RemoveSplitTransaction(transactionViewModel))" />
+    }
+    <AddTransactionForm
+        ViewModel="@transactionViewModel"
+        Id="@($"AddTransactionForm_{i - 1}")"
+        TransactionType="@Type"
+        LookupState="@_lookupState.Instance"
+        AccountListState="@_accountListState.Instance" />
+    i++;
+}
+
+@if (_viewModel.AddTransactionFormViewModels.Count > 1)
+{
+    <TextInput 
+        Id="SplitTransactionDescription"
+        IsLabelDisplay="true"
+        Label="Split transaction description"
+        @bind-Value="@_viewModel.SplitTransactionDescription" />
+}
+
+<Button
+    Label="Add split transaction"
+    Variant="ButtonVariant.Text"
+    Type="ButtonType.Primary"
+    OnClick="@_viewModel.AddSplitTransaction" />
+
+<Button
+    Label="Submit"
+    Variant="ButtonVariant.Text"
+    Type="ButtonType.Success"
+    OnClick="@_viewModel.Submit" />
+
+</div>
+
+@code {
+
+    private IStateInstance<LookupState> _lookupState = default!;
+    private IStateInstance<AccountListState> _accountListState = default!;
+
+    [Parameter]
+    public Guid Type { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _lookupState = GetState<LookupState>();
+        _accountListState = GetState<AccountListState>();
+    }
+
+    protected override void OnParametersSet()
+    {
+        _viewModel.TransactionTypeId = Type;
+    }
+
+}
