@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
-
-namespace mark.davison.finance.web.features.test.Transaction.Create;
+﻿namespace mark.davison.finance.web.features.test.Transaction.Create;
 
 [TestClass]
 public class TransactionCreateCommandHandlerTests

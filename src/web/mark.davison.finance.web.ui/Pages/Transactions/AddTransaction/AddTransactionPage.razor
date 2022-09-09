@@ -53,21 +53,24 @@
 
     <div class="container">
         <Button 
+            Disabled="@_submitting"
             Label="Add split transaction"
             Variant="ButtonVariant.Text"
             Type="ButtonType.Primary"
             OnClick="@_viewModel.AddSplitTransaction" />
         <Button 
+            Disabled="@_submitting"
+            Progress="@_submitting"
             CssClass="float-end"
             Label="Submit"
             Variant="ButtonVariant.Text"
             Type="ButtonType.Success"
-            OnClick="@_viewModel.Submit" />
+            OnClick="@OnSubmit" />
     </div>
 </div>
 
 @code {
-
+    private bool _submitting;
     private IStateInstance<LookupState> _lookupState = default!;
     private IStateInstance<AccountListState> _accountListState = default!;
 
@@ -85,6 +88,13 @@
     protected override void OnParametersSet()
     {
         _viewModel.TransactionTypeId = Type;
+    }
+
+    private async Task OnSubmit()
+    {
+        _submitting = true;
+        await _viewModel.Submit();
+        _submitting = false;
     }
 
 }
