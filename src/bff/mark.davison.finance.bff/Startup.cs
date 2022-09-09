@@ -21,8 +21,6 @@ public class Startup
             .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(AuthController).Assembly));
 
         services.ConfigureHealthCheckServices();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
 
         services.AddCors(options =>
         {
@@ -71,11 +69,6 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        if (env.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
         app.UseSession();
 
         app.UseMiddleware<RequestResponseLoggingMiddleware>();

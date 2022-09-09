@@ -1,4 +1,6 @@
-﻿<Modal
+﻿@inject IServiceProvider _serviceProvider;
+
+<Modal
     Title="Add Account"
     CloseOnOutsideClick="false"
     @bind-IsOpen="IsOpen">
@@ -32,8 +34,17 @@
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
 
-    [Inject]
     public AddAccountViewModel ViewModel { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        Reset();
+    }
+
+    protected void Reset()
+    {
+        ViewModel = _serviceProvider.GetRequiredService<AddAccountViewModel>();
+    }
 
     public async Task HandleSave()
     {
@@ -48,12 +59,14 @@
             IsOpen = false;
         }
         StateHasChanged();
+        Reset();
     }
 
     private async Task OnCancel()
     {
         await ViewModel.OnCancel();
         IsOpen = false;
+        Reset();
     }
 
 }

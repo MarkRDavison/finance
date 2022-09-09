@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.web.ui.CommonCandidates.Navigation;
-using Moq;
-
-namespace mark.davison.finance.web.ui.test.Helpers;
+﻿namespace mark.davison.finance.web.ui.test.Helpers;
 
 public class TestBase : TestContextWrapper
 {

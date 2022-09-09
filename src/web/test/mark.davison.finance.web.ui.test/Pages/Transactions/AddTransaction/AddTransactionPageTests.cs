@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.web.components;
-
-namespace mark.davison.finance.web.ui.test.Pages.Transactions.AddTransaction;
+﻿namespace mark.davison.finance.web.ui.test.Pages.Transactions.AddTransaction;
 
 [TestClass]
 public class AddTransactionPageTests : TestBase

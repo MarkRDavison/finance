@@ -14,7 +14,7 @@ builder.Services.AddSingleton<IClientNavigationManager, ClientNavigationManager>
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
-builder.Services.AddSingleton<AddAccountViewModel>();
+builder.Services.AddTransient<AddAccountViewModel>();
 builder.Services.AddTransient<AddTransactionPageViewModel>();
 
 await builder.Build().RunAsync();
