@@ -5,7 +5,7 @@
 public class BankController : BaseFinanceController<Bank>
 {
     public BankController(
-        ILogger<UserController> logger,
+        ILogger<BankController> logger,
         IRepository repository,
         IServiceScopeFactory serviceScopeFactory,
         ICurrentUserContext currentUserContext

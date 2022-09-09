@@ -16,13 +16,4 @@
     <ProjectReference Include="..\mark.davison.finance.web.features\mark.davison.finance.web.features.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Content Update="wwwroot\css\zeno-ui.min.css">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-    <Content Update="wwwroot\js\zeno-ui.js">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
 </Project>

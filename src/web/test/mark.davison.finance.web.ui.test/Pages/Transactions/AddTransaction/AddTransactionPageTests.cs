@@ -1,5 +1,4 @@
-﻿using mark.davison.finance.web.features.Transaction.Create;
-using Moq;
+﻿using mark.davison.finance.web.components;
 
 namespace mark.davison.finance.web.ui.test.Pages.Transactions.AddTransaction;
 
@@ -10,7 +9,7 @@ public class AddTransactionPageTests : TestBase
 
 	public AddTransactionPageTests()
 	{
-		_viewModel = new(_dispatcher.Object, _stateStore);
+		_viewModel = new(_dispatcher.Object, _stateStore, _clientNavigationManager.Object);
 	}
 
 	protected override void SetupTest()
@@ -110,6 +109,11 @@ public class AddTransactionPageTests : TestBase
 			new AccountListItemDto { Id = destinationAccountId, AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD }));
 		_stateStore.SetState(LookupStateHelpers.CreateStandardState());
 
+		_clientNavigationManager
+			.Setup(_ => _
+				.NavigateTo(Routes.Root))
+			.Verifiable();
+
 		_dispatcher
 			.Setup(_ => _.Dispatch<TransactionCreateCommand, TransactionCreateCommandResponse>(
 				It.IsAny<TransactionCreateCommand>(),
@@ -125,7 +129,10 @@ public class AddTransactionPageTests : TestBase
 				Assert.AreEqual(1235600, command.CreateTransactionDtos[0].Amount);
 				Assert.AreEqual(Currency.NZD, command.CreateTransactionDtos[0].CurrencyId);
 
-				return Task.FromResult(new TransactionCreateCommandResponse());
+				return Task.FromResult(new TransactionCreateCommandResponse
+				{
+					Success = true
+				});
 			})
 			.Verifiable();
 
@@ -140,6 +147,12 @@ public class AddTransactionPageTests : TestBase
 			.FindAll("button")
 			.First(_ => _.TextContent == "Submit")
 			.ClickAsync(new MouseEventArgs());
+
+		_clientNavigationManager
+			.Verify(
+				_ => _
+					.NavigateTo(Routes.Root),
+				Times.Once);
 
 		_dispatcher
 			.Verify(_ =>

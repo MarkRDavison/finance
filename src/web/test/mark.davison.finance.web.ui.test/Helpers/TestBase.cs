@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using mark.davison.finance.web.ui.CommonCandidates.Navigation;
+using Moq;
 
 namespace mark.davison.finance.web.ui.test.Helpers;
 
@@ -7,6 +8,7 @@ public class TestBase : TestContextWrapper
     protected readonly StateStore _stateStore;
     protected readonly ComponentSubscriptions _componentSubscriptions;
     protected readonly Mock<ICQRSDispatcher> _dispatcher;
+    protected readonly Mock<IClientNavigationManager> _clientNavigationManager;
     protected readonly IServiceScopeFactory _serviceScopeFactory = null!;
 
     public TestBase()
@@ -14,6 +16,7 @@ public class TestBase : TestContextWrapper
         _componentSubscriptions = new();
         _stateStore = new(_componentSubscriptions);
         _dispatcher = new(MockBehavior.Strict);
+        _clientNavigationManager = new(MockBehavior.Strict);
     }
 
     [TestInitialize]

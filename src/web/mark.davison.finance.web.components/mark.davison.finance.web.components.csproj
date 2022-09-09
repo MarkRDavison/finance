@@ -19,8 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="mark.davison.common.client" Version="1.3.16" />
-    <PackageReference Include="mark.davison.zui" Version="1.0.10" />
+    <PackageReference Include="mark.davison.common.client" Version="1.4.1" />
+    <PackageReference Include="mark.davison.zui" Version="1.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.7" />
   </ItemGroup>
 

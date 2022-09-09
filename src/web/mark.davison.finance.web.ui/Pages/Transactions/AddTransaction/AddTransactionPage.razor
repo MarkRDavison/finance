@@ -2,62 +2,76 @@
 @inherits ComponentWithState
 @inject AddTransactionPageViewModel _viewModel
 
-<div>
+<div class="container clearfix" style="padding: 10px;">
 
 @{
     int i = 1;
 }
 
+    <h1>Create new @_transactionType</h1>
+
 @foreach (var transactionViewModel in _viewModel.AddTransactionFormViewModels)
 {
-    @if (_viewModel.AddTransactionFormViewModels.Count == 1)
-    {
-        <h3>Transaction info</h3>
-    }
-    else {
-        <h3>Split @i / @_viewModel.AddTransactionFormViewModels.Count</h3>
+    <div class="add-transaction-split-container container" style="padding: 12px; border-top: solid 5px LightGray">
+        <div class="container">
+        @if (_viewModel.AddTransactionFormViewModels.Count == 1)
+        {
+            <h3 style="display: inline-block;">Transaction info</h3>
+        }
+        else {
+            <h3 style="display: inline-block;">Split @i / @_viewModel.AddTransactionFormViewModels.Count</h3>
 
-        <Button Label="Remove"
-            Variant="ButtonVariant.Text"
-            Type="ButtonType.Danger"
-            OnClick="@(() => _viewModel.RemoveSplitTransaction(transactionViewModel))" />
-    }
-    <AddTransactionForm
-        ViewModel="@transactionViewModel"
-        Id="@($"AddTransactionForm_{i - 1}")"
-        TransactionType="@Type"
-        LookupState="@_lookupState.Instance"
-        AccountListState="@_accountListState.Instance" />
+            <Button 
+                CssClass="float-end"
+                Label="Remove"
+                Variant="ButtonVariant.Text"
+                Type="ButtonType.Danger"
+                OnClick="@(() => _viewModel.RemoveSplitTransaction(transactionViewModel))" />
+        }
+        </div>
+        <AddTransactionForm
+            ViewModel="@transactionViewModel"
+            Id="@($"AddTransactionForm_{i - 1}")"
+            TransactionType="@Type"
+            LookupState="@_lookupState.Instance"
+            AccountListState="@_accountListState.Instance" />
+    </div>
     i++;
 }
 
 @if (_viewModel.AddTransactionFormViewModels.Count > 1)
 {
-    <TextInput 
-        Id="SplitTransactionDescription"
-        IsLabelDisplay="true"
-        Label="Split transaction description"
-        @bind-Value="@_viewModel.SplitTransactionDescription" />
+    <div class="container" style="padding: 12px; border-top: solid 5px LightGray">
+        <TextInput 
+            Width="100%"
+            Id="SplitTransactionDescription"
+            IsLabelDisplay="true"
+            Label="Split transaction description"
+            @bind-Value="@_viewModel.SplitTransactionDescription" />
+    </div>
 }
 
-<Button
-    Label="Add split transaction"
-    Variant="ButtonVariant.Text"
-    Type="ButtonType.Primary"
-    OnClick="@_viewModel.AddSplitTransaction" />
-
-<Button
-    Label="Submit"
-    Variant="ButtonVariant.Text"
-    Type="ButtonType.Success"
-    OnClick="@_viewModel.Submit" />
-
+    <div class="container">
+        <Button 
+            Label="Add split transaction"
+            Variant="ButtonVariant.Text"
+            Type="ButtonType.Primary"
+            OnClick="@_viewModel.AddSplitTransaction" />
+        <Button 
+            CssClass="float-end"
+            Label="Submit"
+            Variant="ButtonVariant.Text"
+            Type="ButtonType.Success"
+            OnClick="@_viewModel.Submit" />
+    </div>
 </div>
 
 @code {
 
     private IStateInstance<LookupState> _lookupState = default!;
     private IStateInstance<AccountListState> _accountListState = default!;
+
+    private string _transactionType => _lookupState.Instance.TransactionTypes.FirstOrDefault(_ => _.Id == Type)?.Type ?? "Transaction";
 
     [Parameter]
     public Guid Type { get; set; }

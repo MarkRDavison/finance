@@ -10,6 +10,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddHttpClient(WebConstants.ApiClientName).AddHttpMessageHandler(_ => new CookieHandler());
 builder.Services.AddSingleton<IAuthenticationConfig>(authConfig);
 builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
+builder.Services.AddSingleton<IClientNavigationManager, ClientNavigationManager>();
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
