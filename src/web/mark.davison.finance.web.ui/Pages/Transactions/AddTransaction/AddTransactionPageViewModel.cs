@@ -5,13 +5,16 @@ public class AddTransactionPageViewModel
 
     private readonly ICQRSDispatcher _dispatcher;
     private readonly IStateStore _stateStore;
+    private readonly IClientNavigationManager _clientNavigationManager;
 
     public AddTransactionPageViewModel(
         ICQRSDispatcher dispatcher,
-        IStateStore stateStore)
+        IStateStore stateStore,
+        IClientNavigationManager clientNavigationManager)
     {
         _dispatcher = dispatcher;
         _stateStore = stateStore;
+        _clientNavigationManager = clientNavigationManager;
 
         AddTransactionFormViewModels.Add(new());
     }
@@ -34,7 +37,7 @@ public class AddTransactionPageViewModel
     {
         var request = new TransactionCreateCommand
         {
-            Description = string.Empty,
+            Description = SplitTransactionDescription,
             TransactionTypeId = TransactionTypeId,
             CreateTransactionDtos = AddTransactionFormViewModels.Select(_ =>
             {
@@ -60,6 +63,11 @@ public class AddTransactionPageViewModel
         };
 
         var response = await _dispatcher.Dispatch<TransactionCreateCommand, TransactionCreateCommandResponse>(request, CancellationToken.None);
+
+        if (response.Success)
+        {
+            _clientNavigationManager.NavigateTo(Routes.Root);
+        }
     }
 
 }

@@ -1,9 +1,11 @@
 ﻿h1:focus {
     outline: none;
 }
+
 a {
     text-decoration: none;
 }
+
 a:visited {
     color: blue;
 }

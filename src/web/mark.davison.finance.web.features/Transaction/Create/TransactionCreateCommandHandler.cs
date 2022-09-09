@@ -17,19 +17,12 @@ public class TransactionCreateCommandHandler : ICommandHandler<TransactionCreate
             TransactionTypeId = command.TransactionTypeId,
             Transactions = command.CreateTransactionDtos
         };
-        try
-        {
-            var response = await _repository.Post<CreateTransactionResponse, CreateTransactionRequest>(request, cancellation);
-            if (!response.Success)
-            {
-                return new TransactionCreateCommandResponse();
-            }
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
 
-        return new TransactionCreateCommandResponse();
+        var response = await _repository.Post<CreateTransactionResponse, CreateTransactionRequest>(request, cancellation);
+
+        return new TransactionCreateCommandResponse
+        {
+            Success = response.Success
+        };
     }
 }

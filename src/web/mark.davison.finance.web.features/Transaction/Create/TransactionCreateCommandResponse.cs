@@ -2,4 +2,5 @@
 
 public class TransactionCreateCommandResponse
 {
+    public bool Success { get; set; }
 }

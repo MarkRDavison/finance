@@ -5,6 +5,7 @@
     ViewModel="@ViewModel">
 
     <TextInput
+        Width="100%"
         Id="@($"{Id}_Description")"
         IsLabelDisplay="true"
         Label="Description"
@@ -12,6 +13,7 @@
 
     <DropdownList
         TId="Guid"
+        Width="100%"
         Id="@($"{Id}_SourceAccountId")"
         IsLabelDisplay="true"
         Label="Source account"
@@ -20,6 +22,7 @@
 
     <DropdownList
         TId="Guid"
+        Width="100%"
         Id="@($"{Id}_DestinationAccountId")"
         IsLabelDisplay="true"
         Label="Destination account"
@@ -27,12 +30,14 @@
         @bind-Value="ViewModel.Model.DestinationAccountId" />
 
     <DateInput
+        Width="100%"
         Id="@($"{Id}_Date")"
         IsLabelDisplay="true"
         Label="Date"
         @bind-Value="ViewModel.Model.Date" />
 
     <CurrencyInput
+        Width="100%"
         Id="@($"{Id}_Amount")"
         IsLabelDisplay="true"
         Label="Amount"
@@ -41,6 +46,7 @@
 
     <DropdownList
         TId="Guid"
+        Width="100%"
         Id="@($"{Id}_ForeignCurrencyId")"
         IsLabelDisplay="true"
         Label="Foreign currency"
@@ -48,6 +54,7 @@
         @bind-Value="ViewModel.Model.ForeignCurrencyId" />
 
     <CurrencyInput
+        Width="100%"
         Id="@($"{Id}_ForeignAmount")"
         IsLabelDisplay="true"
         Label="Foreign amount"
