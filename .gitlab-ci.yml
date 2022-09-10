@@ -176,6 +176,12 @@ end to end tests:
    - echo $WEB_IMAGE_TAG
    - echo $BFF_IMAGE_TAG
    - echo $API_IMAGE_TAG
+   - if [ "$CI_COMMIT_BRANCH" = "main" ]; then export WEB_IMAGE_TAG="latest"; fi
+   - if [ "$CI_COMMIT_BRANCH" = "main" ]; then export BFF_IMAGE_TAG="latest"; fi
+   - if [ "$CI_COMMIT_BRANCH" = "main" ]; then export API_IMAGE_TAG="latest"; fi
+   - echo $WEB_IMAGE_TAG
+   - echo $BFF_IMAGE_TAG
+   - echo $API_IMAGE_TAG
    - kubectl delete namespace ${APP_NAME}-dev --ignore-not-found=true --kubeconfig "$KUBE_CONFIG"
    - kubectl create namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
    - helm upgrade ${APP_NAME} ./charts --install --atomic --values ./charts/dev-values.yaml --set api.tag="$API_IMAGE_TAG" --set bff.tag="$BFF_IMAGE_TAG" --set web.tag="$WEB_IMAGE_TAG" --namespace ${APP_NAME}-dev --kubeconfig "$KUBE_CONFIG"
