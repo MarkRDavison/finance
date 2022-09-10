@@ -1,4 +1,5 @@
-﻿@attribute [Route(Routes.TransactionNew)]
+﻿@using mark.davison.finance.accounting.constants
+@attribute [Route(Routes.TransactionNew)]
 @inherits ComponentWithState
 @inject AddTransactionPageViewModel _viewModel
 @inject IStateHelper _stateHelper
@@ -89,6 +90,12 @@
 
     protected override async Task OnParametersSetAsync()
     {
+        if (Type != TransactionConstants.Deposit &&
+            Type != TransactionConstants.Transfer &&
+            Type != TransactionConstants.Withdrawal)
+        {
+            throw new InvalidOperationException();
+        }
         _viewModel.TransactionTypeId = Type;
         await EnsureStateLoaded();
     }

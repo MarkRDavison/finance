@@ -64,8 +64,8 @@ public class CreateDepositTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -113,7 +113,7 @@ public class CreateDepositTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
+        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
 
         _createTransctionValidationContext
             .Verify(
@@ -161,8 +161,8 @@ public class CreateDepositTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -210,7 +210,7 @@ public class CreateDepositTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateDepositTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
+        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
 
         _createTransctionValidationContext
             .Verify(
