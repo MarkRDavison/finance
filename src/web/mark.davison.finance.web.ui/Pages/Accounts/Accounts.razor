@@ -1,5 +1,6 @@
 ﻿@attribute [Route(Routes.Accounts)]
 @inherits ComponentWithState
+@inject IStateHelper _stateHelper
 
 <div style="display: flex; flex-direction: column;">
     <div>
@@ -55,8 +56,18 @@
             new(){ Title = "Last Modified", Field = nameof(AccountListItemViewModel.LastModified) },
         };
         _accountListState = GetState<AccountListState>();
-        await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
-        await base.OnInitializedAsync();
+        await EnsureStateLoaded();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await EnsureStateLoaded();
+    }
+
+    private async Task EnsureStateLoaded()
+    {
+        await _stateHelper.FetchAccountList(false);
+
     }
 
     private bool AddAccountModalOpen { get; set; }

@@ -164,9 +164,15 @@ end to end tests:
    - cat variables/web_image_build
    - cat variables/bff_image_build
    - cat variables/api_image_build
-   - export WEB_IMAGE_TAG=`cat variables/web_image_build 2> /dev/null || echo latest`
-   - export BFF_IMAGE_TAG=`cat variables/bff_image_build 2> /dev/null || echo latest`
-   - export API_IMAGE_TAG=`cat variables/api_image_build 2> /dev/null || echo latest`
+   - export WEB_IMAGE_TAG=`cat variables/web_image_tag 2> /dev/null`
+   - export BFF_IMAGE_TAG=`cat variables/bff_image_tag 2> /dev/null`
+   - export API_IMAGE_TAG=`cat variables/api_image_tag 2> /dev/null`
+   - echo $WEB_IMAGE_TAG
+   - echo $BFF_IMAGE_TAG
+   - echo $API_IMAGE_TAG
+   - if [ "$WEB_IMAGE_TAG" = "" ]; then export WEB_IMAGE_TAG="latest"; fi
+   - if [ "$BFF_IMAGE_TAG" = "" ]; then export BFF_IMAGE_TAG="latest"; fi
+   - if [ "$API_IMAGE_TAG" = "" ]; then export API_IMAGE_TAG="latest"; fi
    - echo $WEB_IMAGE_TAG
    - echo $BFF_IMAGE_TAG
    - echo $API_IMAGE_TAG

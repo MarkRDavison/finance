@@ -2,19 +2,22 @@
 
 public class AccountListState : IState
 {
-    public AccountListState()
+    public AccountListState() : this(Enumerable.Empty<AccountListItemDto>())
     {
-        Accounts = Enumerable.Empty<AccountListItemDto>();
     }
+
     public AccountListState(IEnumerable<AccountListItemDto> accounts)
     {
         Accounts = accounts.ToList();
+        LastModified = DateTime.Now;
     }
 
     public IEnumerable<AccountListItemDto> Accounts { get; private set; }
+    public DateTime LastModified { get; private set; }
 
     public void Initialise()
     {
         Accounts = Enumerable.Empty<AccountListItemDto>();
+        LastModified = default;
     }
 }
