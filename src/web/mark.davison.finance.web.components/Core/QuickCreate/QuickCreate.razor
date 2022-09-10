@@ -17,6 +17,14 @@
         Icon="plus-lg"
         Label="Deposit"
         OnClick="@DepositClick"/>
+    <Button
+        CssClass="z-quick-create-item"
+        Variant="ButtonVariant.Text"
+        Type="ButtonType.Secondary"
+        IconStyle="zui.Core.IconStyle.IconLeft" 
+        Icon="plus-lg"
+        Label="Transfer"
+        OnClick="@TransferClick"/>
 </div>
 
 @code {
@@ -34,6 +42,12 @@
     {
         await IsOpenChanged.InvokeAsync(false);
         _navigationManager.NavigateTo(RouteHelpers.TransactionNew(TransactionConstants.Withdrawal));
+    }
+
+    private async Task TransferClick()
+    {
+        await IsOpenChanged.InvokeAsync(false);
+        _navigationManager.NavigateTo(RouteHelpers.TransactionNew(TransactionConstants.Transfer));
     }
 
 }

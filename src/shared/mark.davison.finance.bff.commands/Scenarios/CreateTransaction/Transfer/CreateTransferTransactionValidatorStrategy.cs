@@ -1,14 +1,8 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Transfer;
 
-public class CreateTransferTransactionValidatorStrategy : ICreateTransactionValidatorStrategy
+public class CreateTransferTransactionValidatorStrategy : CreateTransactionValidatorStrategy
 {
-    public Task ValidateTranasction(CreateTransactionDto transaction, CreateTransactionResponse response, ICreateTransctionValidationContext context)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task ValidateTransactionGroup(CreateTransactionRequest request, CreateTransactionResponse response, ICreateTransctionValidationContext context)
-    {
-        throw new NotImplementedException();
-    }
+    protected override Guid TransactionTypeId => TransactionConstants.Transfer;
+    protected override IEnumerable<Guid> ValidSourceIds => AccountConstants.Assets.Concat(AccountConstants.Liabilities);
+    protected override IEnumerable<Guid> ValidDestinationIds => AccountConstants.Assets.Concat(AccountConstants.Liabilities);
 }
