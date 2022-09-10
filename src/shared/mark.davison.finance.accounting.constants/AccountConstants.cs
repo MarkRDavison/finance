@@ -43,6 +43,11 @@ public static class AccountConstants
     public static IEnumerable<Guid> Assets => new[] {
         Asset
     };
+
+    public static IEnumerable<Guid> Expenses => new[] {
+        Expense
+    };
+
     public static IEnumerable<Guid> Revenues => new[] {
         Revenue
     };
@@ -63,6 +68,18 @@ public static class AccountConstants
             }
         }
     }
+
+    public static IEnumerable<object[]> Expenses_DynamicData
+    {
+        get
+        {
+            foreach (var id in Expenses)
+            {
+                yield return new object[] { id };
+            }
+        }
+    }
+
     public static IEnumerable<object[]> NonAssets_DynamicData
     {
         get
