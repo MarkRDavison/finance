@@ -1,7 +1,13 @@
 ﻿.z-quick-create {
+    position: absolute;
+    z-index: 100;
+    right: 0;
+    top: 0px;
     display: flex;
     flex-direction: column;
     height: 100%;
+    background: #ccc;
+    padding: 5px;
 }
 
 .z-quick-create-item {

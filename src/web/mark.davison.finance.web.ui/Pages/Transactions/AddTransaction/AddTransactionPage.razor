@@ -1,6 +1,7 @@
 ﻿@attribute [Route(Routes.TransactionNew)]
 @inherits ComponentWithState
 @inject AddTransactionPageViewModel _viewModel
+@inject IStateHelper _stateHelper
 
 <div class="container clearfix" style="padding: 10px;">
 
@@ -79,15 +80,17 @@
     [Parameter]
     public Guid Type { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         _lookupState = GetState<LookupState>();
         _accountListState = GetState<AccountListState>();
+        await EnsureStateLoaded();
     }
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         _viewModel.TransactionTypeId = Type;
+        await EnsureStateLoaded();
     }
 
     private async Task OnSubmit()
@@ -97,4 +100,8 @@
         _submitting = false;
     }
 
+    protected async Task EnsureStateLoaded()
+    {
+        await _stateHelper.FetchAccountList(false);
+    }
 }

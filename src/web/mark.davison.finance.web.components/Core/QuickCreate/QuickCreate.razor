@@ -7,6 +7,14 @@
         Type="ButtonType.Secondary"
         IconStyle="zui.Core.IconStyle.IconLeft" 
         Icon="plus-lg"
+        Label="Withdrawal"
+        OnClick="@WithdrawalClick" />
+    <Button
+        CssClass="z-quick-create-item"
+        Variant="ButtonVariant.Text"
+        Type="ButtonType.Secondary"
+        IconStyle="zui.Core.IconStyle.IconLeft" 
+        Icon="plus-lg"
         Label="Deposit"
         OnClick="@DepositClick"/>
 </div>
@@ -20,6 +28,12 @@
     {
         await IsOpenChanged.InvokeAsync(false);
         _navigationManager.NavigateTo(RouteHelpers.TransactionNew(TransactionConstants.Deposit));
+    }
+
+    private async Task WithdrawalClick()
+    {
+        await IsOpenChanged.InvokeAsync(false);
+        _navigationManager.NavigateTo(RouteHelpers.TransactionNew(TransactionConstants.Withdrawal));
     }
 
 }

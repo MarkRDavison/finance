@@ -1,19 +1,26 @@
-﻿namespace mark.davison.finance.web.ui.test.Pages.Transactions.AddTransaction;
+﻿using mark.davison.finance.web.features.StateHelpers;
+
+namespace mark.davison.finance.web.ui.test.Pages.Transactions.AddTransaction;
 
 [TestClass]
 public class AddTransactionPageTests : TestBase
 {
 	private readonly AddTransactionPageViewModel _viewModel;
+	private readonly Mock<IStateHelper> _stateHelper;
 
 	public AddTransactionPageTests()
 	{
 		_viewModel = new(_dispatcher.Object, _stateStore, _clientNavigationManager.Object);
+		_stateHelper = new(MockBehavior.Strict);
 	}
 
 	protected override void SetupTest()
 	{
 		base.SetupTest();
 		Services.Add(new ServiceDescriptor(typeof(AddTransactionPageViewModel), _viewModel));
+		Services.Add(new ServiceDescriptor(typeof(IStateHelper), _stateHelper.Object));
+
+		_stateHelper.Setup(_ => _.FetchAccountList(It.IsAny<bool>())).Returns(Task.CompletedTask);
 	}
 
 	[TestMethod]
