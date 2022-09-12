@@ -1,0 +1,22 @@
+﻿@inherits ComponentWithState
+
+<div id="AddCategoryForm">
+    <TextInput 
+        Id="add-category-form-name"
+        Label="Name" 
+        IsLabelDisplay="true"
+        Width="100%"
+        @bind-Value="ViewModel.Name"/>
+</div>
+
+@code {
+
+    [Parameter, EditorRequired]
+    public AddCategoryFormViewModel ViewModel { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        ViewModel.CategoryListState = GetState<CategoryListState>();
+        base.OnInitialized();
+    }
+}

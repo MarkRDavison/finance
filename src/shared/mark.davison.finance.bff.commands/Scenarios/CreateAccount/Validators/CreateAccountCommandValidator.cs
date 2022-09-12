@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
+﻿using mark.davison.finance.models.dtos.Commands.CreateAccount;
+
+namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 
 public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 {

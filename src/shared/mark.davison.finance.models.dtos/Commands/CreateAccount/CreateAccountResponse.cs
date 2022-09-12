@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateLocation;
+﻿namespace mark.davison.finance.models.dtos.Commands.CreateAccount;
 
 public class CreateAccountResponse // TODO: Base response class?
 {

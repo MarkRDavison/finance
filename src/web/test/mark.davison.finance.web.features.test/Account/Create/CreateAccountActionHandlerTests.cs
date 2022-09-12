@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.web.features.test.Account.Create;
+﻿using mark.davison.finance.models.dtos.Commands.CreateAccount;
+
+namespace mark.davison.finance.web.features.test.Account.Create;
 
 [TestClass]
 public class CreateAccountActionHandlerTests

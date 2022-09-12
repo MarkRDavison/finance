@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
+﻿namespace mark.davison.finance.models.dtos.Commands.CreateTransaction;
 
 // https://docs.firefly-iii.org/firefly-iii/about-firefly-iii/architecture/#transactions
 /*

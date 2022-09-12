@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateLocation;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount;
 
 public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest, CreateAccountResponse>
 {

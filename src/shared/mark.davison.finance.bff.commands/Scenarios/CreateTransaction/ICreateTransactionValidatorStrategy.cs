@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
+﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
+
+namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
 
 public interface ICreateTransactionValidatorStrategy
 {

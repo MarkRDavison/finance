@@ -1,4 +1,4 @@
-﻿using mark.davison.finance.bff.commands.Scenarios.CreateLocation;
+﻿using mark.davison.finance.models.dtos.Commands.CreateAccount;
 
 namespace mark.davison.finance.web.features.Account.Create;
 

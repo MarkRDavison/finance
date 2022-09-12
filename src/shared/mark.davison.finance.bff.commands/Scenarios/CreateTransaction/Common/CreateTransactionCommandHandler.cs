@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
+﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
+
+namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
 
 public class CreateTransactionCommandHandler : ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>
 {

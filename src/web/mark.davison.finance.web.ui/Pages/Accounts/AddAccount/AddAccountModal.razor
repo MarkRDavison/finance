@@ -57,9 +57,9 @@
         if (success)
         {
             IsOpen = false;
+            Reset();
         }
         StateHasChanged();
-        Reset();
     }
 
     private async Task OnCancel()
