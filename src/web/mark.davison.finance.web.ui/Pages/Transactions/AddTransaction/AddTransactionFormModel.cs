@@ -10,5 +10,5 @@ public class AddTransactionFormModel : IFormModel
     public decimal Amount { get; set; }
     public Guid ForeignCurrencyId { get; set; }
     public decimal ForeignAmount { get; set; }
-
+    public Guid CategoryId { get; set; }
 }

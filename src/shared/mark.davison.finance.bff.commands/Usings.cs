@@ -15,6 +15,7 @@ global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Valid
 global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Withdrawal;
 global using mark.davison.finance.models.dtos.Commands.CreateAccount;
 global using mark.davison.finance.models.dtos.Commands.CreateCategory;
+global using mark.davison.finance.models.dtos.Commands.CreateTransaction;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;
 global using Microsoft.Extensions.DependencyInjection;

@@ -60,6 +60,15 @@
         Label="Foreign amount"
         CurrencyInfo="@_foreignAmountCurrencyInfo"
         @bind-Value="ViewModel.Model.ForeignAmount" />
+
+    <DropdownList
+        TId="Guid"
+        Width="100%"
+        Id="@($"{Id}_CategoryId")"
+        IsLabelDisplay="true"
+        Label="Category"
+        Items="@_categoryItems"
+        @bind-Value="ViewModel.Model.CategoryId" />
 </Form>
 
 @code {
@@ -88,6 +97,11 @@
         .Cast<IDropdownItem<Guid>>()
         .ToList();
 
+    private List<IDropdownItem<Guid>> _categoryItems => CategoryListState.Categories
+        .Select(_ => new DropdownItem<Guid>(_.Id, _.Name))
+        .Cast<IDropdownItem<Guid>>()
+        .ToList();
+
     private List<IDropdownItem<Guid>> _currencyItems => LookupState.Currencies
         .Select(_ => new DropdownItem<Guid>(_.Id, _.Name))
         .Cast<IDropdownItem<Guid>>()
@@ -107,4 +121,7 @@
 
     [Parameter, EditorRequired]
     public AccountListState AccountListState { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public CategoryListState CategoryListState { get; set; } = default!;
 }

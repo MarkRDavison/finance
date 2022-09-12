@@ -22,15 +22,17 @@ public class AddTransactionFormTests : TestBase
         Guid transactionTypeId = TransactionConstants.Deposit;
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         var inputs = cut.FindAll(".z-form-control");
-        Assert.AreEqual(7, inputs.Count());
+        Assert.AreEqual(8, inputs.Count());
     }
 
     [TestMethod]
@@ -40,11 +42,13 @@ public class AddTransactionFormTests : TestBase
         var descriptionText = "some description";
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetTextInputValueByLabel("Description", descriptionText);
@@ -61,14 +65,15 @@ public class AddTransactionFormTests : TestBase
             AccountTypeId = AccountConstants.Revenue,
             Name = "Test revenue account"
         };
-        _stateStore.SetState(AccountListStateHelpers.CreateAccountListState(
-            sourceAccount));
+        _stateStore.SetState(AccountListStateHelpers.CreateAccountListState(sourceAccount));
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetDropdownValueByLabel("Source account", sourceAccount.Id);
@@ -85,14 +90,15 @@ public class AddTransactionFormTests : TestBase
             AccountTypeId = AccountConstants.Asset,
             Name = "Test asset account"
         };
-        _stateStore.SetState(AccountListStateHelpers.CreateAccountListState(
-            destinationAccount));
+        _stateStore.SetState(AccountListStateHelpers.CreateAccountListState(destinationAccount));
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetDropdownValueByLabel("Destination account", destinationAccount.Id);
@@ -106,11 +112,13 @@ public class AddTransactionFormTests : TestBase
         DateOnly date = new DateOnly(2022, 8, 15);
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetDateValueByLabel("Date", date);
@@ -124,11 +132,13 @@ public class AddTransactionFormTests : TestBase
         decimal amount = 123.42M;
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetCurrencyValueByLabel("Amount", amount);
@@ -141,11 +151,13 @@ public class AddTransactionFormTests : TestBase
         Guid transactionTypeId = TransactionConstants.Deposit;
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetDropdownValueByLabel("Foreign currency", Currency.NZD);
@@ -159,14 +171,36 @@ public class AddTransactionFormTests : TestBase
         decimal amount = 123.42M;
         _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
         var cut = RenderComponent<AddTransactionForm>(_ => _
             .Add(_ => _.TransactionType, transactionTypeId)
             .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
             .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
             .Add(_ => _.ViewModel, _viewModel));
 
         cut.SetCurrencyValueByLabel("Foreign amount", amount);
         Assert.AreEqual(amount, _viewModel.Model.ForeignAmount);
+    }
+
+    [TestMethod]
+    public void UpdatingCategory_UpdatesModel()
+    {
+        Guid transactionTypeId = TransactionConstants.Deposit;
+        Guid categoryId = Guid.NewGuid();
+        _stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
+        _stateStore.SetState(LookupStateHelpers.CreateStandardState());
+        _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState(new CategoryListItemDto { Id = categoryId }));
+
+        var cut = RenderComponent<AddTransactionForm>(_ => _
+            .Add(_ => _.TransactionType, transactionTypeId)
+            .Add(_ => _.LookupState, _stateStore.GetState<LookupState>().Instance)
+            .Add(_ => _.AccountListState, _stateStore.GetState<AccountListState>().Instance)
+            .Add(_ => _.CategoryListState, _stateStore.GetState<CategoryListState>().Instance)
+            .Add(_ => _.ViewModel, _viewModel));
+
+        cut.SetDropdownValueByLabel("Category", categoryId);
+        Assert.AreEqual(categoryId, _viewModel.Model.CategoryId);
     }
 }

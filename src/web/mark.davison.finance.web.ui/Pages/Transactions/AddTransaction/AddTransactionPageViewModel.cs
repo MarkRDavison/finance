@@ -45,6 +45,7 @@ public class AddTransactionPageViewModel
                 return new CreateTransactionDto
                 {
                     Id = Guid.NewGuid(),
+                    CategoryId = _.Model.CategoryId == Guid.Empty ? null : _.Model.CategoryId,
                     Description = _.Model.Description,
                     SourceAccountId = _.Model.SourceAccountId,
                     DestinationAccountId = _.Model.DestinationAccountId,
@@ -56,8 +57,7 @@ public class AddTransactionPageViewModel
                     CurrencyId = sourceTransactionAccount.CurrencyId,
                     ForeignCurrencyId = _.Model.ForeignCurrencyId == Guid.Empty ? null : _.Model.ForeignCurrencyId,
                     BillId = null,
-                    BudgetId = null,
-                    CategoryId = null,
+                    BudgetId = null
                 };
             }).ToList()
         };

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.test.Scenarios.CreateTransaction.Common.Validators;
+﻿namespace mark.davison.finance.bff.commands.test.Scenarios.CreateTransaction.Common.Validators;
 
 [TestClass]
 public class CreateTransactionCommandValidatorTests
@@ -46,6 +44,69 @@ public class CreateTransactionCommandValidatorTests
 
         Assert.IsFalse(response.Success);
         Assert.IsTrue(response.Error.Contains(string.Format(CreateTransactionCommandValidator.VALIDATION_DATE, transaction.Id)));
+    }
+
+    [TestMethod]
+    public async Task Validate_ReturnsMessageWhenCategoryIdIsInvalid()
+    {
+        var transaction = new CreateTransactionDto { Id = Guid.NewGuid(), CategoryId = Guid.NewGuid() };
+        var request = new CreateTransactionRequest
+        {
+            Transactions = new()
+            {
+                transaction
+            }
+        };
+
+        _createTransctionValidationContext
+            .Setup(_ => _.GetCategoryById(
+                transaction.CategoryId.Value,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((Category?)null)
+            .Verifiable();
+
+        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+
+        _createTransctionValidationContext
+            .Verify(
+                _ => _.GetCategoryById(
+                    transaction.CategoryId.Value,
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+        Assert.IsFalse(response.Success);
+        Assert.IsTrue(response.Error.Contains(string.Format(CreateTransactionCommandValidator.VALIDATION_CATEGORY_ID, transaction.Id)));
+    }
+
+    [TestMethod]
+    public async Task Validate_ReturnsNoMessageWhenCategoryIdIsValid()
+    {
+        var transaction = new CreateTransactionDto { Id = Guid.NewGuid(), CategoryId = Guid.NewGuid() };
+        var request = new CreateTransactionRequest
+        {
+            Transactions = new()
+            {
+                transaction
+            }
+        };
+
+        _createTransctionValidationContext
+            .Setup(_ => _.GetCategoryById(
+                transaction.CategoryId.Value,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Category())
+            .Verifiable();
+
+        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+
+        _createTransctionValidationContext
+            .Verify(
+                _ => _.GetCategoryById(
+                    transaction.CategoryId.Value,
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+        Assert.IsFalse(response.Error.Contains(string.Format(CreateTransactionCommandValidator.VALIDATION_CATEGORY_ID, transaction.Id)));
     }
 
     [TestMethod]

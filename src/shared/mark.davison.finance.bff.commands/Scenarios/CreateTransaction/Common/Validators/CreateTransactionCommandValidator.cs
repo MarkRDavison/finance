@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Validators;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Validators;
 
 public class CreateTransactionCommandValidator : ICreateTransactionCommandValidator
 {
@@ -9,6 +7,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
     public const string VALIDATION_FOREIGN_CURRENCY_ID = "INVALID_FOREIGN_CURRENCY_ID${0}";
     public const string VALIDATION_DUPLICATE_CURRENCY = "INVALID_DUPLICATE_CURRENCY${0}";
     public const string VALIDATION_GROUP_DESCRIPTION = "INVALID_GROUP_DESCR";
+    public const string VALIDATION_CATEGORY_ID = "INVALID_CATEGORYID${0}";
     public const string VALIDATION_DATE = "INVALID_DATE${0}";
     public const string VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT = "DUP_ACT${0}";
 
@@ -67,6 +66,11 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
         if (transaction.SourceAccountId == transaction.DestinationAccountId)
         {
             response.Error.Add(string.Format(VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT, transaction.Id));
+        }
+
+        if (transaction.CategoryId != null && await _createTransctionValidationContext.GetCategoryById(transaction.CategoryId.Value, cancellation) == null)
+        {
+            response.Error.Add(string.Format(VALIDATION_CATEGORY_ID, transaction.Id));
         }
 
         if (!Currency.Ids.Contains(transaction.CurrencyId))

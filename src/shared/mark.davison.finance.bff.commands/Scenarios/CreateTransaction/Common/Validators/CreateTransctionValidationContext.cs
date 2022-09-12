@@ -5,6 +5,7 @@ public class CreateTransctionValidationContext : ICreateTransctionValidationCont
     private readonly IHttpRepository _httpRepository;
     private readonly ICurrentUserContext _currentUserContext;
     private readonly Dictionary<Guid, Account?> _accountCache;
+    private readonly Dictionary<Guid, Category?> _categoryCache;
 
     public CreateTransctionValidationContext(
         IHttpRepository httpRepository,
@@ -13,6 +14,7 @@ public class CreateTransctionValidationContext : ICreateTransctionValidationCont
         _httpRepository = httpRepository;
         _currentUserContext = currentUserContext;
         _accountCache = new();
+        _categoryCache = new();
     }
 
     public async Task<Account?> GetAccountById(Guid accountId, CancellationToken cancellationToken)
@@ -27,5 +29,19 @@ public class CreateTransctionValidationContext : ICreateTransctionValidationCont
         }
 
         return _accountCache[accountId];
+    }
+
+    public async Task<Category?> GetCategoryById(Guid categoryId, CancellationToken cancellationToken)
+    {
+        if (!_categoryCache.ContainsKey(categoryId))
+        {
+            var category = await _httpRepository.GetEntityAsync<Category>(
+                categoryId,
+                HeaderParameters.Auth(_currentUserContext.Token, _currentUserContext.CurrentUser),
+                cancellationToken);
+            _categoryCache[categoryId] = category;
+        }
+
+        return _categoryCache[categoryId];
     }
 }
