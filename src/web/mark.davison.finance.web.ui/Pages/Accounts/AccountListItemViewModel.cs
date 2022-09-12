@@ -1,6 +1,4 @@
-﻿using mark.davison.zui.Core;
-
-namespace mark.davison.finance.web.ui.Pages.Accounts;
+﻿namespace mark.davison.finance.web.ui.Pages.Accounts;
 
 public class AccountListItemViewModel : ITableRow<Guid>
 {

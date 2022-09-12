@@ -19,6 +19,7 @@ public class AddTransactionPageTests : TestBase
 		Services.Add(new ServiceDescriptor(typeof(IStateHelper), _stateHelper.Object));
 
 		_stateHelper.Setup(_ => _.FetchAccountList(It.IsAny<bool>())).Returns(Task.CompletedTask);
+		_stateHelper.Setup(_ => _.FetchCategoryList()).Returns(Task.CompletedTask);
 	}
 
 	[TestMethod]
@@ -27,6 +28,7 @@ public class AddTransactionPageTests : TestBase
 		Guid transactionTypeId = TransactionConstants.Deposit;
 		_stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
 		_stateStore.SetState(LookupStateHelpers.CreateStandardState());
+		_stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
 		var cut = RenderComponent<AddTransactionPage>(_ => _
 			.Add(_ => _.Type, transactionTypeId));
@@ -61,6 +63,7 @@ public class AddTransactionPageTests : TestBase
 		Guid transactionTypeId = TransactionConstants.Deposit;
 		_stateStore.SetState(AccountListStateHelpers.CreateAccountListState());
 		_stateStore.SetState(LookupStateHelpers.CreateStandardState());
+		_stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
 		var cut = RenderComponent<AddTransactionPage>(_ => _
 			.Add(_ => _.Type, transactionTypeId));
@@ -111,6 +114,7 @@ public class AddTransactionPageTests : TestBase
 			new AccountListItemDto { Id = sourceAccountId, AccountTypeId = AccountConstants.Revenue, CurrencyId = Currency.NZD },
 			new AccountListItemDto { Id = destinationAccountId, AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD }));
 		_stateStore.SetState(LookupStateHelpers.CreateStandardState());
+		_stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
 		_clientNavigationManager
 			.Setup(_ => _
