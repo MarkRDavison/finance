@@ -47,10 +47,7 @@ public class StateHelper : IStateHelper
         _stateStore = stateStore;
     }
 
-    public IDisposable Force()
-    {
-        throw new NotImplementedException();
-    }
+    public IDisposable Force() => new StateHelperDisposable(this);
 
     private bool RequiresRefetch(DateTime stateLastModified, TimeSpan interval)
     {
@@ -63,6 +60,14 @@ public class StateHelper : IStateHelper
         if (RequiresRefetch(state.Instance.LastModified, DefaultReftechTimeSpan))
         {
             await _dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
+        }
+    }
+    public async Task FetchCategoryList()
+    {
+        var state = _stateStore.GetState<CategoryListState>();
+        if (RequiresRefetch(state.Instance.LastModified, DefaultReftechTimeSpan))
+        {
+            await _dispatcher.Dispatch(new FetchCategoryListAction(), CancellationToken.None);
         }
     }
 

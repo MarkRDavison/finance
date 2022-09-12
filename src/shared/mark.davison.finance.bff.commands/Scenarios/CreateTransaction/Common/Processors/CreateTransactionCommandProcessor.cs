@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Processors;
+﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
+
+namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Processors;
 
 public class CreateTransactionCommandProcessor : ICreateTransactionCommandProcessor
 {
@@ -74,9 +76,9 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
             headerParameters,
             cancellation);
 
-        response.Group = transactionGroup;
-        response.Journals.AddRange(journals);
-        response.Transactions.AddRange(transactions);
+        response.Group = new TransactionGroupDto();
+        response.Journals.AddRange(journals.Select(_ => new TransactionJournalDto { }));
+        response.Transactions.AddRange(transactions.Select(_ => new TransactionDto { }));
 
         return response;
     }

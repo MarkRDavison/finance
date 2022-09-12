@@ -39,7 +39,6 @@ public class UpdateAccountListItemsActionHandlerTests
 
         await _handler.Handle(new UpdateAccountListItemsAction(accountListItems), CancellationToken.None);
 
-
         _stateStore
             .Verify(_ => _
                 .SetState<AccountListState>(

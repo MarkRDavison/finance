@@ -2,13 +2,13 @@
 
 
 [TestClass]
-public class FetchAccountListActionHandlerTests
+public class FetchCategoryListActionHandlerTests
 {
     private readonly Mock<IStateStore> _stateStore;
     private readonly Mock<IClientHttpRepository> _repository;
     private readonly FetchAccountListActionHandler _handler;
 
-    public FetchAccountListActionHandlerTests()
+    public FetchCategoryListActionHandlerTests()
     {
         _stateStore = new(MockBehavior.Strict);
         _repository = new(MockBehavior.Strict);

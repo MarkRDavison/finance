@@ -1,0 +1,63 @@
+﻿@attribute [Route(Routes.Categories)]
+@inherits ComponentWithState
+@inject IStateHelper _stateHelper
+
+<div class="container">
+    <h1 style="display: inline-block;">Categories</h1>
+    <Button
+        CssClass="float-end"
+        Variant="ButtonVariant.Outlined"
+        Type="ButtonType.Primary"
+        IconStyle="IconStyle.IconOnly"
+        Icon="plus-lg"
+        OnClick="@OpenAddCategoryModal" />
+    <div class="container">
+        <Table 
+            TRow="CategoryListItemViewModel"
+            TKey="Guid"
+            PagingEnabled="true"
+            Rows="@_rows"
+            ColumnDefinitions="@_columns"/>
+    </div>
+</div>
+<AddCategoryModal @bind-IsOpen="AddCategoryModalOpen" />
+
+@code {
+    private bool AddCategoryModalOpen { get; set; }
+    private IStateInstance<CategoryListState> _categoryListState { get; set; } = default!;
+
+    private IEnumerable<TableColumDefinition<CategoryListItemViewModel>> _columns { get; set; } = default!;
+    private IEnumerable<CategoryListItemViewModel> _rows => _categoryListState.Instance.Categories.Select(_ => new CategoryListItemViewModel
+    {
+        Id= _.Id,
+        Name = new LinkDefinition
+        {
+            Text = _.Name,
+            Href = RouteHelpers.Category(_.Id)
+        }
+    });
+
+    protected override async Task OnInitializedAsync()
+    {
+        _columns = new List<TableColumDefinition<CategoryListItemViewModel>> {
+            new(){ Title = "Name", Field = nameof(CategoryListItemViewModel.Name), Type = TableCellType.Link, Align = Alignment.Left }
+        };
+        _categoryListState = GetState<CategoryListState>();
+        await EnsureStateLoaded();
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await EnsureStateLoaded();
+    }
+
+    private async Task EnsureStateLoaded()
+    {
+        await _stateHelper.FetchCategoryList();
+    }
+
+    private void OpenAddCategoryModal()
+    {
+        AddCategoryModalOpen = true;
+    }
+}
