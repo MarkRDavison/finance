@@ -19,6 +19,17 @@
             <tbody>
                 @foreach (var item in Generate(Id))
                 {
+                    @if (item.IsSplit)
+                    {
+                        <tr>
+                            <td style="text-align: right;">@item.SplitDescription</td>
+                            <td style="text-align: right;"></td>
+                            <td style="text-align: right;"></td>
+                            <td style="text-align: right;"></td>
+                            <td style="text-align: right;"></td>
+                            <td style="text-align: right;"></td>
+                        </tr>
+                    }
                     @foreach (var splitItem in item.Transactions)
                     {
                         var sourceAccount = _accountListState.Instance.Accounts.First(_ => _.Id == splitItem.SourceTransaction.AccountId);
@@ -29,10 +40,10 @@
                         var currency = _lookupState.Instance.Currencies.First(_ => _.Id == sourceAccount.CurrencyId);
 
                         var decimalAmount = CurrencyRules.FromPersisted(amount);
-                        var formattedAmount = $"{(decimalAmount < 0 ? "-" : string.Empty)}{currency?.Symbol}{Math.Abs(decimalAmount).ToString($"N{currency.DecimalPlaces}")}";
+                        var formattedAmount = $"{(decimalAmount < 0 ? "-" : string.Empty)}{currency?.Symbol}{Math.Abs(decimalAmount).ToString($"N{currency!.DecimalPlaces}")}";
 
                         var category = _categoryListState.Instance.Categories.FirstOrDefault(_ => _.Id == splitItem.SourceTransaction.CategoryId);
-                        Console.WriteLine("Doing row {0} - {1}", splitItem.SourceTransaction.CategoryId, splitItem.DestinationTransaction.CategoryId);
+
                         <tr>
                             <td style="text-align: right;">@splitItem.SourceTransaction.Description</td>
                             <td style="text-align: right;">@formattedAmount</td>
