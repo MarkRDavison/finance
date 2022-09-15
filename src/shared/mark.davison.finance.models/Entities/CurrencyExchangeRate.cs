@@ -8,5 +8,8 @@ public partial class CurrencyExchangeRate : FinanceEntity
     public DateOnly Date { get; set; }
     public decimal Rate { get; set; } // TODO: Use long here?
     public decimal UserRate { get; set; } // TODO: Use long here?
+
+    public virtual Currency? FromCurrency { get; set; }
+    public virtual Currency? ToCurrency { get; set; }
 }
 

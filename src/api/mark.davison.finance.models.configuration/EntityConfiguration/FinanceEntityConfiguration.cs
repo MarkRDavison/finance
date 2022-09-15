@@ -31,6 +31,7 @@ public abstract class FinanceEntityConfiguration<T> : IEntityTypeConfiguration<T
     public const int NameMaxLength = 255;
     public const int PeriodMaxLength = 63;
 
+
     protected void ConfigureConversion(PropertyBuilder<DateOnly> propertyBuilder)
     {
         propertyBuilder

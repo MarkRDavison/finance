@@ -10,4 +10,6 @@ public partial class Goal : FinanceEntity
     public DateOnly StartDate { get; set; }
     [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly TargetDate { get; set; }
+
+    public virtual Account? Account { get; set; }
 }

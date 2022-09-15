@@ -24,13 +24,13 @@ public class TransactionByAccountQueryHandlerTests
         _httpRepositoryMock
             .Setup(_ => _.
                 GetEntitiesAsync<Transaction>(
+                    It.IsAny<string>(),
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((string path, QueryParameters q, HeaderParameters h, CancellationToken c) =>
             {
-                Assert.IsTrue(q.ContainsKey(nameof(Transaction.AccountId)));
-                Assert.AreEqual(accountId.ToString(), q[nameof(Transaction.AccountId)]);
+                Assert.IsTrue(path.Contains(accountId.ToString()));
                 return new List<Transaction>();
             })
             .Verifiable();
@@ -40,6 +40,7 @@ public class TransactionByAccountQueryHandlerTests
         _httpRepositoryMock
             .Verify(_ => _.
                 GetEntitiesAsync<Transaction>(
+                    It.IsAny<string>(),
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
@@ -56,6 +57,7 @@ public class TransactionByAccountQueryHandlerTests
         _httpRepositoryMock
             .Setup(_ => _.
                 GetEntitiesAsync<Transaction>(
+                    It.IsAny<string>(),
                     It.IsAny<QueryParameters>(),
                     It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()))

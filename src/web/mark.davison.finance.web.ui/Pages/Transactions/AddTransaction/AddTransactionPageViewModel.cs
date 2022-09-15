@@ -50,10 +50,10 @@ public class AddTransactionPageViewModel
                     SourceAccountId = _.Model.SourceAccountId,
                     DestinationAccountId = _.Model.DestinationAccountId,
                     Date = _.Model.Date,
-                    Amount = (long)(_.Model.Amount * (decimal)Math.Pow(10, CurrencyRules.FinanceDecimalPlaces)),
+                    Amount = CurrencyRules.ToPersisted(_.Model.Amount),
                     ForeignAmount = _.Model.ForeignAmount == 0
                         ? null
-                        : (long)(_.Model.ForeignAmount * (decimal)Math.Pow(10, CurrencyRules.FinanceDecimalPlaces)),
+                        : CurrencyRules.ToPersisted(_.Model.ForeignAmount),
                     CurrencyId = sourceTransactionAccount.CurrencyId,
                     ForeignCurrencyId = _.Model.ForeignCurrencyId == Guid.Empty ? null : _.Model.ForeignCurrencyId,
                     BillId = null,

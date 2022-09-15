@@ -14,8 +14,7 @@ public class TransactionQueryByAccountActionHandler : IActionHandler<Transaction
     }
     public async Task Handle(TransactionQueryByAccountAction action, CancellationToken cancellationToken)
     {
-        var existing = _stateStore.GetState<TransactionState>().Instance.Transactions;
-        var updated = existing.Where(_ => _.AccountId != action.AccountId).ToDictionary(_ => _.Id, _ => _);
+        var updated = _stateStore.GetState<TransactionState>().Instance.Transactions.ToDictionary(_ => _.Id, _ => _);
 
         var response = await _repository.Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(new TransactionByAccountQueryRequest
         {

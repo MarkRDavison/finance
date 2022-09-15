@@ -17,5 +17,6 @@ public partial class Bill : FinanceEntity
     [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly? ExtensionDate { get; set; }
 
+    public virtual Currency? Currency { get; set; }
 }
 

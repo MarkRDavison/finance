@@ -10,5 +10,11 @@ public partial class RecurringTransaction : FinanceEntity
     public long Amount { get; set; }
     public long? ForeignAmount { get; set; }
     public string Description { get; set; } = string.Empty;
+
+    public virtual Currency? TransactionCurrency { get; set; }
+    public virtual Currency? ForeignCurrency { get; set; }
+    public virtual Account? SourceAccount { get; set; }
+    public virtual Account? DestinationAccount { get; set; }
+    public virtual TransactionType? TransactionType { get; set; }
 }
 

@@ -14,10 +14,8 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
         var response = new TransactionByAccountQueryResponse();
 
         var transactions = await _httpRepository.GetEntitiesAsync<Transaction>(
-            new QueryParameters()
-            {
-                { nameof(Transaction.AccountId), query.AccountId.ToString() }
-            },
+            $"transaction/account/{query.AccountId}",
+            new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellation);
 
@@ -27,9 +25,13 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
             UserId = _.UserId,
             AccountId = _.AccountId,
             TransactionJournalId = _.TransactionJournalId,
+            TransactionGroupId = _.TransactionJournal?.TransactionGroupId ?? Guid.Empty,
             CurrencyId = _.CurrencyId,
             ForeignCurrencyId = _.ForeignCurrencyId,
+            CategoryId = _.TransactionJournal?.CategoryId,
+            SplitTransactionDescription = _.TransactionJournal?.TransactionGroup?.Title ?? string.Empty,
             Description = _.Description,
+            Date = _.TransactionJournal?.Date ?? default,
             Amount = _.Amount,
             ForeignAmount = _.ForeignAmount,
             Reconciled = _.Reconciled

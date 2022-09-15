@@ -8,5 +8,7 @@ public partial class BudgetLimitRepetition : FinanceEntity
     [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly EndDate { get; set; }
     public long Amount { get; set; }
+
+    public virtual BudgetLimit? BudgetLimit { get; set; }
 }
 

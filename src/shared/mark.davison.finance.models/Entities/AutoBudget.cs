@@ -7,5 +7,8 @@ public partial class AutoBudget : FinanceEntity
     public int AutoBudgetType { get; set; }
     public long Amount { get; set; }
     public string Period { get; set; } = string.Empty;
+
+    public virtual Budget? Budget { get; set; }
+    public virtual Currency? Currency { get; set; }
 }
 

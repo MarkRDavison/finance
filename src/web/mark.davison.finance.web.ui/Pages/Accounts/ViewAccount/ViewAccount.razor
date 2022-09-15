@@ -1,34 +1,104 @@
 ﻿@attribute [Route(Routes.Account)]
 @inherits ComponentWithState
+@inject IStateHelper _stateHelper
 
-@if (_currentAccount == null)
-{
-    <Loading Type="LoadingType.CircularInfinite" Size="64px" />
-}
-else {
-    <div style="display: flex; flex-direction: column;">
-        <h1>View Account</h1>
-        <span>@Id</span>
-        <div>@_currentAccount?.Name</div>
-        @foreach (var transaction in _transactionState.Instance.Transactions)
-        {
-            <span>@transaction.Description (@transaction.Id)</span><br/>
-        }
+<div class="container">
+    <h1 style="display: inline-block;">@_currentAccount?.Name</h1>
+    <div class="container">
+        <table class="z-table" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th style="text-align: right;">Description</th>
+                    <th style="text-align: right;">Amount</th>
+                    <th style="text-align: right;">Date</th>
+                    <th style="text-align: right;">Source account</th>
+                    <th style="text-align: right;">Destination account </th>
+                    <th style="text-align: right;">Category</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Generate(Id))
+                {
+                    @foreach (var splitItem in item.Transactions)
+                    {
+                        var sourceAccount = _accountListState.Instance.Accounts.First(_ => _.Id == splitItem.SourceTransaction.AccountId);
+                        var destinationAccount = _accountListState.Instance.Accounts.First(_ => _.Id == splitItem.DestinationTransaction.AccountId);
+
+                        var amount = (sourceAccount.Id == Id ? splitItem.SourceTransaction.Amount : splitItem.DestinationTransaction.Amount);
+
+                        var currency = _lookupState.Instance.Currencies.First(_ => _.Id == sourceAccount.CurrencyId);
+
+                        var decimalAmount = CurrencyRules.FromPersisted(amount);
+                        var formattedAmount = $"{(decimalAmount < 0 ? "-" : string.Empty)}{currency?.Symbol}{Math.Abs(decimalAmount).ToString($"N{currency.DecimalPlaces}")}";
+
+                        var category = _categoryListState.Instance.Categories.FirstOrDefault(_ => _.Id == splitItem.SourceTransaction.CategoryId);
+                        Console.WriteLine("Doing row {0} - {1}", splitItem.SourceTransaction.CategoryId, splitItem.DestinationTransaction.CategoryId);
+                        <tr>
+                            <td style="text-align: right;">@splitItem.SourceTransaction.Description</td>
+                            <td style="text-align: right;">@formattedAmount</td>
+                            <td style="text-align: right;">@splitItem.SourceTransaction.Date.ToShortDateString()</td>
+                            <td style="text-align: right;">@sourceAccount.Name</td>
+                            <td style="text-align: right;">@destinationAccount.Name</td>
+                            <td style="text-align: right;">@category?.Name</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
     </div>
-}
+</div>
 
 @code {
     private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
 
+    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
     private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
+    private IStateInstance<CategoryListState> _categoryListState { get; set; } = default!;
     private IStateInstance<TransactionState> _transactionState { get; set; } = default!;
 
     [Parameter]
     public Guid Id { get; set; }
 
+    private IEnumerable<AccountTransactionItemViewModel> Generate(Guid accountId)
+    {
+        List<AccountTransactionItemViewModel> items = new();
+
+        foreach (var tGroup in _transactionState.Instance.Transactions.GroupBy(_ => _.TransactionGroupId))
+        {
+            AccountTransactionItemViewModel item = new();
+            if (tGroup.Count() % 2 != 0){
+                throw new InvalidDataException();
+            }
+            item.SplitDescription = tGroup.FirstOrDefault()?.SplitTransactionDescription;
+            item.IsSplit = !string.IsNullOrEmpty(item.SplitDescription);
+            item.TransactionGroupId = tGroup.FirstOrDefault()?.TransactionGroupId ?? Guid.Empty;
+
+            foreach (var transactionGroup in tGroup.GroupBy(_ => _.TransactionJournalId))
+            {
+                var splitItem = new AccountTransactionItemTransactionViewModel { };
+
+                splitItem.SourceTransaction = transactionGroup.First(_ => _.Amount < 0);
+                splitItem.DestinationTransaction = transactionGroup.First(_ => _.Amount > 0);
+
+                if (splitItem.SourceTransaction.AccountId == accountId ||
+                    splitItem.DestinationTransaction.AccountId == accountId)
+                {
+                    item.Transactions.Add(splitItem);
+                }
+
+            }
+
+            items.Add(item);
+        }
+
+        return items;
+    }
+
     protected override async Task OnInitializedAsync()
     {
+        _lookupState = GetState<LookupState>();
         _accountListState = GetState<AccountListState>();
+        _categoryListState = GetState<CategoryListState>();
         _transactionState = GetState<TransactionState>();
 
         await base.OnInitializedAsync();
@@ -36,12 +106,17 @@ else {
 
     protected override async Task OnParametersSetAsync()
     {
+        await EnsureStateLoaded();
+    }
 
-        if (_currentAccount == null)
-        {
-            await Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
-        }
+    private async Task EnsureStateLoaded()
+    {
+        var accountTask = Dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
 
-        await Dispatcher.Dispatch(new TransactionQueryByAccountAction() { AccountId = Id }, CancellationToken.None);
+        await Task.WhenAll(            
+            _stateHelper.FetchCategoryList(), 
+            _stateHelper.FetchAccountInformation(Id),
+            accountTask
+        );
     }
 }

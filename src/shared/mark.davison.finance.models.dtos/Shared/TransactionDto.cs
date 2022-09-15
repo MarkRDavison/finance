@@ -6,9 +6,14 @@ public class TransactionDto
     public Guid UserId { get; set; }
     public Guid AccountId { get; set; }
     public Guid TransactionJournalId { get; set; }
+    public Guid TransactionGroupId { get; set; }
     public Guid CurrencyId { get; set; }
     public Guid? ForeignCurrencyId { get; set; }
+    public Guid? CategoryId { get; set; }
     public string Description { get; set; } = string.Empty;
+    public string? SplitTransactionDescription { get; set; }
+    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
+    public DateOnly Date { get; set; }
     public long Amount { get; set; }
     public long? ForeignAmount { get; set; }
     public bool Reconciled { get; set; }

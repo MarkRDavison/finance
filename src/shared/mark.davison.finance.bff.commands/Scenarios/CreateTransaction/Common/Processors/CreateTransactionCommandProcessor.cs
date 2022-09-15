@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Processors;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Processors;
 
 public class CreateTransactionCommandProcessor : ICreateTransactionCommandProcessor
 {
@@ -29,6 +27,7 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
                 BillId = transaction.BillId,
                 CurrencyId = transaction.CurrencyId,
                 ForeignCurrencyId = transaction.ForeignCurrencyId,
+                CategoryId = transaction.CategoryId,
                 Order = order++,
                 Date = transaction.Date
             };
@@ -41,8 +40,8 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
                 CurrencyId = transaction.CurrencyId,
                 ForeignCurrencyId = transaction.ForeignCurrencyId,
                 Description = transaction.Description,
-                Amount = transaction.Amount,
-                ForeignAmount = transaction.ForeignAmount
+                Amount = -transaction.Amount,
+                ForeignAmount = -transaction.ForeignAmount
             };
             var destinationTransaction = new Transaction
             {

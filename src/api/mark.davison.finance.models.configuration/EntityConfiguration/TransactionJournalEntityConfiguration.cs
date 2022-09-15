@@ -22,6 +22,11 @@ public partial class TransactionJournalEntityConfiguration : FinanceEntityConfig
 
         builder
             .Property(_ => _.Completed);
+
+        builder
+            .HasMany(_ => _.Transactions)
+            .WithOne(_ => _.TransactionJournal)
+            .HasForeignKey(_ => _.TransactionJournalId);
     }
 }
 

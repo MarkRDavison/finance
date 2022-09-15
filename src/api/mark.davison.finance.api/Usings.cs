@@ -1,4 +1,5 @@
 ﻿global using mark.davison.common.Instrumentation;
+global using mark.davison.common.persistence.Controllers;
 global using mark.davison.common.server;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.Health;
