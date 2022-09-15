@@ -9,4 +9,8 @@ public partial class Account : FinanceEntity
     public Guid BankId { get; set; }
     public Guid AccountTypeId { get; set; }
     public Guid CurrencyId { get; set; }
+
+    public virtual Bank? Bank { get; set; }
+    public virtual AccountType? AccountType { get; set; }
+    public virtual Currency? Currency { get; set; }
 }

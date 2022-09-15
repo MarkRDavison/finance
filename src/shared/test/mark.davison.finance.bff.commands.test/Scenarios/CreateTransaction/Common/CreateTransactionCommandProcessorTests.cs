@@ -284,8 +284,8 @@ public class CreateTransactionCommandProcessorTests
                     Assert.AreEqual(request.Transactions[i].CurrencyId, sourceTransaction.CurrencyId);
                     Assert.AreEqual(request.Transactions[i].ForeignCurrencyId, sourceTransaction.ForeignCurrencyId);
                     Assert.AreEqual(request.Transactions[i].Description, sourceTransaction.Description);
-                    Assert.AreEqual(request.Transactions[i].Amount, sourceTransaction.Amount);
-                    Assert.AreEqual(request.Transactions[i].ForeignAmount, sourceTransaction.ForeignAmount);
+                    Assert.AreEqual(-request.Transactions[i].Amount, sourceTransaction.Amount);
+                    Assert.AreEqual(-request.Transactions[i].ForeignAmount, sourceTransaction.ForeignAmount);
                     Assert.IsFalse(sourceTransaction.Reconciled);
 
                     Assert.AreNotEqual(Guid.Empty, destinationTransaction.Id);

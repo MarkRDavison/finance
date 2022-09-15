@@ -6,6 +6,7 @@ public interface IStateHelper
 
     Task FetchAccountList(bool showActive);
     Task FetchCategoryList();
+    Task FetchAccountInformation(Guid accountId);
 
     TimeSpan DefaultReftechTimeSpan { get; }
 }

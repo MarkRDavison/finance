@@ -14,5 +14,7 @@ public partial class Recurrence : FinanceEntity
     public int Repetitions { get; set; }
     public bool ApplyRules { get; set; }
     public bool IsActive { get; set; } = true;
+
+    public virtual TransactionType? TransactionType { get; set; }
 }
 

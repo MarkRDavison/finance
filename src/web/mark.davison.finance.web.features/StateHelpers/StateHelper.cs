@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.web.features.StateHelpers;
+﻿using mark.davison.finance.web.features.Transaction.QueryByAccount;
+
+namespace mark.davison.finance.web.features.StateHelpers;
 
 public class StateHelper : IStateHelper
 {
@@ -62,6 +64,7 @@ public class StateHelper : IStateHelper
             await _dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
         }
     }
+
     public async Task FetchCategoryList()
     {
         var state = _stateStore.GetState<CategoryListState>();
@@ -69,6 +72,11 @@ public class StateHelper : IStateHelper
         {
             await _dispatcher.Dispatch(new FetchCategoryListAction(), CancellationToken.None);
         }
+    }
+
+    public async Task FetchAccountInformation(Guid accountId)
+    {
+        await _dispatcher.Dispatch(new TransactionQueryByAccountAction() { AccountId = accountId }, CancellationToken.None);
     }
 
     public TimeSpan DefaultReftechTimeSpan => TimeSpan.FromMinutes(1);

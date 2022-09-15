@@ -7,5 +7,7 @@ public partial class RecurrenceRepitition : FinanceEntity
     public string RepititionMoment { get; set; } = string.Empty;
     public int RepititionSkip { get; set; }
     public int Weekend { get; set; }
+
+    public virtual Recurrence? Recurrence { get; set; }
 }
 

@@ -22,4 +22,39 @@ public class TransactionController : BaseFinanceController<Transaction>
     {
         throw new NotImplementedException();
     }
+
+
+    [HttpGet("account/{id}")]
+    public async Task<IActionResult> GetByAccountId(Guid id, CancellationToken cancellationToken)
+    {
+        using (_logger.ProfileOperation(context: $"GET api/{typeof(Account).Name.ToLowerInvariant()}/summary"))
+        {
+            var transactionJournals = await _repository.GetEntitiesAsync<TransactionJournal>(
+                _ => _.Transactions.Any(_ => _.AccountId == id),
+                new Expression<Func<TransactionJournal, object>>[]
+                {
+                    _ => _.TransactionGroup!,
+                    _ => _.Transactions!,
+                },
+                cancellationToken);
+
+            return Ok(transactionJournals.SelectMany(_ =>
+            {
+                foreach (var tj in _.Transactions)
+                {
+                    tj.TransactionJournal = new TransactionJournal
+                    {
+                        CategoryId = _.CategoryId,
+                        TransactionGroupId = _.TransactionGroupId,
+                        Date = _.Date,
+                        TransactionGroup = new TransactionGroup
+                        {
+                            Title = _.TransactionGroup?.Title ?? string.Empty
+                        }
+                    };
+                }
+                return _.Transactions;
+            }));
+        }
+    }
 }

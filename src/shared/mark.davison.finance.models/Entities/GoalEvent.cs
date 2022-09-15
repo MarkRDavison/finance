@@ -7,5 +7,8 @@ public partial class GoalEvent : FinanceEntity
     [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly Date { get; set; }
     public long Amount { get; set; }
+
+    public virtual Goal? Goal { get; set; }
+    public virtual TransactionJournal? TransactionJournal { get; set; }
 }
 

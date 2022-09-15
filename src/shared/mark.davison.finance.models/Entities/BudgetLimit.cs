@@ -11,5 +11,8 @@ public partial class BudgetLimit : FinanceEntity
     public long Amount { get; set; }
     public string Period { get; set; } = string.Empty;
     public bool Generated { get; set; }
+
+    public virtual Budget? Budget { get; set; }
+    public virtual Currency? Currency { get; set; }
 }
 

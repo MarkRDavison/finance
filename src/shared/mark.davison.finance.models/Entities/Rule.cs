@@ -9,5 +9,7 @@ public partial class Rule : FinanceEntity
     public bool IsActive { get; set; } = true;
     public bool StopProcessing { get; set; }
     public bool Strict { get; set; }
+
+    public virtual RuleGroup? RuleGroup { get; set; }
 }
 

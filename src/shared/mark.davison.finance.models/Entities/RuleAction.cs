@@ -8,5 +8,7 @@ public partial class RuleAction : FinanceEntity
     public int Order { get; set; }
     public bool IsActive { get; set; } = true;
     public bool StopProcessing { get; set; }
+
+    public virtual Rule? Rule { get; set; }
 }
 
