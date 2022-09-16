@@ -1,12 +1,10 @@
-﻿using mark.davison.finance.models.EntityConfiguration;
-
-namespace mark.davison.finance.persistence;
+﻿namespace mark.davison.finance.persistence;
 
 public class FinanceDbContext : DbContext
 {
     public FinanceDbContext(DbContextOptions options) : base(options)
     {
-        Database.EnsureCreated();
+        Database.Migrate();
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
