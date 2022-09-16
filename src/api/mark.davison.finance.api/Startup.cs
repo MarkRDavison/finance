@@ -52,14 +52,25 @@ public class Startup
         {
             if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
             {
-                services.AddDbContextFactory<FinanceDbContext>(_ => _
-                    .UseSqlite($"Data Source={Guid.NewGuid()}.db"));
+                AppSettings.CONNECTION_STRING = $"Data Source={Guid.NewGuid()}.db";
             }
-            else
-            {
-                services.AddDbContextFactory<FinanceDbContext>(_ => _
-                    .UseSqlite(AppSettings.CONNECTION_STRING));
-            }
+            services.AddDbContextFactory<FinanceDbContext>(_ => _
+                .UseSqlite(
+                    AppSettings.CONNECTION_STRING,
+                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.sqlite")));
+        }
+        else if (AppSettings.DATABASE_TYPE == "postgres")
+        {
+            var conn = new NpgsqlConnectionStringBuilder();
+            conn.Host = AppSettings.DB_HOST;
+            conn.Database = AppSettings.DB_DATABASE;
+            conn.Port = AppSettings.DB_PORT;
+            conn.Username = AppSettings.DB_USERNAME;
+            conn.Password = AppSettings.DB_PASSWORD;
+            services.AddDbContextFactory<FinanceDbContext>(_ => _
+                .UseNpgsql(
+                    conn.ConnectionString,
+                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.postgresql")));
         }
         else
         {

@@ -12,4 +12,9 @@ public class AppSettings
     public string CONNECTION_STRING { get; set; } = "Data Source=C:/temp/finance-current.db";
     public string DATABASE_TYPE { get; set; } = "sqlite";
     public bool PRODUCTION_MODE { get; set; } = false;
+    public int DB_PORT { get; set; } = 5432;
+    public string DB_HOST { get; set; } = "localhost";
+    public string DB_DATABASE { get; set; } = "finance-dev";
+    public string DB_USERNAME { get; set; } = string.Empty;
+    public string DB_PASSWORD { get; set; } = string.Empty;
 }
