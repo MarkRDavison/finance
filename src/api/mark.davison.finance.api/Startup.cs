@@ -70,6 +70,7 @@ public class Startup
             conn.Port = AppSettings.DB_PORT;
             conn.Username = AppSettings.DB_USERNAME;
             conn.Password = AppSettings.DB_PASSWORD;
+            Console.Error.WriteLine("ConnectionString: {0}", conn.ConnectionString);
             Console.Error.WriteLine("Host: {0}", conn.Host);
             Console.Error.WriteLine("Database: {0}", conn.Database);
             Console.Error.WriteLine("Port: {0}", conn.Port);
