@@ -10,7 +10,6 @@ public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbCont
 {
     public FinanceDbContext CreateDbContext(string[] args)
     {
-        Console.WriteLine("FinanceDbContextFactory.IDesignTimeDbContextFactory");
         IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddEnvironmentVariables()
@@ -34,8 +33,6 @@ public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbCont
         }
         conn.Username = financeConfig["DB_USERNAME"];
         conn.Password = financeConfig["DB_PASSWORD"];
-
-        Console.WriteLine("Host: {0}", conn.Host);
 
         optionsBuilder.UseNpgsql(
             conn.ConnectionString,
