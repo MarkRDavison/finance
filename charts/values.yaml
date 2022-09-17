@@ -15,11 +15,15 @@ api: {
   },
   env: {
     secret: [
-      'CLIENT_SECRET'
+      'CLIENT_SECRET',
+      'DB_USERNAME',
+      'DB_PASSWORD'
     ],
     public: {
-      FINANCE__DATABASE_TYPE: 'sqlite',
-      FINANCE__CONNECTION_STRING: 'Data Source=localdatabase.db',
+      FINANCE__DATABASE_TYPE: 'postgres',
+      FINANCE__DB_DATABASE: 'zenofinance',
+      FINANCE__DB_PORT: 5432,
+      FINANCE__DB_HOST: 'https://postgres.markdavison.kiwi',
       FINANCE__URL: 'http://0.0.0.0:50000',
       FINANCE__CLIENT_ID: 'zeno-finance',
       FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
