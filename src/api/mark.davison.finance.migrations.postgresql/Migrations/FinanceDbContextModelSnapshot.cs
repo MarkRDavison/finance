@@ -77,9 +77,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                     b.Property<Guid>("AccountTypeId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("BankId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("Created")
                         .HasColumnType("timestamp with time zone");
 
@@ -109,8 +106,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountTypeId");
-
-                    b.HasIndex("BankId");
 
                     b.HasIndex("CurrencyId");
 
@@ -220,32 +215,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AvailableBudgets");
-                });
-
-            modelBuilder.Entity("mark.davison.finance.models.Entities.Bank", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Banks");
                 });
 
             modelBuilder.Entity("mark.davison.finance.models.Entities.Bill", b =>
@@ -1407,12 +1376,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("mark.davison.finance.models.Entities.Bank", "Bank")
-                        .WithMany()
-                        .HasForeignKey("BankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("mark.davison.finance.models.Entities.Currency", "Currency")
                         .WithMany()
                         .HasForeignKey("CurrencyId")
@@ -1426,8 +1389,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                         .IsRequired();
 
                     b.Navigation("AccountType");
-
-                    b.Navigation("Bank");
 
                     b.Navigation("Currency");
 
@@ -1487,17 +1448,6 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                         .IsRequired();
 
                     b.Navigation("Currency");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("mark.davison.finance.models.Entities.Bank", b =>
-                {
-                    b.HasOne("mark.davison.common.server.abstractions.Identification.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
 
                     b.Navigation("User");
                 });

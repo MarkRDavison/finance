@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.test.integration.Scenarios.CreateTransaction;
+﻿namespace mark.davison.finance.bff.commands.test.integration.Scenarios.CreateTransaction;
 
 [TestClass]
 public class CreateTransactionTests : CommandIntegrationTestBase
@@ -17,14 +15,12 @@ public class CreateTransactionTests : CommandIntegrationTestBase
             {
                 Id = _assetAccountId,
                 AccountTypeId = AccountConstants.Asset,
-                BankId = Bank.KiwibankId,
                 CurrencyId = Currency.NZD
             },
             new Account
             {
                 Id = _revenueAccountId,
                 AccountTypeId = AccountConstants.Revenue,
-                BankId = Bank.KiwibankId,
                 CurrencyId = Currency.NZD
             }
         }, CancellationToken.None);

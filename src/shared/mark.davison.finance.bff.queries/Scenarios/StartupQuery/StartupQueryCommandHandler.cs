@@ -13,11 +13,6 @@ public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, Sta
     {
         var response = new StartupQueryResponse();
 
-        var banks = await _httpRepository.GetEntitiesAsync<Bank>(
-            new QueryParameters(),
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
-
         var accountTypes = await _httpRepository.GetEntitiesAsync<AccountType>(
             new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
@@ -32,12 +27,6 @@ public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, Sta
             new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellation);
-
-        response.Banks.AddRange(banks.Select(_ => new BankDto
-        {
-            Id = _.Id,
-            Name = _.Name
-        }));
 
         response.AccountTypes.AddRange(accountTypes.Select(_ => new AccountTypeDto
         {

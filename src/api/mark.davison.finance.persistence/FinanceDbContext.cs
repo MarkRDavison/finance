@@ -16,7 +16,6 @@ public class FinanceDbContext : DbContext
     public DbSet<AccountType> AccountTypes { get; set; } = null!;
     public DbSet<AutoBudget> AutoBudgets { get; set; } = null!;
     public DbSet<AvailableBudget> AvailableBudgets { get; set; } = null!;
-    public DbSet<Bank> Banks { get; set; } = null!;
     public DbSet<Bill> Bills { get; set; } = null!;
     public DbSet<Budget> Budgets { get; set; } = null!;
     public DbSet<BudgetLimit> BudgetLimits { get; set; } = null!;

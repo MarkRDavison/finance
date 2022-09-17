@@ -30,7 +30,6 @@ public partial class AddAccountViewModel
             AccountNumber = AddAccountFormViewModel.AccountNumber,
             VirtualBalance = decimal.ToInt64(AddAccountFormViewModel.VirtualBalance * (decimal)Math.Pow(10, currency.DecimalPlaces)),
             AccountTypeId = AddAccountFormViewModel.AccountTypeId,
-            BankId = AddAccountFormViewModel.BankId,
             CurrencyId = AddAccountFormViewModel.CurrencyId
         }, CancellationToken.None);
 
