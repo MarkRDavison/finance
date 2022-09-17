@@ -13,7 +13,8 @@ public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbCont
         Console.WriteLine("FinanceDbContextFactory.IDesignTimeDbContextFactory");
         IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.Development.json")
+            .AddEnvironmentVariables()
+            .AddJsonFile("appsettings.Development.json", true)
             .Build();
 
         var financeConfig = configuration.GetSection("FINANCE");

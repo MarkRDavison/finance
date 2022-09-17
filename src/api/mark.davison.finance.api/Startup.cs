@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api;
+﻿using System.Text.Json;
+
+namespace mark.davison.finance.api;
 
 public class Startup
 {
@@ -48,6 +50,7 @@ public class Startup
                 .Build()
             ));
 
+        Console.Error.WriteLine(JsonSerializer.Serialize(AppSettings));
         if (AppSettings.DATABASE_TYPE == "sqlite")
         {
             if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
