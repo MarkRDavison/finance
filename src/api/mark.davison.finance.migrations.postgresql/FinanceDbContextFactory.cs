@@ -10,6 +10,7 @@ public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbCont
 {
     public FinanceDbContext CreateDbContext(string[] args)
     {
+        Console.WriteLine("FinanceDbContextFactory.IDesignTimeDbContextFactory");
         IConfiguration configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.Development.json")
@@ -22,9 +23,18 @@ public class FinanceDbContextFactory : IDesignTimeDbContextFactory<FinanceDbCont
         var conn = new NpgsqlConnectionStringBuilder();
         conn.Host = financeConfig["DB_HOST"];
         conn.Database = financeConfig["DB_DATABASE"];
-        conn.Port = int.Parse(financeConfig["DB_PORT"]);
+        if (int.TryParse(financeConfig["DB_PORT"], out int port))
+        {
+            conn.Port = port;
+        }
+        else
+        {
+            conn.Port = 5432;
+        }
         conn.Username = financeConfig["DB_USERNAME"];
         conn.Password = financeConfig["DB_PASSWORD"];
+
+        Console.WriteLine("Host: {0}", conn.Host);
 
         optionsBuilder.UseNpgsql(
             conn.ConnectionString,
