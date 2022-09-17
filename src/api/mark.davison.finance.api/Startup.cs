@@ -70,6 +70,11 @@ public class Startup
             conn.Port = AppSettings.DB_PORT;
             conn.Username = AppSettings.DB_USERNAME;
             conn.Password = AppSettings.DB_PASSWORD;
+            Console.Error.WriteLine("Host: {0}", conn.Host);
+            Console.Error.WriteLine("Database: {0}", conn.Database);
+            Console.Error.WriteLine("Port: {0}", conn.Port);
+            Console.Error.WriteLine("Username: {0}", conn.Username);
+            Console.Error.WriteLine("Password: {0}", conn.Password.Substring(0, 4) + "*****************" + conn.Password.Substring(conn.Password.Length - 4));
             services.AddDbContextFactory<FinanceDbContext>(_ => _
                 .UseNpgsql(
                     conn.ConnectionString,
