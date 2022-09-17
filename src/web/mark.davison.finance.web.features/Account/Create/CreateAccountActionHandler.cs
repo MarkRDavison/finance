@@ -20,7 +20,6 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, C
             {
                 AccountNumber = command.AccountNumber,
                 AccountTypeId = command.AccountTypeId,
-                BankId = command.BankId,
                 CurrencyId = command.CurrencyId,
                 Id = Guid.NewGuid(),
                 Name = command.Name,

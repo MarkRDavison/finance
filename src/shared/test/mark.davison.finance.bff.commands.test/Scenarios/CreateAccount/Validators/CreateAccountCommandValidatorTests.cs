@@ -6,7 +6,6 @@ public class CreateAccountCommandValidatorTests
     private readonly CreateAccountCommandValidator _createAccountCommandValidator;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly Mock<IHttpRepository> _httpRepository;
-    private readonly List<Bank> _banks;
     private readonly List<AccountType> _accountTypes;
     private readonly List<Currency> _currencies;
     private readonly User _user;
@@ -16,11 +15,6 @@ public class CreateAccountCommandValidatorTests
         _httpRepository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
 
-        _banks = new()
-        {
-            new Bank { Id = Bank.KiwibankId, Name = "Kiwibank" },
-            new Bank { Id = Bank.BnzId, Name = "BNZ" }
-        };
         _accountTypes = new()
         {
             new AccountType { Id = AccountConstants.Asset, Type = "Asset" },
@@ -43,36 +37,8 @@ public class CreateAccountCommandValidatorTests
     }
 
     [TestMethod]
-    public async Task Validate_WhereBankIdIsNotValid_ReturnsError()
-    {
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Bank?)null);
-
-        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid() } };
-        var response = await _createAccountCommandValidator.Validate(
-            request,
-            _currentUserContext.Object,
-            CancellationToken.None);
-
-        Assert.IsTrue(response.Error.Contains(CreateAccountCommandValidator.VALIDATION_BANK_ID));
-    }
-
-    [TestMethod]
     public async Task Validate_WhereAccountIdIsNotValid_ReturnsError()
     {
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -85,7 +51,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = Guid.NewGuid()
             }
         };
@@ -102,14 +67,6 @@ public class CreateAccountCommandValidatorTests
     {
         _httpRepository
             .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
-        _httpRepository
-            .Setup(_ => _
                 .GetEntityAsync<AccountType>(
                     It.IsAny<Guid>(),
                     It.IsAny<HeaderParameters>(),
@@ -124,7 +81,7 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((Currency?)null);
 
-        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid() } };
+        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { AccountTypeId = Guid.NewGuid() } };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -136,14 +93,6 @@ public class CreateAccountCommandValidatorTests
     [TestMethod]
     public async Task Validate_WhereNameIsNotValid_ReturnsError()
     {
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -160,7 +109,7 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(_currencies[0]);
 
-        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { BankId = Guid.NewGuid(), AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
+        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
         var response = await _createAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -176,14 +125,6 @@ public class CreateAccountCommandValidatorTests
     public async Task Validate_WhereAccountNumberIsDuplicated_WithoutExpenseOrRevenue_ReturnsError()
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -218,7 +159,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = Guid.NewGuid(),
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
@@ -238,14 +178,6 @@ public class CreateAccountCommandValidatorTests
     public async Task Validate_WhereAccountNumberIsDuplicated_WithExpense_ReturnsSuccess()
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -281,7 +213,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = AccountConstants.Expense,
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
@@ -300,13 +231,6 @@ public class CreateAccountCommandValidatorTests
     public async Task Validate_WhereAccountNumberIsDuplicated_WithRevenue_ReturnsSuccess()
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
 
         _httpRepository
             .Setup(_ => _
@@ -343,7 +267,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = AccountConstants.Revenue,
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
@@ -362,14 +285,6 @@ public class CreateAccountCommandValidatorTests
     public async Task Validate_WhereAccountNumberIsDuplicatedAgainstMultiple_WithRevenue_ReturnsSuccess()
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -411,7 +326,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = AccountConstants.Revenue,
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
@@ -431,14 +345,6 @@ public class CreateAccountCommandValidatorTests
     public async Task Validate_WhereAccountNumberIsNotDuplicated_ReturnsSuccess()
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
-        _httpRepository
-            .Setup(_ => _
-                .GetEntityAsync<Bank>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_banks[0]);
-
         _httpRepository
             .Setup(_ => _
                 .GetEntityAsync<AccountType>(
@@ -467,7 +373,6 @@ public class CreateAccountCommandValidatorTests
         {
             CreateAccountDto = new CreateAccountDto
             {
-                BankId = Guid.NewGuid(),
                 AccountTypeId = Guid.NewGuid(),
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",

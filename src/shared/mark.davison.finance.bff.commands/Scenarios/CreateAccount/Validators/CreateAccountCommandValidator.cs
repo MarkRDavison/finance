@@ -5,7 +5,6 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 
     private readonly IHttpRepository _httpRepository;
 
-    public const string VALIDATION_BANK_ID = "INVALID_BANK_ID";
     public const string VALIDATION_ACCOUNT_TYPE_ID = "INVALID_ACCOUNT_TYPE_ID";
     public const string VALIDATION_CURRENCY_ID = "INVALID_CURRENCY_ID";
 
@@ -25,18 +24,6 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         };
 
         var authHeaders = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
-
-        var bank = await _httpRepository.GetEntityAsync<Bank>(
-            request.CreateAccountDto.BankId,
-            authHeaders,
-            cancellation);
-
-        if (bank == null)
-        {
-            response.Success = false;
-            response.Error.Add(VALIDATION_BANK_ID);
-            return response;
-        }
 
         var accountType = await _httpRepository.GetEntityAsync<AccountType>(
             request.CreateAccountDto.AccountTypeId,

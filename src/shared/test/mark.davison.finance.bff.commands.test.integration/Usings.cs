@@ -8,6 +8,7 @@ global using mark.davison.finance.api.Configuration;
 global using mark.davison.finance.api.test.Framework;
 global using mark.davison.finance.common.candidates;
 global using mark.davison.finance.models.dtos.Commands.CreateCategory;
+global using mark.davison.finance.models.dtos.Commands.CreateTransaction;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;
 global using Microsoft.AspNetCore.Authentication.JwtBearer;

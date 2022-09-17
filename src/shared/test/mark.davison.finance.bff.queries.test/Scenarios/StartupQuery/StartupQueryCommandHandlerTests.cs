@@ -18,14 +18,8 @@ public class StartupQueryCommandHandlerTests
     }
 
     [TestMethod]
-    public async Task DtosForAccountTypes_Banks_Currencies_ReturnedCorrectly()
+    public async Task DtosForAccountTypes_Currencies_ReturnedCorrectly()
     {
-        var banks = new List<Bank> {
-            new Bank { Id = Guid.NewGuid(), Name = "Kiwibank" },
-            new Bank { Id = Guid.NewGuid(), Name = "ANZ" },
-            new Bank { Id = Guid.NewGuid(), Name = "BNZ" },
-            new Bank { Id = Guid.NewGuid(), Name = "Westpac" }
-        };
         var accountTypes = new List<AccountType> {
             new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Default) },
             new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Debt) },
@@ -43,11 +37,6 @@ public class StartupQueryCommandHandlerTests
             new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Deposit) },
         };
 
-        _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<Bank>(
-            It.IsAny<QueryParameters>(),
-            It.IsAny<HeaderParameters>(),
-            It.IsAny<CancellationToken>()))
-            .ReturnsAsync(banks);
         _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<AccountType>(
             It.IsAny<QueryParameters>(),
             It.IsAny<HeaderParameters>(),
@@ -68,16 +57,10 @@ public class StartupQueryCommandHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(banks.Count, response.Banks.Count);
         Assert.AreEqual(accountTypes.Count, response.AccountTypes.Count);
         Assert.AreEqual(currencies.Count, response.Currencies.Count);
         Assert.AreEqual(transactionTypes.Count, response.TransactionTypes.Count);
-        foreach (var b in banks)
-        {
-            Assert.IsTrue(response.Banks.Exists(_ =>
-                _.Id == b.Id &&
-                _.Name == b.Name));
-        }
+
         foreach (var at in accountTypes)
         {
             Assert.IsTrue(response.AccountTypes.Exists(_ =>

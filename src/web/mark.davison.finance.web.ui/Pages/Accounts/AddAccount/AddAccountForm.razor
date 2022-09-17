@@ -15,15 +15,6 @@
         @bind-Value="ViewModel.AccountNumber"/>
     <DropdownList
         TId="Guid"
-        Id="add-account-form-bank"
-        Label="Bank" 
-        IsLabelDisplay="true"
-        Width="100%"
-        Placeholder="Select bank"
-        Items="@_bankItems"
-        @bind-Value="ViewModel.BankId"/>
-    <DropdownList
-        TId="Guid"
         Id="add-account-form-account-type"
         Label="Account type" 
         IsLabelDisplay="true"
@@ -50,8 +41,6 @@
 </div>
 
 @code {
-
-    private List<IDropdownItem<Guid>> _bankItems => ViewModel.LookupState.Instance.Banks.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
 
     private List<IDropdownItem<Guid>> _accountTypeItems => ViewModel.LookupState.Instance.AccountTypes.Select(_ => new DropdownItem<Guid>(_.Id, _.Type)).Cast<IDropdownItem<Guid>>().ToList();
 

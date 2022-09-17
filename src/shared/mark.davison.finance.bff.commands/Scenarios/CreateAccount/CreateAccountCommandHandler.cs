@@ -34,7 +34,6 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
             VirtualBalance = request.CreateAccountDto.VirtualBalance,
             AccountNumber = request.CreateAccountDto.AccountNumber,
             AccountTypeId = request.CreateAccountDto.AccountTypeId,
-            BankId = request.CreateAccountDto.BankId,
             CurrencyId = request.CreateAccountDto.CurrencyId,
             Order = -1,
             UserId = currentUserContext.CurrentUser.Id

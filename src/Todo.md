@@ -31,3 +31,8 @@ https://github.com/apexcharts/Blazor-ApexCharts
 https://blazor.radzen.com/
 https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/?view=aspnetcore-6.0#load-a-script-from-an-external-javascript-file-js-collocated-with-a-component
 https://antblazor.com/en-US/charts/introduce
+
+# Migrations
+
+dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj
+dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj

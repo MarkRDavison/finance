@@ -6,8 +6,6 @@ public class AddAccountFormViewModel
 
     public string AccountNumber { get; set; } = string.Empty;
 
-    public Guid BankId { get; set; }
-
     public Guid AccountTypeId { get; set; }
 
     public Guid CurrencyId { get; set; }
@@ -18,7 +16,6 @@ public class AddAccountFormViewModel
 
     public bool Valid =>
         !string.IsNullOrEmpty(Name) &&
-        BankId != Guid.Empty &&
         AccountTypeId != Guid.Empty &&
         CurrencyId != Guid.Empty;
 }

@@ -22,7 +22,6 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     public virtual async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
         await EnsureUserSeeded(cancellationToken);
-        await EnsureBanksSeeded(cancellationToken);
         await EnsureAccountTypesSeeded(cancellationToken);
         await EnsureLinkTypesSeeded(cancellationToken);
         await EnsureTransactionTypesSeeded(cancellationToken);
@@ -50,16 +49,6 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             await _repository.UpsertEntityAsync(seededUser, cancellationToken);
         }
 
-    }
-    private async Task EnsureBanksSeeded(CancellationToken cancellationToken)
-    {
-        var seededBanks = new List<Bank>
-        {
-            new Bank{ Id = Bank.KiwibankId, Name = "Kiwibank", UserId = Guid.Empty },
-            new Bank{ Id = Bank.BnzId, Name = "BNZ", UserId = Guid.Empty }
-        };
-
-        await EnsureSeeded(seededBanks, cancellationToken);
     }
 
     private async Task EnsureAccountTypesSeeded(CancellationToken cancellationToken)

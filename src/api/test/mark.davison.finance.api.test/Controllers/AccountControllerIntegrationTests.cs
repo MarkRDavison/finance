@@ -26,7 +26,6 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
             {
                 Id = Guid.NewGuid(),
                 Name = "Asset Account",
-                BankId = Bank.KiwibankId,
                 AccountTypeId = AccountConstants.Asset,
                 CurrencyId = Currency.NZD,
                 AccountNumber = "1",
@@ -36,7 +35,6 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
             {
                 Id = Guid.NewGuid(),
                 Name = "Revenue Account",
-                BankId = Bank.KiwibankId,
                 AccountTypeId = AccountConstants.Revenue,
                 CurrencyId = Currency.NZD,
                 AccountNumber = "2",

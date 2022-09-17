@@ -18,7 +18,6 @@ public class UpdateLookupsActionHandler : IActionHandler<UpdateLookupsAction>
     {
         var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(cancellation);
         _stateStore.SetState(new LookupState(
-            response.Banks,
             response.AccountTypes,
             response.Currencies,
             response.TransactionTypes
