@@ -1,8 +1,6 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateAccount;
+﻿namespace mark.davison.finance.web.features.Account.Create;
 
-namespace mark.davison.finance.web.features.Account.Create;
-
-public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, CreateAccountCommandResponse>
+public class CreateAccountActionHandler : ICommandHandler<CreateAccountCommandRequest, CreateAccountCommandResponse>
 {
     private readonly IClientHttpRepository _repository;
 
@@ -12,7 +10,7 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, C
         _repository = repository;
     }
 
-    public async Task<CreateAccountCommandResponse> Handle(CreateAccountAction command, CancellationToken cancellation)
+    public async Task<CreateAccountCommandResponse> Handle(CreateAccountCommandRequest command, CancellationToken cancellationToken)
     {
         var request = new CreateAccountRequest
         {
@@ -23,10 +21,12 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountAction, C
                 CurrencyId = command.CurrencyId,
                 Id = Guid.NewGuid(),
                 Name = command.Name,
-                VirtualBalance = command.VirtualBalance
+                VirtualBalance = command.VirtualBalance,
+                OpeningBalance = command.OpeningBalance,
+                OpeningBalanceDate = command.OpeningBalanceDate
             }
         };
-        var response = await _repository.Post<CreateAccountResponse, CreateAccountRequest>(request, cancellation);
+        var response = await _repository.Post<CreateAccountResponse, CreateAccountRequest>(request, cancellationToken);
         if (!response.Success)
         {
             return new CreateAccountCommandResponse { Success = false };

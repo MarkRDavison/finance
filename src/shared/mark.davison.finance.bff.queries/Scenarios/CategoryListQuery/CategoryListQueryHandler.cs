@@ -9,7 +9,7 @@ public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, 
         _httpRepository = httpRepository;
     }
 
-    public async Task<CategoryListQueryResponse> Handle(CategoryListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CategoryListQueryResponse> Handle(CategoryListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CategoryListQueryResponse();
 
@@ -19,7 +19,7 @@ public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, 
                 { nameof(Category.UserId), currentUserContext.CurrentUser.Id.ToString() }
             },
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
         response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
         {

@@ -29,7 +29,8 @@ public class StartupQueryCommandHandlerTests
             new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountConstants.Expense) }
         };
         var currencies = new List<Currency> {
-            new Currency { Id = Guid.NewGuid(), Code = "NZD", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 }
+            new Currency { Id = Guid.NewGuid(), Code = "NZD", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 },
+            new Currency { Id = Currency.INT, Code = "INT", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 }
         };
         var transactionTypes = new List<TransactionType> {
             new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.OpeningBalance) },
@@ -58,7 +59,7 @@ public class StartupQueryCommandHandlerTests
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
         Assert.AreEqual(accountTypes.Count, response.AccountTypes.Count);
-        Assert.AreEqual(currencies.Count, response.Currencies.Count);
+        Assert.AreEqual(currencies.Count(_ => _.Id != Currency.INT), response.Currencies.Count);
         Assert.AreEqual(transactionTypes.Count, response.TransactionTypes.Count);
 
         foreach (var at in accountTypes)
@@ -69,12 +70,20 @@ public class StartupQueryCommandHandlerTests
         }
         foreach (var c in currencies)
         {
-            Assert.IsTrue(response.Currencies.Exists(_ =>
-                _.Id == c.Id &&
-                _.Code == c.Code &&
-                _.Name == c.Name &&
-                _.Symbol == c.Symbol &&
-                _.DecimalPlaces == c.DecimalPlaces));
+            if (c.Id == Currency.INT)
+            {
+                Assert.IsFalse(response.Currencies.Exists(_ =>
+                    _.Id == c.Id));
+            }
+            else
+            {
+                Assert.IsTrue(response.Currencies.Exists(_ =>
+                    _.Id == c.Id &&
+                    _.Code == c.Code &&
+                    _.Name == c.Name &&
+                    _.Symbol == c.Symbol &&
+                    _.DecimalPlaces == c.DecimalPlaces));
+            }
         }
         foreach (var at in transactionTypes)
         {

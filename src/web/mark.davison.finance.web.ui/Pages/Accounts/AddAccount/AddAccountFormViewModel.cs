@@ -12,10 +12,14 @@ public class AddAccountFormViewModel
 
     public decimal VirtualBalance { get; set; }
 
+    public decimal OpeningBalance { get; set; }
+    public DateOnly OpeningBalanceDate { get; set; }
+
     public IStateInstance<LookupState> LookupState { get; set; } = default!;
 
     public bool Valid =>
         !string.IsNullOrEmpty(Name) &&
         AccountTypeId != Guid.Empty &&
-        CurrencyId != Guid.Empty;
+        CurrencyId != Guid.Empty &&
+        (OpeningBalance == default || OpeningBalanceDate != default);
 }

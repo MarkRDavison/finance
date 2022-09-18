@@ -2,6 +2,6 @@
 
 public interface ICreateAccountCommandValidator
 {
-    Task<CreateAccountResponse> Validate(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation);
+    Task<CreateAccountResponse> Validate(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
 }
 

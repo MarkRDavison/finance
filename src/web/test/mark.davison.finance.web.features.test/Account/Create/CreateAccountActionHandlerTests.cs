@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateAccount;
-
-namespace mark.davison.finance.web.features.test.Account.Create;
+﻿namespace mark.davison.finance.web.features.test.Account.Create;
 
 [TestClass]
 public class CreateAccountActionHandlerTests
@@ -36,7 +34,7 @@ public class CreateAccountActionHandlerTests
             })
             .Verifiable();
 
-        var response = await _handler.Handle(new CreateAccountAction(), CancellationToken.None);
+        var response = await _handler.Handle(new CreateAccountCommandRequest(), CancellationToken.None);
 
         Assert.AreNotEqual(Guid.Empty, response.ItemId);
 

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
 
 public class CreateTransactionCommandHandler : ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>
 {
@@ -19,13 +17,13 @@ public class CreateTransactionCommandHandler : ICommandHandler<CreateTransaction
         _processor = processor;
     }
 
-    public async Task<CreateTransactionResponse> Handle(CreateTransactionRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateTransactionResponse> Handle(CreateTransactionRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = await _validator.Validate(command, currentUserContext, cancellation);
+        var response = await _validator.Validate(command, currentUserContext, cancellationToken);
 
         if (response.Success)
         {
-            response = await _processor.Process(command, response, currentUserContext, _httpRepository, cancellation);
+            response = await _processor.Process(command, response, currentUserContext, _httpRepository, cancellationToken);
         }
 
         return response;

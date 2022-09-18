@@ -10,6 +10,7 @@ public partial class Currency : FinanceEntity
     public static Guid GBP = new Guid("D78CF1FC-9D08-4A71-8A5B-91D4407327CA");
     public static Guid JPY = new Guid("E63BF389-D189-46B1-B5DC-A6594D7A91C2");
     public static Guid RMB = new Guid("62812AF7-2079-4D61-BE2A-D320AFE938BF");
+    public static Guid INT = new Guid("F9267ABE-C720-4645-A25F-FBDF1E2EB0BA");
 
     public static IList<Guid> Ids => new List<Guid>
     {

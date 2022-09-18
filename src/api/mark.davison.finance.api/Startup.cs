@@ -61,6 +61,7 @@ public class Startup
         }
         else if (AppSettings.DATABASE_TYPE == "postgres")
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // TODO: Fix/remove when dotnet 7 comes out and we persist dateonly
             var conn = new NpgsqlConnectionStringBuilder();
             conn.Host = AppSettings.DB_HOST;
             conn.Database = AppSettings.DB_DATABASE;

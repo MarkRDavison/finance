@@ -10,13 +10,14 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
 
     public const string VALIDATION_MISSING_REQ_FIELD = "MISSING_REQ${0}";
     public const string VALIDATION_DUPLICATE_ACC_NUM = "DUPLICATE_ACC_NUM";
+    public const string VALIDATION_MISSING_OPENING_BAL_DATE = "MISSING_OPENING_BAL_DATE";
 
     public CreateAccountCommandValidator(IHttpRepository httpRepository)
     {
         _httpRepository = httpRepository;
     }
 
-    public async Task<CreateAccountResponse> Validate(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateAccountResponse> Validate(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CreateAccountResponse
         {
@@ -28,7 +29,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var accountType = await _httpRepository.GetEntityAsync<AccountType>(
             request.CreateAccountDto.AccountTypeId,
             authHeaders,
-            cancellation);
+            cancellationToken);
 
         if (accountType == null)
         {
@@ -40,7 +41,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var currency = await _httpRepository.GetEntityAsync<Currency>(
             request.CreateAccountDto.CurrencyId,
             authHeaders,
-            cancellation);
+            cancellationToken);
 
         if (currency == null)
         {
@@ -56,16 +57,24 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
             return response;
         }
 
-        if (!await ValidateDuplicateAccount(request, currentUserContext, cancellation))
+        if (!await ValidateDuplicateAccount(request, currentUserContext, cancellationToken))
         {
             response.Success = false;
             response.Error.Add(VALIDATION_DUPLICATE_ACC_NUM);
+            return response;
+        }
+
+        if (request.CreateAccountDto.OpeningBalance != null && request.CreateAccountDto.OpeningBalanceDate == null)
+        {
+            response.Success = false;
+            response.Error.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
+            return response;
         }
 
         return response;
     }
 
-    internal async Task<bool> ValidateDuplicateAccount(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    internal async Task<bool> ValidateDuplicateAccount(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.CreateAccountDto.AccountNumber))
         {
@@ -91,7 +100,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var duplicateAccounts = await _httpRepository.GetEntitiesAsync<Account>(
             query,
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
         foreach (var duplicateAccount in duplicateAccounts)
         {

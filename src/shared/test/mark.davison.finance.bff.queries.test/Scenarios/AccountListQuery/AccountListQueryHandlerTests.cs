@@ -52,5 +52,41 @@ public class AccountListQueryHandlerTests
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
+
+
+    [TestMethod]
+    public async Task Handle_DoesNotRetrieveHiddenAccounts()
+    {
+        var accountSummaries = new List<AccountSummary> {
+            new AccountSummary{ Id = Account.OpeningBalance },
+            new AccountSummary{ Id = Account.Reconciliation }
+        };
+
+        _httpRepository
+            .Setup(_ => _.GetEntitiesAsync<AccountSummary>(
+                "account/summary", // TODO: magic string
+                It.IsAny<QueryParameters>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(accountSummaries)
+            .Verifiable();
+
+        var request = new AccountListQueryRequest
+        {
+            ShowActive = true
+        };
+        var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
+
+        Assert.AreEqual(0, response.Accounts.Count);
+
+        _httpRepository
+            .Verify(
+                _ => _.GetEntitiesAsync<AccountSummary>(
+                    "account/summary", // TODO: magic string
+                    It.IsAny<QueryParameters>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+    }
 }
 

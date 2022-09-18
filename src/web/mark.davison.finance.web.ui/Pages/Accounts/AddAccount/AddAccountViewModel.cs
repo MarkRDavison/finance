@@ -24,13 +24,17 @@ public partial class AddAccountViewModel
         var currency = AddAccountFormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == AddAccountFormViewModel.CurrencyId);
         var accountType = AddAccountFormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == AddAccountFormViewModel.AccountTypeId);
 
-        var response = await _dispatcher.Dispatch<CreateAccountAction, CreateAccountCommandResponse>(new CreateAccountAction
+        bool openingBalanceSpecified = AddAccountFormViewModel.OpeningBalance != default;
+
+        var response = await _dispatcher.Dispatch<CreateAccountCommandRequest, CreateAccountCommandResponse>(new CreateAccountCommandRequest
         {
             Name = AddAccountFormViewModel.Name,
             AccountNumber = AddAccountFormViewModel.AccountNumber,
-            VirtualBalance = decimal.ToInt64(AddAccountFormViewModel.VirtualBalance * (decimal)Math.Pow(10, currency.DecimalPlaces)),
+            VirtualBalance = CurrencyRules.ToPersisted(AddAccountFormViewModel.VirtualBalance),
             AccountTypeId = AddAccountFormViewModel.AccountTypeId,
-            CurrencyId = AddAccountFormViewModel.CurrencyId
+            CurrencyId = AddAccountFormViewModel.CurrencyId,
+            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(AddAccountFormViewModel.OpeningBalance) : null,
+            OpeningBalanceDate = openingBalanceSpecified ? AddAccountFormViewModel.OpeningBalanceDate : null,
         }, CancellationToken.None);
 
         if (response.Success && response.ItemId != Guid.Empty)
