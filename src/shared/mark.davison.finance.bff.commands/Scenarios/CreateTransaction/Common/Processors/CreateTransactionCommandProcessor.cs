@@ -2,7 +2,7 @@
 
 public class CreateTransactionCommandProcessor : ICreateTransactionCommandProcessor
 {
-    public async Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellation)
+    public async Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken)
     {
         var headerParameters = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
         var transactionGroup = new TransactionGroup
@@ -63,17 +63,17 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
         await httpRepository.UpsertEntityAsync(
             transactionGroup,
             headerParameters,
-            cancellation);
+            cancellationToken);
 
         await httpRepository.UpsertEntitiesAsync(
             journals,
             headerParameters,
-            cancellation);
+            cancellationToken);
 
         await httpRepository.UpsertEntitiesAsync(
             transactions,
             headerParameters,
-            cancellation);
+            cancellationToken);
 
         response.Group = new TransactionGroupDto();
         response.Journals.AddRange(journals.Select(_ => new TransactionJournalDto { }));

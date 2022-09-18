@@ -25,7 +25,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
         _createTransactionValidatorStrategyFactory = createTransactionValidatorStrategyFactory;
     }
 
-    public async Task<CreateTransactionResponse> Validate(CreateTransactionRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateTransactionResponse> Validate(CreateTransactionRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CreateTransactionResponse();
 
@@ -45,7 +45,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
 
         foreach (var transaction in request.Transactions)
         {
-            await ValidateTransaction(response, transaction, currentUserContext, cancellation);
+            await ValidateTransaction(response, transaction, currentUserContext, cancellationToken);
             await transctionTypeValidator.ValidateTranasction(transaction, response, _createTransctionValidationContext);
         }
 
@@ -54,7 +54,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
         return response;
     }
 
-    private async Task ValidateTransaction(CreateTransactionResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    private async Task ValidateTransaction(CreateTransactionResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
@@ -68,7 +68,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
             response.Error.Add(string.Format(VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT, transaction.Id));
         }
 
-        if (transaction.CategoryId != null && await _createTransctionValidationContext.GetCategoryById(transaction.CategoryId.Value, cancellation) == null)
+        if (transaction.CategoryId != null && await _createTransctionValidationContext.GetCategoryById(transaction.CategoryId.Value, cancellationToken) == null)
         {
             response.Error.Add(string.Format(VALIDATION_CATEGORY_ID, transaction.Id));
         }

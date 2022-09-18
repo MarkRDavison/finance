@@ -12,7 +12,7 @@ public class CreateCategoryListCommandHandler : ICommandHandler<CreateCategoryLi
         _repository = repository;
     }
 
-    public async Task<CreateCategoryListCommandResponse> Handle(CreateCategoryListCommand command, CancellationToken cancellation)
+    public async Task<CreateCategoryListCommandResponse> Handle(CreateCategoryListCommand command, CancellationToken cancellationToken)
     {
         var request = new CreateCategoryRequest
         {
@@ -20,7 +20,7 @@ public class CreateCategoryListCommandHandler : ICommandHandler<CreateCategoryLi
             Name = command.Name
         };
 
-        var response = await _repository.Post<CreateCategoryResponse, CreateCategoryRequest>(request, cancellation);
+        var response = await _repository.Post<CreateCategoryResponse, CreateCategoryRequest>(request, cancellationToken);
         if (!response.Success)
         {
             return new CreateCategoryListCommandResponse { Success = false };

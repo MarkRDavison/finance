@@ -14,9 +14,9 @@ public class UpdateLookupsActionHandler : IActionHandler<UpdateLookupsAction>
         _stateStore = stateStore;
     }
 
-    public async Task Handle(UpdateLookupsAction action, CancellationToken cancellation)
+    public async Task Handle(UpdateLookupsAction action, CancellationToken cancellationToken)
     {
-        var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(cancellation);
+        var response = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(cancellationToken);
         _stateStore.SetState(new LookupState(
             response.AccountTypes,
             response.Currencies,

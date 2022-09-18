@@ -6,4 +6,15 @@ public static class AccountListStateHelpers
     {
         return new AccountListState(accountListItems);
     }
+
+    public static AccountListItemDto CreateAssetAccount() => new AccountListItemDto
+    {
+        Id = Guid.NewGuid(),
+        AccountTypeId = AccountConstants.Asset
+    };
+    public static AccountListItemDto CreateRevenueAccount() => new AccountListItemDto
+    {
+        Id = Guid.NewGuid(),
+        AccountTypeId = AccountConstants.Revenue
+    };
 }

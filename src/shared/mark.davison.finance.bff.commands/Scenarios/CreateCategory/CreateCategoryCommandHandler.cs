@@ -14,9 +14,9 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryReques
         _createCategoryCommandValidator = createCategoryCommandValidator;
     }
 
-    public async Task<CreateCategoryResponse> Handle(CreateCategoryRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateCategoryResponse> Handle(CreateCategoryRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = await _createCategoryCommandValidator.Validate(command, currentUserContext, cancellation);
+        var response = await _createCategoryCommandValidator.Validate(command, currentUserContext, cancellationToken);
 
         if (!response.Success)
         {
@@ -35,7 +35,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryReques
             HeaderParameters.Auth(
                 currentUserContext.Token,
                 currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
         return response;
     }

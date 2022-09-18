@@ -9,7 +9,7 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
         _httpRepository = httpRepository;
     }
 
-    public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TransactionByAccountQueryResponse();
 
@@ -17,7 +17,7 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
             $"transaction/account/{query.AccountId}",
             new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
         response.Transactions.AddRange(transactions.Select(_ => new TransactionDto
         {

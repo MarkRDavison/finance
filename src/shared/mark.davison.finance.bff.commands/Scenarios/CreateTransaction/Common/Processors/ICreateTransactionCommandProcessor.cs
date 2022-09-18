@@ -4,5 +4,5 @@ namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.P
 
 public interface ICreateTransactionCommandProcessor
 {
-    Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellation);
+    Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken);
 }

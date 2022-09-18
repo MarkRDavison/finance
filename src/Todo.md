@@ -34,5 +34,7 @@ https://antblazor.com/en-US/charts/introduce
 
 # Migrations
 
+Still need to create another ci stage that starts with a blank database and applies all migrations one by one, do this for sqlite and postgres, make this something in the cicd repo
+
 dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj
 dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj

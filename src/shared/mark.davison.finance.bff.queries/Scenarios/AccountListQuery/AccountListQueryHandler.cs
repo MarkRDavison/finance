@@ -9,7 +9,7 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
         _httpRepository = httpRepository;
     }
 
-    public async Task<AccountListQueryResponse> Handle(AccountListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<AccountListQueryResponse> Handle(AccountListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new AccountListQueryResponse();
 
@@ -17,19 +17,23 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
             "account/summary", // TODO: magic string
             new QueryParameters(),
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
-        response.Accounts.AddRange(accounts.Select(_ => new AccountListItemDto
-        {
-            Id = _.Id,
-            AccountNumber = _.AccountNumber,
-            Name = _.Name,
-            AccountType = _.AccountType,
-            AccountTypeId = _.AccountTypeId,
-            Active = _.IsActive,
-            CurrencyId = _.CurrencyId,
-            LastModified = _.LastActivity
-        }));
+        response.Accounts.AddRange(accounts
+            .Where(_ =>
+                _.Id != Account.OpeningBalance &&
+                _.Id != Account.Reconciliation)
+            .Select(_ => new AccountListItemDto
+            {
+                Id = _.Id,
+                AccountNumber = _.AccountNumber,
+                Name = _.Name,
+                AccountType = _.AccountType,
+                AccountTypeId = _.AccountTypeId,
+                Active = _.IsActive,
+                CurrencyId = _.CurrencyId,
+                LastModified = _.LastActivity
+            }));
 
         return response;
     }

@@ -26,6 +26,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
         await EnsureLinkTypesSeeded(cancellationToken);
         await EnsureTransactionTypesSeeded(cancellationToken);
         await EnsureCurrenciesSeeded(cancellationToken);
+        await EnsureCoreAccountsSeeded(cancellationToken);
     }
 
     internal async Task EnsureSeeded<T>(List<T> entities, CancellationToken cancellationToken)
@@ -97,6 +98,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
         };
         await EnsureSeeded(seededTransactionTypes, cancellationToken);
     }
+
     private async Task EnsureCurrenciesSeeded(CancellationToken cancellationToken)
     {
         var seededCurrencies = new List<Currency>
@@ -109,7 +111,18 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             new Currency { Id = Currency.GBP, Code = "GBP", Name = "British Pound", Symbol = "£", DecimalPlaces = 2  },
             new Currency { Id = Currency.JPY, Code = "JPY", Name = "Japanese Yen", Symbol = "¥", DecimalPlaces = 0  },
             new Currency { Id = Currency.RMB, Code = "RMB", Name = "Chinese Yuan", Symbol = "¥", DecimalPlaces = 2  },
+            new Currency { Id = Currency.INT, Code = "INT", Name = "Internal", Symbol = "$", DecimalPlaces = 2  },
         };
         await EnsureSeeded(seededCurrencies, cancellationToken);
+    }
+
+    private async Task EnsureCoreAccountsSeeded(CancellationToken cancellationToken)
+    {
+        var seededAccounts = new List<Account>
+        {
+            new Account { Id = Account.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT },
+            new Account { Id = Account.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT }
+        };
+        await EnsureSeeded(seededAccounts, cancellationToken);
     }
 }

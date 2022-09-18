@@ -30,17 +30,21 @@ public class AccountController : BaseFinanceController<Account>
         using (_logger.ProfileOperation(context: $"GET api/{typeof(Account).Name.ToLowerInvariant()}/summary"))
         {
             var accounts = await _repository.GetEntitiesAsync<Account>(where, includes, cancellationToken);
-            var summaries = accounts.Select(_ => new AccountSummary
-            {
-                Id = _.Id,
-                Name = _.Name,
-                AccountNumber = _.AccountNumber,
-                AccountType = _.AccountType!.Type,
-                AccountTypeId = _.AccountTypeId,
-                IsActive = _.IsActive,
-                CurrencyId = _.CurrencyId,
-                LastActivity = _.LastModified
-            });
+            var summaries = accounts
+                .Where(_ =>
+                    _.Id != Account.Reconciliation && // TODO: Better single place that creates expression to filter these or add property to account
+                    _.Id != Account.OpeningBalance)
+                .Select(_ => new AccountSummary
+                {
+                    Id = _.Id,
+                    Name = _.Name,
+                    AccountNumber = _.AccountNumber,
+                    AccountType = _.AccountType!.Type,
+                    AccountTypeId = _.AccountTypeId,
+                    IsActive = _.IsActive,
+                    CurrencyId = _.CurrencyId,
+                    LastActivity = _.LastModified
+                });
 
             return Ok(summaries);
         }

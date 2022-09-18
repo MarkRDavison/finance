@@ -11,7 +11,7 @@ public class CreateCategoryCommandValidator : ICreateCategoryCommandValidator
         _httpRepository = httpRepository;
     }
 
-    public async Task<CreateCategoryResponse> Validate(CreateCategoryRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateCategoryResponse> Validate(CreateCategoryRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CreateCategoryResponse { };
 
@@ -22,7 +22,7 @@ public class CreateCategoryCommandValidator : ICreateCategoryCommandValidator
                 { nameof(Category.UserId), currentUserContext.CurrentUser.Id.ToString() }
             },
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
 
         if (duplicate != null)
         {

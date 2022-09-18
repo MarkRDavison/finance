@@ -1,8 +1,11 @@
 ﻿global using mark.davison.common.Repository;
 global using mark.davison.common.server.abstractions.Authentication;
+global using mark.davison.common.server.abstractions.CQRS;
 global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.finance.accounting.constants;
+global using mark.davison.finance.accounting.rules;
+global using mark.davison.finance.bff.commands.Scenarios.CreateAccount;
 global using mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 global using mark.davison.finance.bff.commands.Scenarios.CreateCategory;
 global using mark.davison.finance.bff.commands.Scenarios.CreateCategory.Validators;

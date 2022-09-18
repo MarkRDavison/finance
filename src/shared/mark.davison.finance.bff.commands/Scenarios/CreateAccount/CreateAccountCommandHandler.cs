@@ -5,19 +5,22 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
 
     private readonly IHttpRepository _httpRepository;
     private readonly ICreateAccountCommandValidator _createAccountCommandValidator;
+    private readonly ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> _createTransactionCommandHandler;
 
     public CreateAccountCommandHandler(
         IHttpRepository httpRepository,
-        ICreateAccountCommandValidator createAccountCommandValidator
+        ICreateAccountCommandValidator createAccountCommandValidator,
+        ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> createTransactionCommandHandler
     )
     {
         _httpRepository = httpRepository;
         _createAccountCommandValidator = createAccountCommandValidator;
+        _createTransactionCommandHandler = createTransactionCommandHandler;
     }
 
-    public async Task<CreateAccountResponse> Handle(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellation)
+    public async Task<CreateAccountResponse> Handle(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = await _createAccountCommandValidator.Validate(request, currentUserContext, cancellation);
+        var response = await _createAccountCommandValidator.Validate(request, currentUserContext, cancellationToken);
 
         if (!response.Success)
         {
@@ -44,7 +47,29 @@ public class CreateAccountCommandHandler : ICommandHandler<CreateAccountRequest,
             HeaderParameters.Auth(
                 currentUserContext.Token,
                 currentUserContext.CurrentUser),
-            cancellation);
+            cancellationToken);
+
+        if (request.CreateAccountDto.OpeningBalance != null &&
+            request.CreateAccountDto.OpeningBalanceDate != null)
+        {
+            await _createTransactionCommandHandler.Handle(new()
+            {
+                TransactionTypeId = TransactionConstants.OpeningBalance,
+                Transactions =
+                {
+                    new CreateTransactionDto
+                    {
+                        Id = Guid.NewGuid(),
+                        Amount = request.CreateAccountDto.OpeningBalance.Value,
+                        Description = "Opening balance",
+                        CurrencyId = account.CurrencyId,
+                        SourceAccountId = Account.OpeningBalance,
+                        DestinationAccountId = account.Id,
+                        Date = request.CreateAccountDto.OpeningBalanceDate.Value
+                    }
+                }
+            }, currentUserContext, cancellationToken);
+        }
 
         return response;
     }

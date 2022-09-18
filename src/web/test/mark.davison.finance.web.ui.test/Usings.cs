@@ -15,6 +15,7 @@ global using mark.davison.finance.web.features.Lookup;
 global using mark.davison.finance.web.features.StateHelpers;
 global using mark.davison.finance.web.features.Transaction.Create;
 global using mark.davison.finance.web.ui.CommonCandidates.Navigation;
+global using mark.davison.finance.web.ui.Pages.Accounts.AddAccount;
 global using mark.davison.finance.web.ui.Pages.Categories.AddCategory;
 global using mark.davison.finance.web.ui.Pages.Transactions.AddTransaction;
 global using mark.davison.finance.web.ui.test.Helpers;
