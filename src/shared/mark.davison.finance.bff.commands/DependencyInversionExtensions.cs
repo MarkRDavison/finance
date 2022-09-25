@@ -7,7 +7,8 @@ public static class DependencyInversionExtensions
     {
         // TODO: Make validators like TResponse Validate<TRequest, TResponse>(TRequest request) etc
         //       and auto register them
-        services.AddTransient<ICreateAccountCommandValidator, CreateAccountCommandValidator>();
+        services.AddTransient<IUpsertAccountCommandValidator, UpsertAccountCommandValidator>();
+        services.AddTransient<IUpsertAccountCommandProcessor, UpsertAccountCommandProcessor>();
         services.AddTransient<ICreateCategoryCommandValidator, CreateCategoryCommandValidator>();
         services.AddTransient<ICreateTransactionCommandValidator, CreateTransactionCommandValidator>();
         services.AddTransient<ICreateTransactionCommandProcessor, CreateTransactionCommandProcessor>();

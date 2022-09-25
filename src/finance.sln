@@ -85,11 +85,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui.test", "web\test\mark.davison.finance.web.ui.test\mark.davison.finance.web.ui.test.csproj", "{2C3D1B39-9C52-4386-955C-A125FA7F0D9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.migrations.sqlite", "api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj", "{FEB01DB5-BD9C-4341-9C3A-9202363F94D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.migrations.sqlite", "api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj", "{FEB01DB5-BD9C-4341-9C3A-9202363F94D0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.migrations.postgresql", "api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj", "{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.migrations.postgresql", "api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj", "{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

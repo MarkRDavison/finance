@@ -1,11 +1,10 @@
 ﻿@inject IServiceProvider _serviceProvider;
 
-<Modal
-    Title="Add Account"
+<Modal Title="@Title"
     CloseOnOutsideClick="false"
     @bind-IsOpen="IsOpen">
     <ModalContent>
-        <AddAccountForm ViewModel="@ViewModel.AddAccountFormViewModel" />
+        <EditAccountForm ViewModel="@ViewModel.EditAccountFormViewModel" />
     </ModalContent>
     <ModalFooter>
         <Button
@@ -31,10 +30,14 @@
     [Parameter]
     public bool IsOpen { get; set; }
 
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = string.Empty;
+
     [Parameter]
     public EventCallback<bool> IsOpenChanged { get; set; }
 
-    public AddAccountViewModel ViewModel { get; set; } = default!;
+    [Parameter]
+    public EditAccountViewModel ViewModel { get; set; } = default!;
 
     protected override void OnInitialized()
     {
@@ -43,7 +46,7 @@
 
     protected void Reset()
     {
-        ViewModel = _serviceProvider.GetRequiredService<AddAccountViewModel>();
+        ViewModel = _serviceProvider.GetRequiredService<EditAccountViewModel>();
     }
 
     public async Task HandleSave()

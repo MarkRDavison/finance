@@ -1,15 +1,12 @@
-﻿using mark.davison.finance.web.features.Account.Add;
-using mark.davison.finance.web.features.Account.Create;
-
-namespace mark.davison.finance.web.ui.test.Pages.Account.AddAccount;
+﻿namespace mark.davison.finance.web.ui.test.Pages.Account.EditAccount;
 
 [TestClass]
-public class AddAccountModalTests : TestBase
+public class EditAccountModalTests : TestBase
 {
-    private readonly AddAccountViewModel _viewModel;
+    private readonly EditAccountViewModel _viewModel;
     private readonly Mock<IStateHelper> _stateHelper;
 
-    public AddAccountModalTests()
+    public EditAccountModalTests()
     {
         _viewModel = new(_dispatcher.Object);
         _stateHelper = new(MockBehavior.Strict);
@@ -18,7 +15,7 @@ public class AddAccountModalTests : TestBase
     protected override void SetupTest()
     {
         base.SetupTest();
-        Services.Add(new ServiceDescriptor(typeof(AddAccountViewModel), _viewModel));
+        Services.Add(new ServiceDescriptor(typeof(EditAccountViewModel), _viewModel));
         Services.Add(new ServiceDescriptor(typeof(IStateHelper), _stateHelper.Object));
 
         _stateHelper.Setup(_ => _.FetchAccountList(It.IsAny<bool>())).Returns(Task.CompletedTask);
@@ -32,7 +29,7 @@ public class AddAccountModalTests : TestBase
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
         _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
-        _viewModel.AddAccountFormViewModel = new()
+        _viewModel.EditAccountFormViewModel = new()
         {
             Name = "name",
             AccountNumber = "acc num",
@@ -54,7 +51,7 @@ public class AddAccountModalTests : TestBase
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var cut = RenderComponent<AddAccountModal>(_ => _
+        var cut = RenderComponent<EditAccountModal>(_ => _
             .Add(_ => _.IsOpen, true));
 
         await cut

@@ -10,20 +10,18 @@
             Type="ButtonType.Primary"
             IconStyle="IconStyle.IconOnly"
             Icon="plus-lg"
-            OnClick="@OpenAddAccountModal" />
+            OnClick="@OpenEditAccountModal" />
     </div>
     <Table
         TRow="AccountListItemViewModel"
         TKey="Guid"
         PagingEnabled="true"
         Rows="@_rows"
-        ColumnDefinitions="@_columns"
-        />
+        ColumnDefinitions="@_columns" />
 </div>
-<AddAccountModal @bind-IsOpen="AddAccountModalOpen" />
+<EditAccountModal @bind-IsOpen="EditAccountModalOpen" Title="Add account" />
 
 @code {
-
     private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
 
     private IEnumerable<AccountListItemViewModel> _rows => _accountListState.Instance.Accounts.Select(_ => new AccountListItemViewModel
@@ -69,10 +67,10 @@
         await _stateHelper.FetchAccountList(false);
     }
 
-    private bool AddAccountModalOpen { get; set; }
-    private void OpenAddAccountModal()
+    private bool EditAccountModalOpen { get; set; }
+    private void OpenEditAccountModal()
     {
-        AddAccountModalOpen = true;
+        EditAccountModalOpen = true;
     }
 
 }

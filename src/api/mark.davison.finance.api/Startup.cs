@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api;
+﻿using System.Text.Json.Serialization;
+
+namespace mark.davison.finance.api;
 
 public class Startup
 {
@@ -32,7 +34,10 @@ public class Startup
 
         services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(_ =>
+        {
+            _.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
 
         services.ConfigureHealthCheckServices<InitializationHostedService>();
         services.AddEndpointsApiExplorer();
@@ -54,10 +59,14 @@ public class Startup
             {
                 AppSettings.CONNECTION_STRING = $"Data Source={Guid.NewGuid()}.db";
             }
-            services.AddDbContextFactory<FinanceDbContext>(_ => _
-                .UseSqlite(
+            services.AddDbContextFactory<FinanceDbContext>(_ =>
+            {
+                _.UseSqlite(
                     AppSettings.CONNECTION_STRING,
-                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.sqlite")));
+                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.sqlite"));
+                _.EnableSensitiveDataLogging();
+                _.EnableDetailedErrors();
+            });
         }
         else if (AppSettings.DATABASE_TYPE == "postgres")
         {

@@ -11,6 +11,10 @@ public class AccountSummary
     public DateTime LastActivity { get; set; }
     public long Balance { get; set; }
     public long BalanceDifference { get; set; }
+    public long? VirtualBalance { get; set; }
+    public long? OpeningBalance { get; set; }
+    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
+    public DateOnly? OpeningBalanceDate { get; set; }
     public Guid CurrencyId { get; set; }
 }
 

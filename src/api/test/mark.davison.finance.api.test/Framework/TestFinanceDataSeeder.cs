@@ -2,7 +2,10 @@
 
 public class TestFinanceDataSeeder : FinanceDataSeeder
 {
-    public TestFinanceDataSeeder(IRepository repository, IOptions<AppSettings> options) : base(repository, options)
+    public TestFinanceDataSeeder(
+        IRepository repository,
+        IOptions<AppSettings> options
+    ) : base(repository, options)
     {
     }
 

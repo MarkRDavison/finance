@@ -32,7 +32,10 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
                 AccountTypeId = _.AccountTypeId,
                 Active = _.IsActive,
                 CurrencyId = _.CurrencyId,
-                LastModified = _.LastActivity
+                LastModified = _.LastActivity,
+                VirtualBalance = _.VirtualBalance,
+                OpeningBalance = _.OpeningBalance,
+                OpeningBalanceDate = _.OpeningBalanceDate
             }));
 
         return response;

@@ -30,7 +30,9 @@ public class TransactionController : BaseFinanceController<Transaction>
         using (_logger.ProfileOperation(context: $"GET api/{typeof(Account).Name.ToLowerInvariant()}/summary"))
         {
             var transactionJournals = await _repository.GetEntitiesAsync<TransactionJournal>(
-                _ => _.Transactions.Any(_ => _.AccountId == id),
+                _ => _.TransactionTypeId != TransactionConstants.OpeningBalance &&// TODO: Duplicated everywhere
+                    _.TransactionTypeId != TransactionConstants.Reconciliation &&
+                    _.Transactions.Any(_ => _.AccountId == id),
                 new Expression<Func<TransactionJournal, object>>[]
                 {
                     _ => _.TransactionGroup!,
@@ -38,23 +40,24 @@ public class TransactionController : BaseFinanceController<Transaction>
                 },
                 cancellationToken);
 
-            return Ok(transactionJournals.SelectMany(_ =>
-            {
-                foreach (var tj in _.Transactions)
+            return Ok(transactionJournals
+                .SelectMany(_ =>
                 {
-                    tj.TransactionJournal = new TransactionJournal
+                    foreach (var tj in _.Transactions)
                     {
-                        CategoryId = _.CategoryId,
-                        TransactionGroupId = _.TransactionGroupId,
-                        Date = _.Date,
-                        TransactionGroup = new TransactionGroup
+                        tj.TransactionJournal = new TransactionJournal
                         {
-                            Title = _.TransactionGroup?.Title ?? string.Empty
-                        }
-                    };
-                }
-                return _.Transactions;
-            }));
+                            CategoryId = _.CategoryId,
+                            TransactionGroupId = _.TransactionGroupId,
+                            Date = _.Date,
+                            TransactionGroup = new TransactionGroup
+                            {
+                                Title = _.TransactionGroup?.Title ?? string.Empty
+                            }
+                        };
+                    }
+                    return _.Transactions;
+                }));
         }
     }
 }

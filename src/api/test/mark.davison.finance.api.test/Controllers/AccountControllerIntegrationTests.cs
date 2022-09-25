@@ -1,9 +1,14 @@
-﻿namespace mark.davison.finance.api.test.Controllers;
+﻿using mark.davison.finance.accounting.rules;
+
+namespace mark.davison.finance.api.test.Controllers;
 
 [TestClass]
 public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiWebApplicationFactory, AppSettings>
 {
-    private readonly List<Account> _accounts = new List<Account>();
+    private readonly List<Account> _accounts = new();
+    private readonly List<Transaction> _transactions = new();
+    private readonly List<TransactionJournal> _transactionJournals = new();
+    private readonly List<TransactionGroup> _transactionGroups = new();
 
     [TestMethod]
     public async Task GetAccountSummaries_ReturnsAccountInfo()
@@ -17,6 +22,17 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
             Assert.AreEqual(_.Name, match.Name);
             Assert.AreEqual(_.AccountNumber, match.AccountNumber);
         });
+    }
+
+    [TestMethod]
+    public async Task GetAccountSummaries_ReturnsOpeningBalanceInfo()
+    {
+        var accountSummaries = await GetMultipleAsync<AccountSummary>("/api/account/summary");
+        var accountSummaryWithOpeningBalance = accountSummaries.First(_ => _.AccountNumber == "3");
+
+        Assert.IsNotNull(accountSummaryWithOpeningBalance);
+
+        Assert.AreNotEqual(0, accountSummaryWithOpeningBalance.OpeningBalance);
     }
 
     protected override async Task SeedData(IRepository repository)
@@ -39,9 +55,56 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
                 CurrencyId = Currency.NZD,
                 AccountNumber = "2",
                 IsActive = false
+            },
+            new Account
+            {
+                Id = Guid.NewGuid(),
+                Name = "Asset Account with opening balance",
+                AccountTypeId = AccountConstants.Revenue,
+                CurrencyId = Currency.NZD,
+                AccountNumber = "3",
+                IsActive = true
             }
         });
+
+        _transactionGroups.Add(new TransactionGroup
+        {
+            Id = Guid.NewGuid()
+        });
+        _transactionJournals.AddRange(new List<TransactionJournal>
+        {
+            new TransactionJournal
+            {
+                Id = Guid.NewGuid(),
+                TransactionGroupId = _transactionGroups[0].Id,
+                TransactionTypeId = TransactionConstants.OpeningBalance,
+                CurrencyId = Currency.NZD
+            }
+        });
+        _transactions.AddRange(new List<Transaction>
+        {
+            new Transaction
+            {
+                Id = Guid.NewGuid(),
+                TransactionJournalId = _transactionJournals[0].Id,
+                AccountId = Account.OpeningBalance,
+                CurrencyId = Currency.NZD,
+                Amount = -CurrencyRules.ToPersisted(100.0M)
+            },
+            new Transaction
+            {
+                Id = Guid.NewGuid(),
+                TransactionJournalId = _transactionJournals[0].Id,
+                AccountId = _accounts.First(_ => _.AccountNumber == "3").Id,
+                CurrencyId = Currency.NZD,
+                Amount = +CurrencyRules.ToPersisted(100.0M)
+            }
+        });
+
         await repository.UpsertEntitiesAsync(_accounts, CancellationToken.None);
+        await repository.UpsertEntitiesAsync(_transactionGroups, CancellationToken.None);
+        await repository.UpsertEntitiesAsync(_transactionJournals, CancellationToken.None);
+        await repository.UpsertEntitiesAsync(_transactions, CancellationToken.None);
     }
 
 }
