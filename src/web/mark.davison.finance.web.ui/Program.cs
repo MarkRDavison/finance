@@ -1,5 +1,3 @@
-using mark.davison.finance.web.ui.Pages.Categories.AddCategory;
-
 var bffRoot = "https://localhost:40000";
 var authConfig = new AuthenticationConfig();
 authConfig.SetBffBase(bffRoot);
@@ -17,7 +15,7 @@ builder.Services.AddSingleton<IClientNavigationManager, ClientNavigationManager>
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
-builder.Services.AddTransient<AddAccountViewModel>();
+builder.Services.AddTransient<EditAccountViewModel>();
 builder.Services.AddTransient<AddCategoryModalViewModal>();
 builder.Services.AddTransient<AddTransactionPageViewModel>();
 

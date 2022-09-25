@@ -4,6 +4,12 @@
 
 <div class="container">
     <h1 style="display: inline-block;">@_currentAccount?.Name</h1>
+    <Button 
+        CssClass="float-end" 
+        Label="Edit"
+        Variant="ButtonVariant.Outlined"
+        Type="ButtonType.Primary"
+        OnClick="@OpenEditAccountModal" />
     <div class="container">
         <table class="z-table" style="width: 100%;">
             <thead>
@@ -58,8 +64,18 @@
         </table>
     </div>
 </div>
+<EditAccountModal @bind-IsOpen="EditAccountModalOpen" ViewModel="@EditViewModel" Title="Edit account" />
 
 @code {
+    private EditAccountViewModel? _editViewModel;
+    private EditAccountViewModel? EditViewModel
+    {
+        get => _editViewModel;
+        set {
+            _editViewModel = value;
+            InvokeAsync(StateHasChanged);
+        }
+    }
     private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
 
     private IStateInstance<LookupState> _lookupState { get; set; } = default!;
@@ -69,6 +85,29 @@
 
     [Parameter]
     public Guid Id { get; set; }
+
+    private bool EditAccountModalOpen { get; set; }
+    private void OpenEditAccountModal()
+    {
+        if (_currentAccount != null)
+        {
+            EditViewModel = new EditAccountViewModel(Dispatcher)
+            {
+                EditAccountFormViewModel = new EditAccountFormViewModel
+                {
+                    Id = _currentAccount.Id,
+                    AccountNumber = _currentAccount.AccountNumber,
+                    AccountTypeId = _currentAccount.AccountTypeId,
+                    CurrencyId = _currentAccount.CurrencyId,
+                    Name = _currentAccount.Name,
+                    VirtualBalance = CurrencyRules.FromPersisted(_currentAccount.VirtualBalance.GetValueOrDefault()),
+                    OpeningBalance = CurrencyRules.FromPersisted(_currentAccount.OpeningBalance.GetValueOrDefault()),
+                    OpeningBalanceDate = _currentAccount.OpeningBalanceDate ?? default
+                }
+            };
+            EditAccountModalOpen = true;
+        }
+    }
 
     private IEnumerable<AccountTransactionItemViewModel> Generate(Guid accountId)
     {

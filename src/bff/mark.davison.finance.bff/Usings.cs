@@ -16,3 +16,4 @@ global using mark.davison.finance.common.candidates.Converters;
 global using mark.davison.finance.models.dtos;
 global using Microsoft.AspNetCore.Mvc.ApplicationParts;
 global using System.Text.Json;
+global using System.Text.Json.Serialization;

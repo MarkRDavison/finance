@@ -120,8 +120,8 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     {
         var seededAccounts = new List<Account>
         {
-            new Account { Id = Account.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT },
-            new Account { Id = Account.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT }
+            new Account { Id = Account.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT, Name = "Opening balance" },
+            new Account { Id = Account.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT, Name = "Reconcilation" }
         };
         await EnsureSeeded(seededAccounts, cancellationToken);
     }

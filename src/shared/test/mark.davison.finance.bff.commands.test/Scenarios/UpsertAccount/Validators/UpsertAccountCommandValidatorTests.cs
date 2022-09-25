@@ -1,18 +1,16 @@
-﻿using mark.davison.finance.accounting.rules;
-
-namespace mark.davison.finance.bff.commands.test.Scenarios.CreateAccount.Validators;
+﻿namespace mark.davison.finance.bff.commands.test.Scenarios.UpsertAccount.Validators;
 
 [TestClass]
-public class CreateAccountCommandValidatorTests
+public class UpsertAccountCommandValidatorTests
 {
-    private readonly CreateAccountCommandValidator _createAccountCommandValidator;
+    private readonly UpsertAccountCommandValidator _upsertAccountCommandValidator;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly Mock<IHttpRepository> _httpRepository;
     private readonly List<AccountType> _accountTypes;
     private readonly List<Currency> _currencies;
     private readonly User _user;
 
-    public CreateAccountCommandValidatorTests()
+    public UpsertAccountCommandValidatorTests()
     {
         _httpRepository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
@@ -35,7 +33,7 @@ public class CreateAccountCommandValidatorTests
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(_user);
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
 
-        _createAccountCommandValidator = new CreateAccountCommandValidator(_httpRepository.Object);
+        _upsertAccountCommandValidator = new UpsertAccountCommandValidator(_httpRepository.Object);
 
 
         _httpRepository
@@ -74,19 +72,19 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((AccountType?)null);
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountTypeId = Guid.NewGuid()
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
-        Assert.IsTrue(response.Error.Contains(CreateAccountCommandValidator.VALIDATION_ACCOUNT_TYPE_ID));
+        Assert.IsTrue(response.Error.Contains(UpsertAccountCommandValidator.VALIDATION_ACCOUNT_TYPE_ID));
     }
 
     [TestMethod]
@@ -101,28 +99,28 @@ public class CreateAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((Currency?)null);
 
-        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { AccountTypeId = Guid.NewGuid() } };
-        var response = await _createAccountCommandValidator.Validate(
+        var request = new UpsertAccountRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid() } };
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
-        Assert.IsTrue(response.Error.Contains(CreateAccountCommandValidator.VALIDATION_CURRENCY_ID));
+        Assert.IsTrue(response.Error.Contains(UpsertAccountCommandValidator.VALIDATION_CURRENCY_ID));
     }
 
     [TestMethod]
     public async Task Validate_WhereNameIsNotValid_ReturnsError()
     {
 
-        var request = new CreateAccountRequest { CreateAccountDto = new CreateAccountDto { AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
-        var response = await _createAccountCommandValidator.Validate(
+        var request = new UpsertAccountRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
         Assert.IsTrue(response.Error.Any(_ =>
             _.Contains(string.Format(
-                CreateAccountCommandValidator.VALIDATION_MISSING_REQ_FIELD,
+                UpsertAccountCommandValidator.VALIDATION_MISSING_REQ_FIELD,
                 nameof(Account.Name)))));
     }
 
@@ -140,28 +138,30 @@ public class CreateAccountCommandValidatorTests
             .ReturnsAsync(new List<Account> {
                 new Account
                 {
+                    Id = Guid.NewGuid(),
                     UserId = _user.Id,
                     AccountNumber = AccountNumber
                 }
             });
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
+                Id = Guid.NewGuid(),
                 AccountTypeId = Guid.NewGuid(),
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
         Assert.IsTrue(response.Error.Any(_ =>
-            _.Contains(CreateAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM)));
+            _.Contains(UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM)));
     }
 
     [TestMethod]
@@ -184,9 +184,9 @@ public class CreateAccountCommandValidatorTests
                 }
             });
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountTypeId = AccountConstants.Expense,
                 CurrencyId = Guid.NewGuid(),
@@ -194,7 +194,7 @@ public class CreateAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -222,9 +222,9 @@ public class CreateAccountCommandValidatorTests
                 }
             });
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountTypeId = AccountConstants.Revenue,
                 CurrencyId = Guid.NewGuid(),
@@ -232,7 +232,7 @@ public class CreateAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -254,35 +254,38 @@ public class CreateAccountCommandValidatorTests
             .ReturnsAsync(new List<Account> {
                 new Account
                 {
+                    Id = Guid.NewGuid(),
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
                     AccountTypeId = AccountConstants.Expense
                 },
                 new Account
                 {
+                    Id = Guid.NewGuid(),
                     UserId = _user.Id,
                     AccountNumber = AccountNumber,
                     AccountTypeId = AccountConstants.Revenue
                 }
             });
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
+                Id = Guid.NewGuid(),
                 AccountTypeId = AccountConstants.Revenue,
                 CurrencyId = Guid.NewGuid(),
                 Name = "Name",
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
         Assert.IsTrue(response.Error.Any(_ =>
-            _.Contains(CreateAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM)));
+            _.Contains(UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM)));
     }
 
     [TestMethod]
@@ -290,9 +293,9 @@ public class CreateAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountTypeId = Guid.NewGuid(),
                 CurrencyId = Guid.NewGuid(),
@@ -300,7 +303,7 @@ public class CreateAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -311,9 +314,9 @@ public class CreateAccountCommandValidatorTests
     [TestMethod]
     public async Task Validate_WhereOpeningBalanceSpecifiedButNotOpeningBalanceDate_ReturnsError()
     {
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountTypeId = Guid.NewGuid(),
                 CurrencyId = Guid.NewGuid(),
@@ -323,14 +326,14 @@ public class CreateAccountCommandValidatorTests
             }
         };
 
-        var response = await _createAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
 
         Assert.IsFalse(response.Success);
         Assert.IsTrue(response.Error.Any(_ =>
-            _.Contains(CreateAccountCommandValidator.VALIDATION_MISSING_OPENING_BAL_DATE)));
+            _.Contains(UpsertAccountCommandValidator.VALIDATION_MISSING_OPENING_BAL_DATE)));
     }
 }
 

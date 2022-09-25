@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 
-public class CreateAccountCommandValidator : ICreateAccountCommandValidator
+public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 {
 
     private readonly IHttpRepository _httpRepository;
@@ -12,14 +12,14 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
     public const string VALIDATION_DUPLICATE_ACC_NUM = "DUPLICATE_ACC_NUM";
     public const string VALIDATION_MISSING_OPENING_BAL_DATE = "MISSING_OPENING_BAL_DATE";
 
-    public CreateAccountCommandValidator(IHttpRepository httpRepository)
+    public UpsertAccountCommandValidator(IHttpRepository httpRepository)
     {
         _httpRepository = httpRepository;
     }
 
-    public async Task<CreateAccountResponse> Validate(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<UpsertAccountResponse> Validate(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new CreateAccountResponse
+        var response = new UpsertAccountResponse
         {
             Success = true
         };
@@ -27,7 +27,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var authHeaders = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
 
         var accountType = await _httpRepository.GetEntityAsync<AccountType>(
-            request.CreateAccountDto.AccountTypeId,
+            request.UpsertAccountDto.AccountTypeId,
             authHeaders,
             cancellationToken);
 
@@ -39,7 +39,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         }
 
         var currency = await _httpRepository.GetEntityAsync<Currency>(
-            request.CreateAccountDto.CurrencyId,
+            request.UpsertAccountDto.CurrencyId,
             authHeaders,
             cancellationToken);
 
@@ -50,7 +50,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
             return response;
         }
 
-        if (string.IsNullOrEmpty(request.CreateAccountDto.Name))
+        if (string.IsNullOrEmpty(request.UpsertAccountDto.Name))
         {
             response.Success = false;
             response.Error.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
@@ -64,7 +64,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
             return response;
         }
 
-        if (request.CreateAccountDto.OpeningBalance != null && request.CreateAccountDto.OpeningBalanceDate == null)
+        if (request.UpsertAccountDto.OpeningBalance != null && request.UpsertAccountDto.OpeningBalanceDate == null)
         {
             response.Success = false;
             response.Error.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
@@ -74,19 +74,19 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         return response;
     }
 
-    internal async Task<bool> ValidateDuplicateAccount(CreateAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    internal async Task<bool> ValidateDuplicateAccount(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        if (string.IsNullOrEmpty(request.CreateAccountDto.AccountNumber))
+        if (string.IsNullOrEmpty(request.UpsertAccountDto.AccountNumber))
         {
             return true;
         }
 
         Guid opposingGuid = Guid.Empty;
-        if (request.CreateAccountDto.AccountTypeId == AccountConstants.Expense)
+        if (request.UpsertAccountDto.AccountTypeId == AccountConstants.Expense)
         {
             opposingGuid = AccountConstants.Revenue;
         }
-        else if (request.CreateAccountDto.AccountTypeId == AccountConstants.Revenue)
+        else if (request.UpsertAccountDto.AccountTypeId == AccountConstants.Revenue)
         {
             opposingGuid = AccountConstants.Expense;
         }
@@ -94,7 +94,7 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
         var query = new QueryParameters
         {
             { nameof(Account.UserId), currentUserContext.CurrentUser.Id.ToString() },
-            { nameof(Account.AccountNumber), request.CreateAccountDto.AccountNumber }
+            { nameof(Account.AccountNumber), request.UpsertAccountDto.AccountNumber }
         };
 
         var duplicateAccounts = await _httpRepository.GetEntitiesAsync<Account>(
@@ -102,7 +102,8 @@ public class CreateAccountCommandValidator : ICreateAccountCommandValidator
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellationToken);
 
-        foreach (var duplicateAccount in duplicateAccounts)
+        foreach (var duplicateAccount in duplicateAccounts
+            .Where(_ => _.Id != request.UpsertAccountDto.Id))
         {
             if (opposingGuid == Guid.Empty)
             {

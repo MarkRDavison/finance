@@ -12,21 +12,21 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountCommandRe
 
     public async Task<CreateAccountCommandResponse> Handle(CreateAccountCommandRequest command, CancellationToken cancellationToken)
     {
-        var request = new CreateAccountRequest
+        var request = new UpsertAccountRequest
         {
-            CreateAccountDto = new CreateAccountDto
+            UpsertAccountDto = new UpsertAccountDto
             {
                 AccountNumber = command.AccountNumber,
                 AccountTypeId = command.AccountTypeId,
                 CurrencyId = command.CurrencyId,
-                Id = Guid.NewGuid(),
+                Id = command.Id == default ? Guid.NewGuid() : command.Id,
                 Name = command.Name,
                 VirtualBalance = command.VirtualBalance,
                 OpeningBalance = command.OpeningBalance,
                 OpeningBalanceDate = command.OpeningBalanceDate
             }
         };
-        var response = await _repository.Post<CreateAccountResponse, CreateAccountRequest>(request, cancellationToken);
+        var response = await _repository.Post<UpsertAccountResponse, UpsertAccountRequest>(request, cancellationToken);
         if (!response.Success)
         {
             return new CreateAccountCommandResponse { Success = false };
@@ -35,7 +35,7 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountCommandRe
         return new CreateAccountCommandResponse
         {
             Success = true,
-            ItemId = request.CreateAccountDto.Id
+            ItemId = request.UpsertAccountDto.Id
         };
     }
 }

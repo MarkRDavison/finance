@@ -1,13 +1,13 @@
-﻿namespace mark.davison.finance.web.ui.test.Pages.Account.AddAccount;
+﻿namespace mark.davison.finance.web.ui.test.Pages.Account.EditAccount;
 
 [TestClass]
-public class AddAccountFormTests : TestBase
+public class EditAccountFormTests : TestBase
 {
-    private readonly AddAccountFormViewModel _viewModel;
+    private readonly EditAccountFormViewModel _viewModel;
 
-    public AddAccountFormTests()
+    public EditAccountFormTests()
     {
-        _viewModel = new AddAccountFormViewModel();
+        _viewModel = new EditAccountFormViewModel();
     }
 
     [TestMethod]
@@ -17,7 +17,7 @@ public class AddAccountFormTests : TestBase
         _stateStore.SetState(LookupStateHelpers.CreateStandardState());
         _stateStore.SetState(CategoryListStateHelpers.CreateCategoryListState());
 
-        var cut = RenderComponent<AddAccountForm>(_ => _
+        var cut = RenderComponent<EditAccountForm>(_ => _
             .Add(_ => _.ViewModel, _viewModel));
 
         var inputs = cut.FindAll(".z-form-control");

@@ -1,6 +1,6 @@
-﻿namespace mark.davison.finance.models.dtos.Commands.CreateAccount;
+﻿namespace mark.davison.finance.models.dtos.Commands.UpsertAccount;
 
-public class CreateAccountResponse // TODO: Base response class?
+public class UpsertAccountResponse // TODO: Base response class?
 {
     public bool Success { get; set; }
     public List<string> Error { get; set; } = new();

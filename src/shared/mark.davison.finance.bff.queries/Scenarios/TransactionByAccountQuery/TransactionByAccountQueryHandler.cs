@@ -19,23 +19,24 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
             HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
             cancellationToken);
 
-        response.Transactions.AddRange(transactions.Select(_ => new TransactionDto
-        {
-            Id = _.Id,
-            UserId = _.UserId,
-            AccountId = _.AccountId,
-            TransactionJournalId = _.TransactionJournalId,
-            TransactionGroupId = _.TransactionJournal?.TransactionGroupId ?? Guid.Empty,
-            CurrencyId = _.CurrencyId,
-            ForeignCurrencyId = _.ForeignCurrencyId,
-            CategoryId = _.TransactionJournal?.CategoryId,
-            SplitTransactionDescription = _.TransactionJournal?.TransactionGroup?.Title ?? string.Empty,
-            Description = _.Description,
-            Date = _.TransactionJournal?.Date ?? default,
-            Amount = _.Amount,
-            ForeignAmount = _.ForeignAmount,
-            Reconciled = _.Reconciled
-        }));
+        response.Transactions.AddRange(transactions
+            .Select(_ => new TransactionDto
+            {
+                Id = _.Id,
+                UserId = _.UserId,
+                AccountId = _.AccountId,
+                TransactionJournalId = _.TransactionJournalId,
+                TransactionGroupId = _.TransactionJournal?.TransactionGroupId ?? Guid.Empty,
+                CurrencyId = _.CurrencyId,
+                ForeignCurrencyId = _.ForeignCurrencyId,
+                CategoryId = _.TransactionJournal?.CategoryId,
+                SplitTransactionDescription = _.TransactionJournal?.TransactionGroup?.Title ?? string.Empty,
+                Description = _.Description,
+                Date = _.TransactionJournal?.Date ?? default,
+                Amount = _.Amount,
+                ForeignAmount = _.ForeignAmount,
+                Reconciled = _.Reconciled
+            }));
 
         return response;
     }

@@ -12,5 +12,9 @@ public class AccountListItemDto
     public DateTime LastModified { get; set; }
     public long BalanceDifference { get; set; }
     public Guid CurrencyId { get; set; }
+    public long? VirtualBalance { get; set; }
+    public long? OpeningBalance { get; set; }
+    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
+    public DateOnly? OpeningBalanceDate { get; set; }
 }
 

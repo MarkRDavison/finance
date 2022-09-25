@@ -2,10 +2,12 @@
 
 public static class DependencyInversionExtensions
 {
+
     public static IServiceCollection UseFinanceBff(this IServiceCollection services, AppSettings appSettings)
     {
         return services.UseFinanceBff(appSettings, null);
     }
+
     public static IServiceCollection UseFinanceBff(this IServiceCollection services, AppSettings appSettings, Func<HttpClient>? client)
     {
         services.AddScoped<ICurrentUserContext>(_ => new CurrentUserContext());
@@ -14,6 +16,7 @@ public static class DependencyInversionExtensions
         {
             var options = new JsonSerializerOptions
             {
+                ReferenceHandler = ReferenceHandler.IgnoreCycles,
                 PropertyNameCaseInsensitive = true,
                 Converters =
                 {
@@ -44,4 +47,5 @@ public static class DependencyInversionExtensions
 
         return services;
     }
+
 }
