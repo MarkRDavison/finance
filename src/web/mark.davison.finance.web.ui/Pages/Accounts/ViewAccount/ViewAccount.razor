@@ -64,18 +64,10 @@
         </table>
     </div>
 </div>
-<EditAccountModal @bind-IsOpen="EditAccountModalOpen" ViewModel="@EditViewModel" Title="Edit account" />
+<EditAccountModal @bind-IsOpen="EditAccountModalOpen" ViewModel="@_editViewModel" Title="Edit account" />
 
 @code {
     private EditAccountViewModel? _editViewModel;
-    private EditAccountViewModel? EditViewModel
-    {
-        get => _editViewModel;
-        set {
-            _editViewModel = value;
-            InvokeAsync(StateHasChanged);
-        }
-    }
     private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
 
     private IStateInstance<LookupState> _lookupState { get; set; } = default!;
@@ -91,7 +83,7 @@
     {
         if (_currentAccount != null)
         {
-            EditViewModel = new EditAccountViewModel(Dispatcher)
+            _editViewModel = new EditAccountViewModel(Dispatcher)
             {
                 EditAccountFormViewModel = new EditAccountFormViewModel
                 {
@@ -116,7 +108,8 @@
         foreach (var tGroup in _transactionState.Instance.Transactions.GroupBy(_ => _.TransactionGroupId))
         {
             AccountTransactionItemViewModel item = new();
-            if (tGroup.Count() % 2 != 0){
+            if (tGroup.Count() % 2 != 0)
+            {
                 throw new InvalidDataException();
             }
             item.SplitDescription = tGroup.FirstOrDefault()?.SplitTransactionDescription;
