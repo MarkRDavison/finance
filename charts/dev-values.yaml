@@ -24,7 +24,8 @@ api: {
       FINANCE__CLIENT_ID: 'zeno-finance',
       FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
       FINANCE__SCOPE: 'openid profile email offline_access zeno zeno-finance',
-      FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi'
+      FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi',
+      FINANCE__PRODUCTION_MODE: false
     }
   }
 }
@@ -55,7 +56,8 @@ bff: {
       FINANCE__REDIS_HOST: 'redis.markdavison.kiwi',
       FINANCE__CLIENT_ID: 'zeno-finance',
       FINANCE__URL: 'http://0.0.0.0:40000',
-      FINANCE__SCOPE: 'openid profile email offline_access zeno zeno-finance'
+      FINANCE__SCOPE: 'openid profile email offline_access zeno zeno-finance',
+      FINANCE__PRODUCTION_MODE: false
     }
   }
 }

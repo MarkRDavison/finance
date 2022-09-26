@@ -13,4 +13,5 @@ public class AppSettings
     public string BFF_ORIGIN { get; set; } = "https://localhost:40000";
     public string API_ORIGIN { get; set; } = "https://localhost:50000";
     public List<string> SCOPES => SCOPE.Split(" ", StringSplitOptions.RemoveEmptyEntries).Where(_ => _ != null).ToList();
+    public bool PRODUCTION_MODE { get; set; } = false;
 }
