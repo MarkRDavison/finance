@@ -33,8 +33,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WEB", "WEB", "{FF363D6D-ACB
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{E693CBD9-F93D-492A-BC2C-956DAFAC439C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "E2E", "E2E", "{1DE73634-4D30-4C5B-BEA3-7D6FCBCA4A0F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.api", "api\mark.davison.finance.api\mark.davison.finance.api.csproj", "{F3C93E96-66C7-4D07-8FEA-971CAC873CA8}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration", "api\mark.davison.finance.models.configuration\mark.davison.finance.models.configuration.csproj", "{02F7FB7D-8C88-4A7A-96F1-C22E6EDE27D0}"
@@ -90,6 +88,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", "{4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.migrations.postgresql", "api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj", "{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.web.services", "web\mark.davison.finance.web.services\mark.davison.finance.web.services.csproj", "{A35F7202-F572-4670-B504-5CF57565F6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +201,10 @@ Global
 		{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A35F7202-F572-4670-B504-5CF57565F6D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A35F7202-F572-4670-B504-5CF57565F6D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A35F7202-F572-4670-B504-5CF57565F6D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A35F7202-F572-4670-B504-5CF57565F6D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,6 +242,7 @@ Global
 		{FEB01DB5-BD9C-4341-9C3A-9202363F94D0} = {4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9}
 		{4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B} = {4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9}
+		{A35F7202-F572-4670-B504-5CF57565F6D1} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}

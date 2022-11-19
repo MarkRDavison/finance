@@ -1,4 +1,5 @@
-﻿using mark.davison.finance.web.features.Transaction.QueryByAccount;
+﻿using mark.davison.finance.web.features.Dashboard;
+using mark.davison.finance.web.features.Dashboard.QueryAccountSummary;
 
 namespace mark.davison.finance.web.features.StateHelpers;
 
@@ -59,7 +60,7 @@ public class StateHelper : IStateHelper
     public async Task FetchAccountList(bool showActive)
     {
         var state = _stateStore.GetState<AccountListState>();
-        if (RequiresRefetch(state.Instance.LastModified, DefaultReftechTimeSpan))
+        if (RequiresRefetch(state.Instance.LastModified, DefaultRefetchTimeSpan))
         {
             await _dispatcher.Dispatch(new FetchAccountListAction(false), CancellationToken.None);
         }
@@ -68,7 +69,7 @@ public class StateHelper : IStateHelper
     public async Task FetchCategoryList()
     {
         var state = _stateStore.GetState<CategoryListState>();
-        if (RequiresRefetch(state.Instance.LastModified, DefaultReftechTimeSpan))
+        if (RequiresRefetch(state.Instance.LastModified, DefaultRefetchTimeSpan))
         {
             await _dispatcher.Dispatch(new FetchCategoryListAction(), CancellationToken.None);
         }
@@ -79,6 +80,18 @@ public class StateHelper : IStateHelper
         await _dispatcher.Dispatch(new TransactionQueryByAccountAction() { AccountId = accountId }, CancellationToken.None);
     }
 
-    public TimeSpan DefaultReftechTimeSpan => TimeSpan.FromMinutes(1);
+    public async Task FetchAccountTypeDashboardSummaryData(params Guid[] accountTypeIds)
+    {
+        var state = _stateStore.GetState<DashboardState>();
+        if (RequiresRefetch(state.Instance.LastModified, DefaultRefetchTimeSpan))
+        {
+            await Task.WhenAll(accountTypeIds.Select(
+                _ => _dispatcher.Dispatch(
+                    new QueryAccountSummaryActionRequest { AccountTypeId = _ },
+                    CancellationToken.None)));
+        }
+    }
+
+    public TimeSpan DefaultRefetchTimeSpan => TimeSpan.FromMinutes(1);
 
 }

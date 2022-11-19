@@ -20,6 +20,7 @@ global using mark.davison.finance.web.features.Category.Update;
 global using mark.davison.finance.web.features.Lookup;
 global using mark.davison.finance.web.features.StateHelpers;
 global using mark.davison.finance.web.features.Transaction.Create;
+global using mark.davison.finance.web.services;
 global using mark.davison.finance.web.ui;
 global using mark.davison.finance.web.ui.CommonCandidates.Form;
 global using mark.davison.finance.web.ui.CommonCandidates.Navigation;

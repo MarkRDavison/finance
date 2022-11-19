@@ -8,5 +8,7 @@ public interface IStateHelper
     Task FetchCategoryList();
     Task FetchAccountInformation(Guid accountId);
 
-    TimeSpan DefaultReftechTimeSpan { get; }
+    Task FetchAccountTypeDashboardSummaryData(params Guid[] accountTypeIds);
+
+    TimeSpan DefaultRefetchTimeSpan { get; }
 }

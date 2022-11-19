@@ -1,0 +1,25 @@
+﻿@attribute [Route(Routes.Root)]
+@inject IStateHelper _stateHelper
+
+<AccountTypeLineGraph
+    AccountTypeId="@AccountConstants.Asset"
+    Title="Asset accounts"/>
+
+@code {
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await EnsureStateLoaded();
+    }
+
+    private async Task EnsureStateLoaded()
+    {
+        await _stateHelper.FetchAccountTypeDashboardSummaryData(AccountConstants.Asset);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await EnsureStateLoaded();
+    }
+
+}

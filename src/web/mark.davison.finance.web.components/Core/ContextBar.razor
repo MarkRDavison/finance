@@ -1,7 +1,8 @@
 ﻿@inject IAuthenticationContext _authContext
+@inject IAppContextService _appContextService
 
 <div class="z-context">
-    <p>@_start.ToString("MMMM d, yyyy") - @_end.ToString("MMMM dd, yyyy")</p>
+    <p>@_appContextService.RangeStart.ToString("MMMM d, yyyy") - @_appContextService.RangeEnd.ToString("MMMM dd, yyyy")</p>
     <p>@_authContext.User?.name</p>
     <Button
         Variant="ButtonVariant.Text"
@@ -13,8 +14,6 @@
 
 @code {
 
-    private DateOnly _start = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month, 1);
-    private DateOnly _end = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month + 1, 1).AddDays(-1);
 
     [Parameter]
     public bool QuickCreateOpen { get; set; }
