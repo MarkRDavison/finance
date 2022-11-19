@@ -13,6 +13,7 @@ builder.Services.AddSingleton<IAuthenticationContext, AuthenticationContext>();
 builder.Services.AddSingleton<IStateHelper, StateHelper>();
 builder.Services.AddSingleton<IClientNavigationManager, ClientNavigationManager>();
 builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpRepository(_.GetRequiredService<IAuthenticationConfig>().BffBase, _.GetRequiredService<IHttpClientFactory>()));
+builder.Services.UseFinanceWebServices();
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
 builder.Services.AddTransient<EditAccountViewModel>();

@@ -21,7 +21,7 @@ public class AccountController : BaseFinanceController<Account>
     [HttpGet("summary")]
     public async Task<IActionResult> GetSummary(CancellationToken cancellationToken)
     {
-        var where = GenerateWhereClause(HttpContext.Request.Query);
+        var where = GenerateWhereClause(HttpContext.Request.Query, await ExtractBody());
         var includes = new Expression<Func<Account, object>>[]
         {
             _ => _.AccountType!
