@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.accounting.rules;
-
-namespace mark.davison.finance.api.test.Controllers;
+﻿namespace mark.davison.finance.api.test.Controllers;
 
 [TestClass]
 public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiWebApplicationFactory, AppSettings>

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
@@ -20,9 +20,9 @@
 
   <ItemGroup>
     <PackageReference Include="Blazor-ApexCharts" Version="0.9.14-beta" />
-    <PackageReference Include="mark.davison.common.client" Version="1.5.4" />
+    <PackageReference Include="mark.davison.common.client" Version="2.0.0" />
     <PackageReference Include="mark.davison.zui" Version="1.0.14" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

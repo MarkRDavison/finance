@@ -9,6 +9,5 @@ public class UpsertAccountDto
     public Guid AccountTypeId { get; set; }
     public Guid CurrencyId { get; set; }
     public long? OpeningBalance { get; set; }
-    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly? OpeningBalanceDate { get; set; }
 }
