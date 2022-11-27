@@ -6,9 +6,7 @@ public partial class Goal : FinanceEntity
     public Guid AccountId { get; set; }
     public string Name { get; set; } = string.Empty;
     public long TargetAmount { get; set; }
-    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly StartDate { get; set; }
-    [JsonConverter(typeof(DateOnlyConverter))] // TODO: .net 7 plz...
     public DateOnly TargetDate { get; set; }
 
     public virtual Account? Account { get; set; }

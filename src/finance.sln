@@ -7,13 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "API", "API", "{E1377132-D39
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BFF", "BFF", "{2195F093-0053-4EED-8409-EEBCA64D0532}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1A6DB920-65F4-4E23-9D50-6B95962A4536}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A1F5F85F-1EEB-4DB5-9101-9B6CB22AD79B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7E3B8DDF-D353-4A37-8560-04ADEB39E8BF}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{397467EA-8012-4CA1-A08C-9132046130B2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{244B4F2C-95D0-4FFB-A565-16350D306601}"
 	ProjectSection(SolutionItems) = preProject
@@ -40,12 +36,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.persistence", "api\mark.davison.finance.persistence\mark.davison.finance.persistence.csproj", "{B08F446E-BB6F-49FA-AD08-32A1D1E491E7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.api.test", "api\test\mark.davison.finance.api.test\mark.davison.finance.api.test.csproj", "{751D7E81-2E1C-4AD1-8A39-933F95281A65}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.configuration.sourcegenerator", "common\mark.davison.finance.models.configuration.sourcegenerator\mark.davison.finance.models.configuration.sourcegenerator.csproj", "{837513A8-6D1D-405A-8E65-96C0CF953BFD}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.sourcegenerator", "common\mark.davison.finance.models.sourcegenerator\mark.davison.finance.models.sourcegenerator.csproj", "{821CE14C-2FA2-46F1-8751-C003DFB7B8C2}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.models.sourcegenerator.test", "common\mark.davison.finance.models.sourcegenerator.test\mark.davison.finance.models.sourcegenerator.test.csproj", "{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.commands", "shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj", "{23846516-24C6-4097-9839-D2ED34772EF2}"
 EndProject
@@ -79,8 +69,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.accoun
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.commands.test.integration", "shared\test\mark.davison.finance.bff.commands.test.integration\mark.davison.finance.bff.commands.test.integration.csproj", "{6CEEF379-6EB8-4E3B-80BD-C78CB0BA5ABC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.common.candidates", "common\mark.davison.finance.common.candidates\mark.davison.finance.common.candidates.csproj", "{CE9D03F6-3B11-42E6-8EFC-033E930ADF12}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui.test", "web\test\mark.davison.finance.web.ui.test\mark.davison.finance.web.ui.test.csproj", "{2C3D1B39-9C52-4386-955C-A125FA7F0D9B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.migrations.sqlite", "api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj", "{FEB01DB5-BD9C-4341-9C3A-9202363F94D0}"
@@ -89,7 +77,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Migrations", "Migrations", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.migrations.postgresql", "api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj", "{D0A2C6A7-A558-4BA2-9299-BBD9F9FC8D4B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.web.services", "web\mark.davison.finance.web.services\mark.davison.finance.web.services.csproj", "{A35F7202-F572-4670-B504-5CF57565F6D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.services", "web\mark.davison.finance.web.services\mark.davison.finance.web.services.csproj", "{A35F7202-F572-4670-B504-5CF57565F6D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -113,18 +101,6 @@ Global
 		{751D7E81-2E1C-4AD1-8A39-933F95281A65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{751D7E81-2E1C-4AD1-8A39-933F95281A65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{751D7E81-2E1C-4AD1-8A39-933F95281A65}.Release|Any CPU.Build.0 = Release|Any CPU
-		{837513A8-6D1D-405A-8E65-96C0CF953BFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{837513A8-6D1D-405A-8E65-96C0CF953BFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{837513A8-6D1D-405A-8E65-96C0CF953BFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{837513A8-6D1D-405A-8E65-96C0CF953BFD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{821CE14C-2FA2-46F1-8751-C003DFB7B8C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{821CE14C-2FA2-46F1-8751-C003DFB7B8C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{821CE14C-2FA2-46F1-8751-C003DFB7B8C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{821CE14C-2FA2-46F1-8751-C003DFB7B8C2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{23846516-24C6-4097-9839-D2ED34772EF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{23846516-24C6-4097-9839-D2ED34772EF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23846516-24C6-4097-9839-D2ED34772EF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -185,10 +161,6 @@ Global
 		{6CEEF379-6EB8-4E3B-80BD-C78CB0BA5ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CEEF379-6EB8-4E3B-80BD-C78CB0BA5ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CEEF379-6EB8-4E3B-80BD-C78CB0BA5ABC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CE9D03F6-3B11-42E6-8EFC-033E930ADF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE9D03F6-3B11-42E6-8EFC-033E930ADF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE9D03F6-3B11-42E6-8EFC-033E930ADF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE9D03F6-3B11-42E6-8EFC-033E930ADF12}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2C3D1B39-9C52-4386-955C-A125FA7F0D9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2C3D1B39-9C52-4386-955C-A125FA7F0D9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C3D1B39-9C52-4386-955C-A125FA7F0D9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -212,15 +184,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A1F5F85F-1EEB-4DB5-9101-9B6CB22AD79B} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{7E3B8DDF-D353-4A37-8560-04ADEB39E8BF} = {2195F093-0053-4EED-8409-EEBCA64D0532}
-		{397467EA-8012-4CA1-A08C-9132046130B2} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 		{E693CBD9-F93D-492A-BC2C-956DAFAC439C} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
 		{F3C93E96-66C7-4D07-8FEA-971CAC873CA8} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{02F7FB7D-8C88-4A7A-96F1-C22E6EDE27D0} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{B08F446E-BB6F-49FA-AD08-32A1D1E491E7} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{751D7E81-2E1C-4AD1-8A39-933F95281A65} = {A1F5F85F-1EEB-4DB5-9101-9B6CB22AD79B}
-		{837513A8-6D1D-405A-8E65-96C0CF953BFD} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
-		{821CE14C-2FA2-46F1-8751-C003DFB7B8C2} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
-		{6CE8DA1C-44E0-4511-A59B-5D04AD117CBE} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 		{23846516-24C6-4097-9839-D2ED34772EF2} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{95B4F2CB-4E59-420F-B60B-65BB11A3D2C3} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{0082295E-4D05-4012-90EB-47A5F5F896A0} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
@@ -237,7 +205,6 @@ Global
 		{6E9CF0E3-717B-4C08-886A-576CFD2A75ED} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{CE10B913-75D2-43E3-9756-1672E1614003} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{6CEEF379-6EB8-4E3B-80BD-C78CB0BA5ABC} = {BEDDADA9-5E88-4128-BB62-33E1B4FD5EAA}
-		{CE9D03F6-3B11-42E6-8EFC-033E930ADF12} = {1A6DB920-65F4-4E23-9D50-6B95962A4536}
 		{2C3D1B39-9C52-4386-955C-A125FA7F0D9B} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
 		{FEB01DB5-BD9C-4341-9C3A-9202363F94D0} = {4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9}
 		{4E0EBBF0-0F8E-423D-B0FD-967E601BBDF9} = {E1377132-D395-45C8-8325-23A908F2DA4D}

@@ -15,7 +15,22 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.8");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.0");
+
+            modelBuilder.Entity("TagTransactionJournal", b =>
+                {
+                    b.Property<Guid>("TagsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("TransactionJournalsId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("TagsId", "TransactionJournalsId");
+
+                    b.HasIndex("TransactionJournalsId");
+
+                    b.ToTable("TagTransactionJournal");
+                });
 
             modelBuilder.Entity("mark.davison.common.server.abstractions.Identification.User", b =>
                 {
@@ -1185,6 +1200,32 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
                     b.ToTable("RuleTriggers");
                 });
 
+            modelBuilder.Entity("mark.davison.finance.models.Entities.Tag", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastModified")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tag");
+                });
+
             modelBuilder.Entity("mark.davison.finance.models.Entities.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1361,6 +1402,21 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("TransactionTypes");
+                });
+
+            modelBuilder.Entity("TagTransactionJournal", b =>
+                {
+                    b.HasOne("mark.davison.finance.models.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("mark.davison.finance.models.Entities.TransactionJournal", null)
+                        .WithMany()
+                        .HasForeignKey("TransactionJournalsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("mark.davison.finance.models.Entities.Account", b =>
@@ -1965,6 +2021,17 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("Rule");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("mark.davison.finance.models.Entities.Tag", b =>
+                {
+                    b.HasOne("mark.davison.common.server.abstractions.Identification.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -30,9 +30,9 @@ configure tags:
     when: always
   script:
     - pip install requests
-    - WEB_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/web/ -m ./src/shared/ -m ./src/common/)
-    - BFF_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/bff/ -m ./src/shared/ -m ./src/common/)
-    - API_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/api/ -m ./src/shared/ -m ./src/common/)
+    - WEB_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/web/ -m ./src/shared/)
+    - BFF_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/bff/ -m ./src/shared/)
+    - API_HASH=$(python3 ./cicd/Image/determinetagfrompath.py -m ./src/api/ -m ./src/shared/)
     - WEB_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${WEB_HASH}" --imagename zeno-finance-web --crusername "${CR_USERNAME}")
     - BFF_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${BFF_HASH}" --imagename zeno-finance-bff --crusername "${CR_USERNAME}")
     - API_BUILD=$(python3 ./cicd/Image/determinetagpresent.py --branch "${CI_COMMIT_BRANCH}" --imagetag "${API_HASH}" --imagename zeno-finance-api --crusername "${CR_USERNAME}")
@@ -52,7 +52,7 @@ configure tags:
 
 build:
   stage: build
-  image: mcr.microsoft.com/dotnet/sdk:6.0
+  image: mcr.microsoft.com/dotnet/sdk:7.0
   needs:
     - job: "configure tags"
   script:

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff;
+﻿using mark.davison.common;
+
+namespace mark.davison.finance.bff;
 
 public static class DependencyInversionExtensions
 {
@@ -14,18 +16,7 @@ public static class DependencyInversionExtensions
 
         services.AddSingleton<IHttpRepository>(_ =>
         {
-            var options = new JsonSerializerOptions
-            {
-                ReferenceHandler = ReferenceHandler.IgnoreCycles,
-                PropertyNameCaseInsensitive = true,
-                Converters =
-                {
-                    new TimeOnlyConverter(),
-                    new NullableTimeOnlyConverter(),
-                    new DateOnlyConverter(),
-                    new NullableDateOnlyConverter()
-                }
-            };
+            var options = SerializationHelpers.CreateStandardSerializationOptions();
             if (client == null)
             {
                 return new FinanceHttpRepository(appSettings.API_ORIGIN, options);
