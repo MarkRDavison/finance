@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.accounting.constants;
-using mark.davison.finance.accounting.rules;
-
-namespace mark.davison.finance.bff.Authentication;
+﻿namespace mark.davison.finance.bff.Authentication;
 
 public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationActions
 {
@@ -63,6 +60,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
         var transactionJournals = new List<TransactionJournal>();
         var transactions = new List<Transaction>();
 
+        // TODO: Create common helper methods? Move FinanceDatatSeederHelpers to common test assembly
         var createTransaction = (Guid transactionTypeId, decimal amount, Guid sourceAccountId, Guid destinationAccountId, string description, DateOnly date) =>
         {
             var transactionGroup = new TransactionGroup { Id = Guid.NewGuid(), UserId = currentUser.Id };
