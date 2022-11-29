@@ -1,6 +1,4 @@
-﻿using SameSiteMode = Microsoft.AspNetCore.Http.SameSiteMode;
-
-namespace mark.davison.finance.bff;
+﻿namespace mark.davison.finance.bff;
 
 public class Startup
 {
@@ -18,8 +16,10 @@ public class Startup
 
         services
             .AddControllers()
-            .PartManager.ApplicationParts.Add(new AssemblyPart(typeof(AuthController).Assembly));
-
+            .ConfigureApplicationPartManager(manager =>
+            {
+                manager.ApplicationParts.Add(new AssemblyPart(typeof(AuthController).Assembly));
+            });
         services.ConfigureHealthCheckServices();
 
         services.AddCors(options =>
@@ -47,9 +47,28 @@ public class Startup
                 o.Cookie.HttpOnly = true;
             });
 
-
-        services
-            .AddDistributedMemoryCache();
+        if (string.IsNullOrEmpty(AppSettings.REDIS_PASSWORD) ||
+            string.IsNullOrEmpty(AppSettings.REDIS_HOST))
+        {
+            services
+                .AddDistributedMemoryCache();
+        }
+        else
+        {
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { AppSettings.REDIS_HOST + ":" + AppSettings.REDIS_PORT },
+                Password = AppSettings.REDIS_PASSWORD
+            };
+            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(config);
+            services.AddStackExchangeRedisCache(_ =>
+            {
+                _.InstanceName = "finance_" + (AppSettings.PRODUCTION_MODE ? "prod_" : "dev_");
+                _.Configuration = redis.Configuration;
+            });
+            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
+            services.AddSingleton(redis);
+        }
 
         services.AddZenoAuthentication(_ =>
         {

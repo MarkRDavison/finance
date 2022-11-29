@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="mark.davison.common.server.abstractions" Version="2.0.0" />
+    <PackageReference Include="mark.davison.common.server.abstractions" Version="2.0.2" />
   </ItemGroup>
 
 </Project>
