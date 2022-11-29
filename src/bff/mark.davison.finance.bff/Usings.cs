@@ -16,6 +16,8 @@ global using mark.davison.finance.bff.Configuration;
 global using mark.davison.finance.bff.queries;
 global using mark.davison.finance.models.dtos;
 global using mark.davison.finance.models.Entities;
+global using Microsoft.AspNetCore.DataProtection;
 global using Microsoft.AspNetCore.Mvc.ApplicationParts;
 global using Microsoft.Extensions.Options;
+global using StackExchange.Redis;
 global using System.Text.Json;
