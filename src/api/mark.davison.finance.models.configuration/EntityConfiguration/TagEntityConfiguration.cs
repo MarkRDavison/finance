@@ -7,5 +7,11 @@ public class TagEntityConfiguration : FinanceEntityConfiguration<Tag>
         builder
             .Property(_ => _.Name)
             .HasMaxLength(64);
+
+        ConfigureConversion(builder
+            .Property(_ => _.MinDate));
+
+        ConfigureConversion(builder
+            .Property(_ => _.MaxDate));
     }
 }

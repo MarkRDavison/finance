@@ -24,15 +24,15 @@ public class CreateTransactionCommandValidatorTests
     public void TestInitialize()
     {
         _createTransactionValidatorStrategyFactory.Setup(_ => _.CreateStrategy(It.IsAny<Guid>())).Returns(_createTransactionValidatorStrategy.Object);
-        _createTransactionValidatorStrategy.Setup(_ => _.ValidateTransactionGroup(It.IsAny<CreateTransactionRequest>(), It.IsAny<CreateTransactionResponse>(), It.IsAny<ICreateTransctionValidationContext>())).Returns(Task.CompletedTask);
-        _createTransactionValidatorStrategy.Setup(_ => _.ValidateTranasction(It.IsAny<CreateTransactionDto>(), It.IsAny<CreateTransactionResponse>(), It.IsAny<ICreateTransctionValidationContext>())).Returns(Task.CompletedTask);
+        _createTransactionValidatorStrategy.Setup(_ => _.ValidateTransactionGroup(It.IsAny<CreateTransactionCommandRequest>(), It.IsAny<CreateTransactionCommandResponse>(), It.IsAny<ICreateTransctionValidationContext>())).Returns(Task.CompletedTask);
+        _createTransactionValidatorStrategy.Setup(_ => _.ValidateTranasction(It.IsAny<CreateTransactionDto>(), It.IsAny<CreateTransactionCommandResponse>(), It.IsAny<ICreateTransctionValidationContext>())).Returns(Task.CompletedTask);
     }
 
     [TestMethod]
     public async Task Validate_ReturnsMessageWhenDateIsInvalid()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid() };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -50,7 +50,7 @@ public class CreateTransactionCommandValidatorTests
     public async Task Validate_ReturnsMessageWhenCategoryIdIsInvalid()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid(), CategoryId = Guid.NewGuid() };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -82,7 +82,7 @@ public class CreateTransactionCommandValidatorTests
     public async Task Validate_ReturnsNoMessageWhenCategoryIdIsValid()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid(), CategoryId = Guid.NewGuid() };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -112,7 +112,7 @@ public class CreateTransactionCommandValidatorTests
     [TestMethod]
     public async Task Validate_WhereMultipleTransactions_ReturnsMessageWhenSplitDescriptionMissing()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -132,7 +132,7 @@ public class CreateTransactionCommandValidatorTests
     public async Task Validate_ReturnsMessageWhenSourceAndDestinationAccountAreSame()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid() };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -149,7 +149,7 @@ public class CreateTransactionCommandValidatorTests
     [TestMethod]
     public async Task Validate_ReturnsMessageWhenTransactionTypeIsInvalid()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -167,7 +167,7 @@ public class CreateTransactionCommandValidatorTests
     public async Task Validate_ReturnsMessageWhenCurrencyIdIsInvalid()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid() };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -185,7 +185,7 @@ public class CreateTransactionCommandValidatorTests
     public async Task Validate_ReturnsMessageWhenForeginCurrencyIdIsInvalid()
     {
         var transaction = new CreateTransactionDto { Id = Guid.NewGuid(), ForeignCurrencyId = Guid.Empty };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -208,7 +208,7 @@ public class CreateTransactionCommandValidatorTests
             CurrencyId = Currency.NZD,
             ForeignCurrencyId = Currency.NZD
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -228,20 +228,20 @@ public class CreateTransactionCommandValidatorTests
 
         _createTransactionValidatorStrategy
             .Setup(_ => _.ValidateTransactionGroup(
-                It.IsAny<CreateTransactionRequest>(),
-                It.IsAny<CreateTransactionResponse>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
+                It.IsAny<CreateTransactionCommandResponse>(),
                 It.IsAny<ICreateTransctionValidationContext>()))
             .Returns(Task.CompletedTask)
             .Verifiable();
         _createTransactionValidatorStrategy
             .Setup(_ => _.ValidateTranasction(
                 It.IsAny<CreateTransactionDto>(),
-                It.IsAny<CreateTransactionResponse>(),
+                It.IsAny<CreateTransactionCommandResponse>(),
                 It.IsAny<ICreateTransctionValidationContext>()))
             .Returns(Task.CompletedTask)
             .Verifiable();
 
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions = new()
             {
@@ -253,15 +253,47 @@ public class CreateTransactionCommandValidatorTests
 
         _createTransactionValidatorStrategy
             .Verify(_ => _.ValidateTransactionGroup(
-                It.IsAny<CreateTransactionRequest>(),
-                It.IsAny<CreateTransactionResponse>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
+                It.IsAny<CreateTransactionCommandResponse>(),
                 It.IsAny<ICreateTransctionValidationContext>()),
             Times.Once);
         _createTransactionValidatorStrategy
             .Verify(_ => _.ValidateTranasction(
                 It.IsAny<CreateTransactionDto>(),
-                It.IsAny<CreateTransactionResponse>(),
+                It.IsAny<CreateTransactionCommandResponse>(),
                 It.IsAny<ICreateTransctionValidationContext>()),
             Times.Once);
+    }
+
+    [TestMethod]
+    public async Task Validate_WhereNoDuplicateTagsArePassed_ReturnsNoMessage()
+    {
+        var request = new CreateTransactionCommandRequest
+        {
+            Transactions = new()
+            {
+                new() { Tags = new() {"1", "2", "3"} }
+            }
+        };
+
+        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+
+        Assert.IsFalse(response.Warning.Contains(string.Format(CreateTransactionCommandValidator.VALIDATION_DUPLICATE_TAGS, string.Empty)));
+    }
+
+    [TestMethod]
+    public async Task Validate_WhereDuplicateTagsArePassed_ReturnsWarningMessage()
+    {
+        var request = new CreateTransactionCommandRequest
+        {
+            Transactions = new()
+            {
+                new() { Tags = new() {"1", "1", "3", "3"} }
+            }
+        };
+
+        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+
+        Assert.IsTrue(response.Warning.Contains(string.Format(CreateTransactionCommandValidator.VALIDATION_DUPLICATE_TAGS, "1,3")));
     }
 }

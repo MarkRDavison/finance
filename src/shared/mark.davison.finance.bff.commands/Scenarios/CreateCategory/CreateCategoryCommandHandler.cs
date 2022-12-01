@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateCategory;
 
-public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryRequest, CreateCategoryResponse>
+public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>
 {
     private readonly IHttpRepository _httpRepository;
     private readonly ICreateCategoryCommandValidator _createCategoryCommandValidator;
@@ -14,7 +14,7 @@ public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryReques
         _createCategoryCommandValidator = createCategoryCommandValidator;
     }
 
-    public async Task<CreateCategoryResponse> Handle(CreateCategoryRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<CreateCategoryCommandResponse> Handle(CreateCategoryCommandRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = await _createCategoryCommandValidator.Validate(command, currentUserContext, cancellationToken);
 

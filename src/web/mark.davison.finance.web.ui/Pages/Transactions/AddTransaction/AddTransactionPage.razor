@@ -114,7 +114,8 @@
     {
         await Task.WhenAll(
             _stateHelper.FetchAccountList(false), 
-            _stateHelper.FetchCategoryList()
+            _stateHelper.FetchCategoryList(),
+            _stateHelper.FetchTagList()
         );
     }
 }

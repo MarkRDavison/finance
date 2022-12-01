@@ -11,9 +11,9 @@ public class CreateCategoryCommandValidator : ICreateCategoryCommandValidator
         _httpRepository = httpRepository;
     }
 
-    public async Task<CreateCategoryResponse> Validate(CreateCategoryRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<CreateCategoryCommandResponse> Validate(CreateCategoryCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new CreateCategoryResponse { };
+        var response = new CreateCategoryCommandResponse { };
 
         var duplicate = await _httpRepository.GetEntityAsync<Category>(
             new QueryParameters

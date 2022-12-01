@@ -46,7 +46,7 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactionGroup()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Description = "Split description",
             Transactions =
@@ -55,7 +55,7 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
@@ -85,7 +85,7 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactionGroup_WithoutDescription_IfOnlyOneTransaction()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Description = "Split description",
             Transactions =
@@ -93,7 +93,7 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
@@ -122,14 +122,14 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactionJournal()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntitiesAsync(
@@ -164,7 +164,7 @@ public class CreateTransactionCommandProcessorTests
             ForeignCurrencyId = Guid.NewGuid(),
             Date = DateOnly.FromDateTime(DateTime.Today)
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             TransactionTypeId = TransactionConstants.Deposit,
             Transactions =
@@ -173,7 +173,7 @@ public class CreateTransactionCommandProcessorTests
                 createTransactionDto
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntitiesAsync(
@@ -213,14 +213,14 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactions()
     {
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntitiesAsync(
@@ -254,7 +254,7 @@ public class CreateTransactionCommandProcessorTests
             Amount = 100,
             ForeignAmount = 125
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
@@ -262,7 +262,7 @@ public class CreateTransactionCommandProcessorTests
                 transaction
             }
         };
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _httpRepository
             .Setup(_ => _.UpsertEntitiesAsync(
@@ -308,6 +308,169 @@ public class CreateTransactionCommandProcessorTests
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<Transaction>>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task Process_FetchesExistingTags_IfAnyUsedInNewTransactionCreation()
+    {
+        var transaction = new CreateTransactionDto
+        {
+            SourceAccountId = Guid.NewGuid(),
+            DestinationAccountId = Guid.NewGuid(),
+            CurrencyId = Guid.NewGuid(),
+            ForeignCurrencyId = Guid.NewGuid(),
+            Description = "transaction description",
+            Amount = 100,
+            ForeignAmount = 125,
+            Tags = new() { "Tag1", "Tag2" }
+        };
+        var request = new CreateTransactionCommandRequest
+        {
+            Transactions =
+            {
+                transaction
+            }
+        };
+        var response = new CreateTransactionCommandResponse();
+
+        _httpRepository
+            .Setup(_ => _.GetEntitiesAsync<Tag>(
+                It.IsAny<QueryParameters>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Tag>())
+            .Verifiable();
+
+        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+
+        _httpRepository
+            .Verify(_ =>
+                _.GetEntitiesAsync<Tag>(
+                    It.IsAny<QueryParameters>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task Process_SavesWithExistingTags_IfAnyUsedInNewTransactionCreation()
+    {
+        var tags = new List<Tag>() {
+            new Tag { Id = Guid.NewGuid(), Name = "Tag 1"},
+            new Tag { Id = Guid.NewGuid(), Name = "Tag 2"}
+        };
+        var transaction = new CreateTransactionDto
+        {
+            SourceAccountId = Guid.NewGuid(),
+            DestinationAccountId = Guid.NewGuid(),
+            CurrencyId = Guid.NewGuid(),
+            ForeignCurrencyId = Guid.NewGuid(),
+            Description = "transaction description",
+            Amount = 100,
+            ForeignAmount = 125,
+            Tags = tags.Select(_ => _.Name).ToList()
+        };
+        var request = new CreateTransactionCommandRequest
+        {
+            Transactions =
+            {
+                transaction
+            }
+        };
+        var response = new CreateTransactionCommandResponse();
+
+        _httpRepository
+            .Setup(_ => _.GetEntitiesAsync<Tag>(
+                It.IsAny<QueryParameters>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tags);
+
+        _httpRepository
+            .Setup(_ => _.UpsertEntitiesAsync(
+                It.IsAny<List<TransactionJournal>>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            {
+                Assert.AreEqual(1, e.Count);
+                Assert.IsNotNull(e[0].Tags);
+                Assert.AreEqual(tags.Count, e[0].Tags!.Count);
+                return e;
+            })
+            .Verifiable();
+
+        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+
+        _httpRepository
+            .Verify(
+                _ => _.UpsertEntitiesAsync(
+                    It.IsAny<List<TransactionJournal>>(),
+                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+    }
+
+    [TestMethod]
+    public async Task Process_SavesWithNewTags_IfAnyUsedInNewTransactionCreation()
+    {
+        const string tagName = "Tag 1";
+        var tags = new List<Tag>()
+        {
+        };
+        var transaction = new CreateTransactionDto
+        {
+            SourceAccountId = Guid.NewGuid(),
+            DestinationAccountId = Guid.NewGuid(),
+            CurrencyId = Guid.NewGuid(),
+            ForeignCurrencyId = Guid.NewGuid(),
+            Description = "transaction description",
+            Amount = 100,
+            ForeignAmount = 125,
+            Tags = new() { tagName }
+        };
+        var request = new CreateTransactionCommandRequest
+        {
+            Transactions =
+            {
+                transaction
+            }
+        };
+        var response = new CreateTransactionCommandResponse();
+
+        _httpRepository
+            .Setup(_ => _.GetEntitiesAsync<Tag>(
+                It.IsAny<QueryParameters>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(tags);
+
+        _httpRepository
+            .Setup(_ => _.UpsertEntitiesAsync(
+                It.IsAny<List<TransactionJournal>>(),
+                It.IsAny<HeaderParameters>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            {
+                Assert.AreEqual(1, e.Count);
+                Assert.IsNotNull(e[0].Tags);
+                Assert.AreEqual(1, e[0].Tags!.Count);
+                Assert.AreEqual(tagName, e[0].Tags![0].Name);
+                Assert.AreNotEqual(Guid.Empty, e[0].Tags![0].Id);
+
+                return e;
+            })
+            .Verifiable();
+
+        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+
+        _httpRepository
+            .Verify(
+                _ => _.UpsertEntitiesAsync(
+                    It.IsAny<List<TransactionJournal>>(),
                     It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);

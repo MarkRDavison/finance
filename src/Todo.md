@@ -1,7 +1,6 @@
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2020_06_07_063612_changes_for_v530.php
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2021_08_28_073733_user_groups.php
 
-FinanceRepository : BaseRepository <-- the base is defined in finance, not in mark.davison.common
 Dont validate audience/authority in integration tests, appsettings option?
 
 Per user options
@@ -31,6 +30,13 @@ https://github.com/apexcharts/Blazor-ApexCharts
 https://blazor.radzen.com/
 https://docs.microsoft.com/en-us/aspnet/core/blazor/javascript-interoperability/?view=aspnetcore-6.0#load-a-script-from-an-external-javascript-file-js-collocated-with-a-component
 https://antblazor.com/en-US/charts/introduce
+
+signalR/websocket to notify when state cache needs to be busted
+
+zui: date range control, given two DateOnly(?) etc
+zui: tag input on blur should submit in progress tag
+zui: auto complete on tag input
+	-	https://stackoverflow.com/questions/33985130/create-a-custom-autocomplete-list-for-an-input-field
 
 # Migrations
 

@@ -2,5 +2,5 @@
 
 public interface ICreateTransactionCommandValidator
 {
-    Task<CreateTransactionResponse> Validate(CreateTransactionRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
+    Task<CreateTransactionCommandResponse> Validate(CreateTransactionCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
 }

@@ -4,6 +4,6 @@ namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 
 public interface IUpsertAccountCommandValidator
 {
-    Task<UpsertAccountResponse> Validate(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
+    Task<UpsertAccountCommandResponse> Validate(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
 }
 

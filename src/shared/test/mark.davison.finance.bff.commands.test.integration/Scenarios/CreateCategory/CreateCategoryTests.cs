@@ -6,10 +6,10 @@ public class CreateCategoryTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task SavingNewCategory_Passes()
     {
-        var handler = GetRequiredService<ICommandHandler<CreateCategoryRequest, CreateCategoryResponse>>();
+        var handler = GetRequiredService<ICommandHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new CreateCategoryRequest { Id = Guid.NewGuid(), Name = "Category B" };
+        var request = new CreateCategoryCommandRequest { Id = Guid.NewGuid(), Name = "Category B" };
         var response = await handler.Handle(request, currentUserContext, CancellationToken.None);
 
         Assert.IsTrue(response.Success);
@@ -18,10 +18,10 @@ public class CreateCategoryTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task SavingNewCategoryWhereNameAlreadyExists_Fails()
     {
-        var handler = GetRequiredService<ICommandHandler<CreateCategoryRequest, CreateCategoryResponse>>();
+        var handler = GetRequiredService<ICommandHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new CreateCategoryRequest { Id = Guid.NewGuid(), Name = "Category B" };
+        var request = new CreateCategoryCommandRequest { Id = Guid.NewGuid(), Name = "Category B" };
         var response = await handler.Handle(request, currentUserContext, CancellationToken.None);
 
         Assert.IsTrue(response.Success);

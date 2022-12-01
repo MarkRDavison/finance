@@ -17,9 +17,9 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
         _httpRepository = httpRepository;
     }
 
-    public async Task<UpsertAccountResponse> Validate(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<UpsertAccountCommandResponse> Validate(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new UpsertAccountResponse
+        var response = new UpsertAccountCommandResponse
         {
             Success = true
         };
@@ -74,7 +74,7 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
         return response;
     }
 
-    internal async Task<bool> ValidateDuplicateAccount(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    internal async Task<bool> ValidateDuplicateAccount(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         if (string.IsNullOrEmpty(request.UpsertAccountDto.AccountNumber))
         {

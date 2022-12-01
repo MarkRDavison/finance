@@ -2,5 +2,5 @@
 
 public interface ICreateCategoryCommandValidator
 {
-    Task<CreateCategoryResponse> Validate(CreateCategoryRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
+    Task<CreateCategoryCommandResponse> Validate(CreateCategoryCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken);
 }

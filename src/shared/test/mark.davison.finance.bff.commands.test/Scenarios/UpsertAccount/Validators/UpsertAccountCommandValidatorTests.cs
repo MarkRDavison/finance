@@ -72,7 +72,7 @@ public class UpsertAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((AccountType?)null);
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -99,7 +99,7 @@ public class UpsertAccountCommandValidatorTests
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync((Currency?)null);
 
-        var request = new UpsertAccountRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid() } };
+        var request = new UpsertAccountCommandRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid() } };
         var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -112,7 +112,7 @@ public class UpsertAccountCommandValidatorTests
     public async Task Validate_WhereNameIsNotValid_ReturnsError()
     {
 
-        var request = new UpsertAccountRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
+        var request = new UpsertAccountCommandRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid(), CurrencyId = Guid.NewGuid() } };
         var response = await _upsertAccountCommandValidator.Validate(
             request,
             _currentUserContext.Object,
@@ -144,7 +144,7 @@ public class UpsertAccountCommandValidatorTests
                 }
             });
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -184,7 +184,7 @@ public class UpsertAccountCommandValidatorTests
                 }
             });
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -222,7 +222,7 @@ public class UpsertAccountCommandValidatorTests
                 }
             });
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -268,7 +268,7 @@ public class UpsertAccountCommandValidatorTests
                 }
             });
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -293,7 +293,7 @@ public class UpsertAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -314,7 +314,7 @@ public class UpsertAccountCommandValidatorTests
     [TestMethod]
     public async Task Validate_WhereOpeningBalanceSpecifiedButNotOpeningBalanceDate_ReturnsError()
     {
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {

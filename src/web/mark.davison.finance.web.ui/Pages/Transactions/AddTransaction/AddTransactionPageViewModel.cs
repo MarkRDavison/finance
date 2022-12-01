@@ -57,7 +57,8 @@ public class AddTransactionPageViewModel
                     CurrencyId = sourceTransactionAccount.CurrencyId,
                     ForeignCurrencyId = _.Model.ForeignCurrencyId == Guid.Empty ? null : _.Model.ForeignCurrencyId,
                     BillId = null,
-                    BudgetId = null
+                    BudgetId = null,
+                    Tags = _.Model.Tags
                 };
             }).ToList()
         };

@@ -1,6 +1,8 @@
 global using mark.davison.common.client.abstractions.Repository;
 global using mark.davison.common.client.abstractions.State;
 global using mark.davison.common.client.State;
+global using mark.davison.finance.models.dtos.Commands.CreateCategory;
+global using mark.davison.finance.models.dtos.Commands.CreateTag;
 global using mark.davison.finance.models.dtos.Commands.UpsertAccount;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.CategoryListQuery;
@@ -16,6 +18,9 @@ global using mark.davison.finance.web.features.Category.Create;
 global using mark.davison.finance.web.features.Category.Fetch;
 global using mark.davison.finance.web.features.Category.Update;
 global using mark.davison.finance.web.features.Lookup;
+global using mark.davison.finance.web.features.Tag;
+global using mark.davison.finance.web.features.Tag.Create;
+global using mark.davison.finance.web.features.Tag.Update;
 global using mark.davison.finance.web.features.Transaction;
 global using mark.davison.finance.web.features.Transaction.Create;
 global using mark.davison.finance.web.features.Transaction.QueryByAccount;

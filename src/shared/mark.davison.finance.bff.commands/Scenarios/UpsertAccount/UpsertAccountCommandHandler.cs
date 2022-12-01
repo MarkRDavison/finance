@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateAccount;
 
-public class UpsertAccountCommandHandler : ICommandHandler<UpsertAccountRequest, UpsertAccountResponse>
+public class UpsertAccountCommandHandler : ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>
 {
 
     private readonly IHttpRepository _httpRepository;
@@ -18,7 +18,7 @@ public class UpsertAccountCommandHandler : ICommandHandler<UpsertAccountRequest,
         _upsertAccountCommandProcessor = upsertAccountCommandProcessor;
     }
 
-    public async Task<UpsertAccountResponse> Handle(UpsertAccountRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<UpsertAccountCommandResponse> Handle(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = await _upsertAccountCommandValidator.Validate(request, currentUserContext, cancellationToken);
 

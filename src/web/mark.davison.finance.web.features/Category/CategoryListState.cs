@@ -6,9 +6,9 @@ public class CategoryListState : IState
     {
     }
 
-    public CategoryListState(IEnumerable<CategoryListItemDto> accounts)
+    public CategoryListState(IEnumerable<CategoryListItemDto> categories)
     {
-        Categories = accounts.ToList();
+        Categories = categories.ToList();
         LastModified = DateTime.Now;
     }
 

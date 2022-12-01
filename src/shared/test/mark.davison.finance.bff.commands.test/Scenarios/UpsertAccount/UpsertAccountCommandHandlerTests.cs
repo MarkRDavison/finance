@@ -25,10 +25,10 @@ public class UpsertAccountCommandHandlerTests
 
         _upsertAccountCommandValidatorMock
             .Setup(_ => _.Validate(
-                It.IsAny<UpsertAccountRequest>(),
+                It.IsAny<UpsertAccountCommandRequest>(),
                 _currentUserContextMock.Object,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UpsertAccountResponse
+            .ReturnsAsync(new UpsertAccountCommandResponse
             {
                 Success = true
             });
@@ -37,15 +37,15 @@ public class UpsertAccountCommandHandlerTests
     [TestMethod]
     public async Task WhenValidationFails_NonSuccessReponseIsReturned()
     {
-        var request = new UpsertAccountRequest { };
-        var validatorResponse = new UpsertAccountResponse
+        var request = new UpsertAccountCommandRequest { };
+        var validatorResponse = new UpsertAccountCommandResponse
         {
             Success = false
         };
 
         _upsertAccountCommandValidatorMock
             .Setup(_ => _.Validate(
-                It.IsAny<UpsertAccountRequest>(),
+                It.IsAny<UpsertAccountCommandRequest>(),
                 _currentUserContextMock.Object,
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(validatorResponse);

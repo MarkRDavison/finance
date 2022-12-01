@@ -12,7 +12,7 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountCommandRe
 
     public async Task<CreateAccountCommandResponse> Handle(CreateAccountCommandRequest command, CancellationToken cancellationToken)
     {
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -26,7 +26,7 @@ public class CreateAccountActionHandler : ICommandHandler<CreateAccountCommandRe
                 OpeningBalanceDate = command.OpeningBalanceDate
             }
         };
-        var response = await _repository.Post<UpsertAccountResponse, UpsertAccountRequest>(request, cancellationToken);
+        var response = await _repository.Post<UpsertAccountCommandResponse, UpsertAccountCommandRequest>(request, cancellationToken);
         if (!response.Success)
         {
             return new CreateAccountCommandResponse { Success = false };
