@@ -2,5 +2,5 @@
 
 public interface ICreateTransactionCommandProcessor
 {
-    Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken);
+    Task<CreateTransactionCommandResponse> Process(CreateTransactionCommandRequest request, CreateTransactionCommandResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken);
 }

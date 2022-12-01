@@ -2,9 +2,9 @@
 
 public interface IUpsertAccountCommandProcessor
 {
-    Task<UpsertAccountResponse> Process(
-        UpsertAccountRequest request,
-        UpsertAccountResponse response,
+    Task<UpsertAccountCommandResponse> Process(
+        UpsertAccountCommandRequest request,
+        UpsertAccountCommandResponse response,
         ICurrentUserContext currentUserContext,
         IHttpRepository httpRepository,
         CancellationToken cancellationToken);

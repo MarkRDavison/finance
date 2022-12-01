@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.models.dtos.Commands.CreateTransaction;
 
-public class CreateTransactionResponse // TODO: Base response class?
+public class CreateTransactionCommandResponse // TODO: Base response class?
 {
     public bool Success { get; set; }
     public List<string> Error { get; set; } = new();

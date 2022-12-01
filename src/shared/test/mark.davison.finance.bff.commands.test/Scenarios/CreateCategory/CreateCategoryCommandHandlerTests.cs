@@ -24,15 +24,15 @@ public class CreateCategoryCommandHandlerTests
     [TestMethod]
     public async Task WhenValidationFails_NonSuccessReponseIsReturned()
     {
-        var request = new CreateCategoryRequest { };
-        var validatorResponse = new CreateCategoryResponse
+        var request = new CreateCategoryCommandRequest { };
+        var validatorResponse = new CreateCategoryCommandResponse
         {
             Success = false
         };
 
         _createCategoryCommandValidatorMock
             .Setup(_ => _.Validate(
-                It.IsAny<CreateCategoryRequest>(),
+                It.IsAny<CreateCategoryCommandRequest>(),
                 _currentUserContextMock.Object,
                 It.IsAny<CancellationToken>()))
         .ReturnsAsync(validatorResponse);

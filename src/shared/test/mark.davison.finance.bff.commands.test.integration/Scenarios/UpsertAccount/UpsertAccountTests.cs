@@ -11,10 +11,10 @@ public class UpsertAccountTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task AddingAccountWithoutOpeningBalance_Works()
     {
-        var handler = GetRequiredService<ICommandHandler<UpsertAccountRequest, UpsertAccountResponse>>();
+        var handler = GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -40,10 +40,10 @@ public class UpsertAccountTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task AddingAccountWithOpeningBalance_Works()
     {
-        var handler = GetRequiredService<ICommandHandler<UpsertAccountRequest, UpsertAccountResponse>>();
+        var handler = GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -78,10 +78,10 @@ public class UpsertAccountTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task AddingAccountWithoutOpeningBalance_ThenUpsertingNewOpeningBalance_Works()
     {
-        var handler = GetRequiredService<ICommandHandler<UpsertAccountRequest, UpsertAccountResponse>>();
+        var handler = GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -101,7 +101,7 @@ public class UpsertAccountTests : CommandIntegrationTestBase
         var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
         Assert.IsNotNull(account);
 
-        request = new UpsertAccountRequest
+        request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -133,10 +133,10 @@ public class UpsertAccountTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task AddingAccountWithOpeningBalance_ThenRemovingIt_Works()
     {
-        var handler = GetRequiredService<ICommandHandler<UpsertAccountRequest, UpsertAccountResponse>>();
+        var handler = GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -167,7 +167,7 @@ public class UpsertAccountTests : CommandIntegrationTestBase
             CancellationToken.None);
         Assert.IsNotNull(transactionJournal);
 
-        request = new UpsertAccountRequest
+        request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {

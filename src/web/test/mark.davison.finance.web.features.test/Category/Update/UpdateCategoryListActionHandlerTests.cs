@@ -16,7 +16,7 @@ public class UpdateCategoryListActionHandlerTests
     [TestMethod]
     public async Task Handle_InvokesRepostoryAndStateStore()
     {
-        var accountListItems = new List<CategoryListItemDto> {
+        var items = new List<CategoryListItemDto> {
             new() { Id = Guid.NewGuid() },
             new() { Id = Guid.NewGuid() },
             new() { Id = Guid.NewGuid() },
@@ -33,11 +33,11 @@ public class UpdateCategoryListActionHandlerTests
                     It.IsAny<CategoryListState>()))
             .Callback((CategoryListState newState) =>
             {
-                Assert.AreEqual(accountListItems.Count, newState.Categories.Count());
+                Assert.AreEqual(items.Count, newState.Categories.Count());
             })
             .Verifiable();
 
-        await _handler.Handle(new UpdateCategoryListAction(accountListItems), CancellationToken.None);
+        await _handler.Handle(new UpdateCategoryListAction(items), CancellationToken.None);
 
         _stateStore
             .Verify(_ => _

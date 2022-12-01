@@ -15,8 +15,8 @@ public class CreateDepositTransactionValidatorStrategyTests
     [TestMethod]
     public async Task ValidateTransactionGroup_DoesNothing()
     {
-        var request = new CreateTransactionRequest();
-        var response = new CreateTransactionResponse();
+        var request = new CreateTransactionCommandRequest();
+        var response = new CreateTransactionCommandResponse();
 
         await _strategy.ValidateTransactionGroup(request, response, _createTransctionValidationContext.Object);
 
@@ -44,7 +44,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             DestinationAccountId = destinationAccount.Id,
             SourceAccountId = sourceAccount.Id
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
@@ -52,7 +52,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -93,7 +93,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             DestinationAccountId = destinationAccount.Id,
             SourceAccountId = sourceAccount.Id
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
@@ -101,7 +101,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -141,7 +141,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             SourceAccountId = sourceAccount.Id,
             DestinationAccountId = destinationAccount.Id
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
@@ -149,7 +149,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -190,7 +190,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             SourceAccountId = sourceAccount.Id,
             DestinationAccountId = destinationAccount.Id
         };
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             Transactions =
             {
@@ -198,7 +198,7 @@ public class CreateDepositTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))

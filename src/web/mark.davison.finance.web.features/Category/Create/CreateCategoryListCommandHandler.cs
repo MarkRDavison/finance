@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateCategory;
-
-namespace mark.davison.finance.web.features.Category.Create;
+﻿namespace mark.davison.finance.web.features.Category.Create;
 
 public class CreateCategoryListCommandHandler : ICommandHandler<CreateCategoryListCommand, CreateCategoryListCommandResponse>
 {
@@ -14,13 +12,13 @@ public class CreateCategoryListCommandHandler : ICommandHandler<CreateCategoryLi
 
     public async Task<CreateCategoryListCommandResponse> Handle(CreateCategoryListCommand command, CancellationToken cancellationToken)
     {
-        var request = new CreateCategoryRequest
+        var request = new CreateCategoryCommandRequest
         {
             Id = Guid.NewGuid(),
             Name = command.Name
         };
 
-        var response = await _repository.Post<CreateCategoryResponse, CreateCategoryRequest>(request, cancellationToken);
+        var response = await _repository.Post<CreateCategoryCommandResponse, CreateCategoryCommandRequest>(request, cancellationToken);
         if (!response.Success)
         {
             return new CreateCategoryListCommandResponse { Success = false };

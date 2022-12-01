@@ -6,6 +6,7 @@ public interface IStateHelper
 
     Task FetchAccountList(bool showActive);
     Task FetchCategoryList();
+    Task FetchTagList();
     Task FetchAccountInformation(Guid accountId);
 
     Task FetchAccountTypeDashboardSummaryData(params Guid[] accountTypeIds);

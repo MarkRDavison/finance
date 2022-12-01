@@ -19,7 +19,7 @@ public class CreateCategoryCommandValidatorTests
     [TestMethod]
     public async Task Validate_Passes_WhenNoDuplicateCategoryExists()
     {
-        var request = new CreateCategoryRequest
+        var request = new CreateCategoryCommandRequest
         {
             Id = Guid.NewGuid(),
             Name = "Category Name"
@@ -50,7 +50,7 @@ public class CreateCategoryCommandValidatorTests
     [TestMethod]
     public async Task Validate_Fails_WhenDuplicateCategoryExistsForCurrentUser()
     {
-        var request = new CreateCategoryRequest
+        var request = new CreateCategoryCommandRequest
         {
             Id = Guid.NewGuid(),
             Name = "Category Name"
@@ -87,7 +87,7 @@ public class CreateCategoryCommandValidatorTests
     [TestMethod]
     public async Task Validate_Passes_WhenDuplicateCategoryExistsForDifferentUser()
     {
-        var request = new CreateCategoryRequest
+        var request = new CreateCategoryCommandRequest
         {
             Id = Guid.NewGuid(),
             Name = "Category Name"

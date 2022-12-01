@@ -32,7 +32,7 @@ public class AddTransactionFormTests : TestBase
             .Add(_ => _.ViewModel, _viewModel));
 
         var inputs = cut.FindAll(".z-form-control");
-        Assert.AreEqual(8, inputs.Count());
+        Assert.AreEqual(9, inputs.Count());
     }
 
     [TestMethod]

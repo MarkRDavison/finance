@@ -12,11 +12,10 @@
 @code {
 
     [Parameter, EditorRequired]
-    public AddCategoryFormViewModel ViewModel { get; set; } = default!;
+    public required AddCategoryFormViewModel ViewModel { get; set; }
 
     protected override void OnInitialized()
     {
         ViewModel.CategoryListState = GetState<CategoryListState>();
-        base.OnInitialized();
     }
 }

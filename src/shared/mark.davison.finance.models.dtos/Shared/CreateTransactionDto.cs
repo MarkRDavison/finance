@@ -14,4 +14,5 @@ public class CreateTransactionDto
     public Guid? BudgetId { get; set; }
     public Guid? CategoryId { get; set; }
     public Guid? BillId { get; set; }
+    public List<string> Tags { get; set; } = new();
 }

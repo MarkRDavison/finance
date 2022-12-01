@@ -2,11 +2,11 @@
 
 public class LookupState : IState
 {
-    public LookupState()
+    public LookupState() : this(
+        Enumerable.Empty<AccountTypeDto>(),
+        Enumerable.Empty<CurrencyDto>(),
+        Enumerable.Empty<TransactionTypeDto>())
     {
-        AccountTypes = Enumerable.Empty<AccountTypeDto>();
-        Currencies = Enumerable.Empty<CurrencyDto>();
-        TransactionTypes = Enumerable.Empty<TransactionTypeDto>();
     }
 
     public LookupState(
@@ -21,13 +21,16 @@ public class LookupState : IState
     }
 
 
-    public IEnumerable<AccountTypeDto> AccountTypes { get; init; }
+    public IEnumerable<AccountTypeDto> AccountTypes { get; private set; }
 
-    public IEnumerable<CurrencyDto> Currencies { get; init; }
+    public IEnumerable<CurrencyDto> Currencies { get; private set; }
 
-    public IEnumerable<TransactionTypeDto> TransactionTypes { get; init; }
+    public IEnumerable<TransactionTypeDto> TransactionTypes { get; private set; }
 
     public void Initialise()
     {
+        AccountTypes = Enumerable.Empty<AccountTypeDto>();
+        Currencies = Enumerable.Empty<CurrencyDto>();
+        TransactionTypes = Enumerable.Empty<TransactionTypeDto>();
     }
 }

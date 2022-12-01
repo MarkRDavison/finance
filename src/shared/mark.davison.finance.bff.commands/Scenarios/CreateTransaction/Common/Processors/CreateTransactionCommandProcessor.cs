@@ -2,7 +2,7 @@
 
 public class CreateTransactionCommandProcessor : ICreateTransactionCommandProcessor
 {
-    public async Task<CreateTransactionResponse> Process(CreateTransactionRequest request, CreateTransactionResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken)
+    public async Task<CreateTransactionCommandResponse> Process(CreateTransactionCommandRequest request, CreateTransactionCommandResponse response, ICurrentUserContext currentUserContext, IHttpRepository httpRepository, CancellationToken cancellationToken)
     {
         var headerParameters = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
         var transactionGroup = new TransactionGroup
@@ -16,6 +16,9 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
         int order = 0;
         var journals = new List<TransactionJournal>();
         var transactions = new List<Transaction>();
+
+        var tags = await GetTags(request, headerParameters, currentUserContext, httpRepository, cancellationToken);
+
         foreach (var transaction in request.Transactions)
         {
             var transactionJournal = new TransactionJournal
@@ -29,7 +32,8 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
                 ForeignCurrencyId = transaction.ForeignCurrencyId,
                 CategoryId = transaction.CategoryId,
                 Order = order++,
-                Date = transaction.Date
+                Date = transaction.Date,
+                Tags = tags.Where(_ => transaction.Tags.Contains(_.Name)).ToList(),
             };
 
             var sourceTransaction = new Transaction
@@ -80,5 +84,34 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
         response.Transactions.AddRange(transactions.Select(_ => new TransactionDto { }));
 
         return response;
+    }
+
+    private async Task<List<Tag>> GetTags(
+        CreateTransactionCommandRequest request,
+        HeaderParameters headerParameters,
+        ICurrentUserContext currentUserContext,
+        IHttpRepository httpRepository,
+        CancellationToken cancellationToken)
+    {
+        var tags = new List<Tag>();
+        var tagNames = request.Transactions.SelectMany(_ => _.Tags).ToHashSet();
+        if (tagNames.Any())
+        {
+            var tagQueryParams = new QueryParameters();
+            tagQueryParams.Where<Tag>(_ => _.UserId == currentUserContext.CurrentUser.Id && tagNames.Contains(_.Name));
+            tags = await httpRepository.GetEntitiesAsync<Tag>(tagQueryParams, headerParameters, cancellationToken);
+
+            var newTags = tagNames.Where(_ => tags.All(__ => __.Name != _)).ToList();
+            foreach (var newTag in newTags)
+            {
+                tags.Add(new Tag
+                {
+                    Id = Guid.NewGuid(),
+                    Name = newTag
+                });
+            }
+        }
+
+        return tags;
     }
 }

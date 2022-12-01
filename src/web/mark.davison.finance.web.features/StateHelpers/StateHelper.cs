@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.web.features.Dashboard;
-using mark.davison.finance.web.features.Dashboard.QueryAccountSummary;
-
-namespace mark.davison.finance.web.features.StateHelpers;
+﻿namespace mark.davison.finance.web.features.StateHelpers;
 
 public class StateHelper : IStateHelper
 {
@@ -72,6 +69,14 @@ public class StateHelper : IStateHelper
         if (RequiresRefetch(state.Instance.LastModified, DefaultRefetchTimeSpan))
         {
             await _dispatcher.Dispatch(new FetchCategoryListAction(), CancellationToken.None);
+        }
+    }
+    public async Task FetchTagList()
+    {
+        var state = _stateStore.GetState<TagListState>();
+        if (RequiresRefetch(state.Instance.LastModified, DefaultRefetchTimeSpan))
+        {
+            await _dispatcher.Dispatch(new FetchTagListAction(), CancellationToken.None);
         }
     }
 

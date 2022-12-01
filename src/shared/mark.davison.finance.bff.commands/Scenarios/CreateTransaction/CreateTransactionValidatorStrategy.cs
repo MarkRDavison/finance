@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
 
 public abstract class CreateTransactionValidatorStrategy : ICreateTransactionValidatorStrategy
 {
@@ -8,7 +6,7 @@ public abstract class CreateTransactionValidatorStrategy : ICreateTransactionVal
     public const string VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE = "INVALID_SOURCE_ACCOUNT_TYPE";
     public const string VALIDATION_INVALID_ACCOUNT_PAIR = "INVALID_ACCOUNT_PAIR";
 
-    public virtual async Task ValidateTranasction(CreateTransactionDto transaction, CreateTransactionResponse response, ICreateTransctionValidationContext context)
+    public virtual async Task ValidateTranasction(CreateTransactionDto transaction, CreateTransactionCommandResponse response, ICreateTransctionValidationContext context)
     {
         var sourceAccount = await context.GetAccountById(transaction.SourceAccountId, CancellationToken.None) ?? throw new NotImplementedException("Need to handle creating new accounts?");
         var destinationAccount = await context.GetAccountById(transaction.DestinationAccountId, CancellationToken.None) ?? throw new NotImplementedException("Need to handle creating new accounts?");
@@ -30,9 +28,10 @@ public abstract class CreateTransactionValidatorStrategy : ICreateTransactionVal
         {
             response.Error.Add(VALIDATION_INVALID_ACCOUNT_PAIR);
         }
+        // TODO: Validate that no duplicate tags are passed, warning?
     }
 
-    public virtual Task ValidateTransactionGroup(CreateTransactionRequest request, CreateTransactionResponse response, ICreateTransctionValidationContext context)
+    public virtual Task ValidateTransactionGroup(CreateTransactionCommandRequest request, CreateTransactionCommandResponse response, ICreateTransctionValidationContext context)
     {
         return Task.FromResult(context);
     }

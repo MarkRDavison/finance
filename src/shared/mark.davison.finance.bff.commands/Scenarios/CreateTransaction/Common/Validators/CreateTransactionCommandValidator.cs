@@ -10,6 +10,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
     public const string VALIDATION_CATEGORY_ID = "INVALID_CATEGORYID${0}";
     public const string VALIDATION_DATE = "INVALID_DATE${0}";
     public const string VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT = "DUP_ACT${0}";
+    public const string VALIDATION_DUPLICATE_TAGS = "DUP_ACT${0}";
 
     private readonly IHttpRepository _httpRepository;
     private readonly ICreateTransctionValidationContext _createTransctionValidationContext;
@@ -25,9 +26,9 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
         _createTransactionValidatorStrategyFactory = createTransactionValidatorStrategyFactory;
     }
 
-    public async Task<CreateTransactionResponse> Validate(CreateTransactionRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<CreateTransactionCommandResponse> Validate(CreateTransactionCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new CreateTransactionResponse();
+        var response = new CreateTransactionCommandResponse();
 
         var transctionTypeValidator = _createTransactionValidatorStrategyFactory.CreateStrategy(request.TransactionTypeId);
 
@@ -54,7 +55,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
         return response;
     }
 
-    private async Task ValidateTransaction(CreateTransactionResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    private async Task ValidateTransaction(CreateTransactionCommandResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
@@ -87,6 +88,15 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
             transaction.ForeignCurrencyId.Value == transaction.CurrencyId)
         {
             response.Error.Add(string.Format(VALIDATION_DUPLICATE_CURRENCY, transaction.Id));
+        }
+
+        var duplicates = transaction.Tags.GroupBy(_ => _)
+              .Where(_ => _.Count() > 1)
+              .Select(_ => _.Key)
+              .ToList();
+        if (duplicates.Any())
+        {
+            response.Warning.Add(string.Format(VALIDATION_DUPLICATE_TAGS, string.Join(",", duplicates)));
         }
     }
 }

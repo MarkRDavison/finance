@@ -2,18 +2,18 @@
 
 public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
 {
-    private readonly ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> _createTransactionHandler;
+    private readonly ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> _createTransactionHandler;
 
     public UpsertAccountCommandProcessor(
-        ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> createTransactionHandler
+        ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> createTransactionHandler
     )
     {
         _createTransactionHandler = createTransactionHandler;
     }
 
-    public async Task<UpsertAccountResponse> Process(
-        UpsertAccountRequest request,
-        UpsertAccountResponse response,
+    public async Task<UpsertAccountCommandResponse> Process(
+        UpsertAccountCommandRequest request,
+        UpsertAccountCommandResponse response,
         ICurrentUserContext currentUserContext,
         IHttpRepository httpRepository,
         CancellationToken cancellationToken)

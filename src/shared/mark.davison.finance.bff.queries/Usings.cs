@@ -6,6 +6,7 @@ global using mark.davison.finance.models.dtos.Queries.AccountDashboardSummaryQue
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.CategoryListQuery;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
+global using mark.davison.finance.models.dtos.Queries.TagListQuery;
 global using mark.davison.finance.models.dtos.Queries.TransactionByAccountQuery;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;

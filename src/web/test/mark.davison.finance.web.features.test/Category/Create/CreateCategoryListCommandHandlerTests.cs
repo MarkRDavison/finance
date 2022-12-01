@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateCategory;
-
-namespace mark.davison.finance.web.features.test.Category.Create;
+﻿namespace mark.davison.finance.web.features.test.Category.Create;
 
 [TestClass]
 public class CreateCategoryListCommandHandlerTests
@@ -18,7 +16,7 @@ public class CreateCategoryListCommandHandlerTests
     [TestMethod]
     public async Task Handle_InvokesRepostory()
     {
-        var accountListItems = new List<CategoryListItemDto> {
+        var items = new List<CategoryListItemDto> {
             new() { Id = Guid.NewGuid() },
             new() { Id = Guid.NewGuid() },
             new() { Id = Guid.NewGuid() },
@@ -27,10 +25,10 @@ public class CreateCategoryListCommandHandlerTests
 
         _repository
             .Setup(_ => _
-                .Post<CreateCategoryResponse, CreateCategoryRequest>(
-                    It.IsAny<CreateCategoryRequest>(),
+                .Post<CreateCategoryCommandResponse, CreateCategoryCommandRequest>(
+                    It.IsAny<CreateCategoryCommandRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateCategoryRequest req, CancellationToken cancellationToken) => new CreateCategoryResponse()
+            .ReturnsAsync((CreateCategoryCommandRequest req, CancellationToken cancellationToken) => new CreateCategoryCommandResponse()
             {
                 Success = true
             })
@@ -42,8 +40,8 @@ public class CreateCategoryListCommandHandlerTests
 
         _repository
             .Verify(_ => _
-                .Post<CreateCategoryResponse, CreateCategoryRequest>(
-                    It.IsAny<CreateCategoryRequest>(),
+                .Post<CreateCategoryCommandResponse, CreateCategoryCommandRequest>(
+                    It.IsAny<CreateCategoryCommandRequest>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }

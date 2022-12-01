@@ -20,6 +20,7 @@ public class AddTransactionPageTests : TestBase
 
 		_stateHelper.Setup(_ => _.FetchAccountList(It.IsAny<bool>())).Returns(Task.CompletedTask);
 		_stateHelper.Setup(_ => _.FetchCategoryList()).Returns(Task.CompletedTask);
+		_stateHelper.Setup(_ => _.FetchTagList()).Returns(Task.CompletedTask);
 	}
 
 	[TestMethod]

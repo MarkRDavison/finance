@@ -29,10 +29,10 @@ public class CreateTransactionTests : CommandIntegrationTestBase
     [TestMethod]
     public async Task SimpleDepositWorks()
     {
-        var handler = GetRequiredService<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>>();
+        var handler = GetRequiredService<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new CreateTransactionRequest
+        var request = new CreateTransactionCommandRequest
         {
             TransactionTypeId = TransactionConstants.Deposit,
             Transactions =

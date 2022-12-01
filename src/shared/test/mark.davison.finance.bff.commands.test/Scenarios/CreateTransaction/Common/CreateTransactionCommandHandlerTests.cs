@@ -23,10 +23,10 @@ public class CreateTransactionCommandHandlerTests
 
         _validator
             .Setup(_ => _.Validate(
-                It.IsAny<CreateTransactionRequest>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateTransactionResponse
+            .ReturnsAsync(new CreateTransactionCommandResponse
             {
                 Success = true
             });
@@ -35,14 +35,14 @@ public class CreateTransactionCommandHandlerTests
     [TestMethod]
     public async Task Handle_InvokesValidator()
     {
-        var command = new CreateTransactionRequest();
+        var command = new CreateTransactionCommandRequest();
 
         _validator
             .Setup(_ => _.Validate(
                 command,
                 _currentUserContext.Object,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateTransactionResponse
+            .ReturnsAsync(new CreateTransactionCommandResponse
             {
                 Success = false
             })
@@ -62,16 +62,16 @@ public class CreateTransactionCommandHandlerTests
     [TestMethod]
     public async Task Handle_InvokesProcessor_WhenValidationPasses()
     {
-        var command = new CreateTransactionRequest();
+        var command = new CreateTransactionCommandRequest();
 
         _processor
             .Setup(_ => _.Process(
                 command,
-                It.IsAny<CreateTransactionResponse>(),
+                It.IsAny<CreateTransactionCommandResponse>(),
                 _currentUserContext.Object,
                 _httpRepository.Object,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateTransactionResponse())
+            .ReturnsAsync(new CreateTransactionCommandResponse())
             .Verifiable();
 
         await _handler.Handle(command, _currentUserContext.Object, CancellationToken.None);
@@ -80,7 +80,7 @@ public class CreateTransactionCommandHandlerTests
             .Verify(
                 _ => _.Process(
                     command,
-                    It.IsAny<CreateTransactionResponse>(),
+                    It.IsAny<CreateTransactionCommandResponse>(),
                     _currentUserContext.Object,
                 _httpRepository.Object,
                     It.IsAny<CancellationToken>()),

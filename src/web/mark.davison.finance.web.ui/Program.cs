@@ -16,8 +16,11 @@ builder.Services.AddSingleton<IClientHttpRepository>(_ => new FinanceClientHttpR
 builder.Services.UseFinanceWebServices();
 builder.Services.UseState();
 builder.Services.UseCQRS(typeof(Program), typeof(FeaturesRootType));
+
+// TODO: Interface/pattern to auto register these
 builder.Services.AddTransient<EditAccountViewModel>();
 builder.Services.AddTransient<AddCategoryModalViewModal>();
 builder.Services.AddTransient<AddTransactionPageViewModel>();
+builder.Services.AddTransient<AddTagModalViewModel>();
 
 await builder.Build().RunAsync();

@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
 
-public class CreateTransactionCommandHandler : ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>
+public class CreateTransactionCommandHandler : ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>
 {
     private readonly IHttpRepository _httpRepository;
     private readonly ICreateTransactionCommandValidator _validator;
@@ -17,7 +17,7 @@ public class CreateTransactionCommandHandler : ICommandHandler<CreateTransaction
         _processor = processor;
     }
 
-    public async Task<CreateTransactionResponse> Handle(CreateTransactionRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<CreateTransactionCommandResponse> Handle(CreateTransactionCommandRequest command, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = await _validator.Validate(command, currentUserContext, cancellationToken);
 

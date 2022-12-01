@@ -1216,6 +1216,12 @@ namespace mark.davison.finance.migrations.postgresql.Migrations
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime?>("MaxDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("MinDate")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)

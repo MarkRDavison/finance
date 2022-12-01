@@ -6,6 +6,7 @@ global using mark.davison.finance.accounting.constants;
 global using mark.davison.finance.accounting.rules.Account;
 global using mark.davison.finance.bff.commands.Scenarios.CreateAccount.Validators;
 global using mark.davison.finance.bff.commands.Scenarios.CreateCategory.Validators;
+global using mark.davison.finance.bff.commands.Scenarios.CreateTag.Validators;
 global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
 global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Processors;
 global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Validators;
@@ -15,6 +16,7 @@ global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Valid
 global using mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Withdrawal;
 global using mark.davison.finance.bff.commands.Scenarios.UpsertAccount.Processors;
 global using mark.davison.finance.models.dtos.Commands.CreateCategory;
+global using mark.davison.finance.models.dtos.Commands.CreateTag;
 global using mark.davison.finance.models.dtos.Commands.CreateTransaction;
 global using mark.davison.finance.models.dtos.Commands.UpsertAccount;
 global using mark.davison.finance.models.dtos.Shared;

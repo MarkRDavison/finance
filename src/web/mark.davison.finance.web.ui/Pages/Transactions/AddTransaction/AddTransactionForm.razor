@@ -69,6 +69,13 @@
         Label="Category"
         Items="@_categoryItems"
         @bind-Value="ViewModel.Model.CategoryId" />
+
+    <TagInput 
+        Width="100%"
+        Id="@($"{Id}_Tags")"
+        IsLabelDisplay="true"
+        Label="Tags"
+        @bind-Value="ViewModel.Model.Tags"/>
 </Form>
 
 @code {
@@ -108,20 +115,20 @@
         .ToList();
 
     [Parameter, EditorRequired]
-    public string Id { get; set; } = default!;
+    public required string Id { get; set; }
 
     [Parameter, EditorRequired]
-    public Guid TransactionType { get; set; }
+    public required Guid TransactionType { get; set; }
 
     [Parameter, EditorRequired]
-    public AddTransactionFormViewModel ViewModel { get; set; } = default!;
+    public required AddTransactionFormViewModel ViewModel { get; set; }
 
     [Parameter, EditorRequired]
-    public LookupState LookupState { get; set; } = default!;
+    public required LookupState LookupState { get; set; }
 
     [Parameter, EditorRequired]
-    public AccountListState AccountListState { get; set; } = default!;
+    public required AccountListState AccountListState { get; set; }
 
     [Parameter, EditorRequired]
-    public CategoryListState CategoryListState { get; set; } = default!;
+    public required CategoryListState CategoryListState { get; set; }
 }

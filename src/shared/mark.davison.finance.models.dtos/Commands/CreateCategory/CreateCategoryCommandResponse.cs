@@ -1,6 +1,6 @@
-﻿namespace mark.davison.finance.models.dtos.Commands.UpsertAccount;
+﻿namespace mark.davison.finance.models.dtos.Commands.CreateCategory;
 
-public class UpsertAccountResponse // TODO: Base response class?
+public class CreateCategoryCommandResponse // TODO: Common base class
 {
     public bool Success { get; set; }
     public List<string> Error { get; set; } = new();

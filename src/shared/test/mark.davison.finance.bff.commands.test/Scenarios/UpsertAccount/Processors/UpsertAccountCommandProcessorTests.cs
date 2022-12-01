@@ -5,7 +5,7 @@ public class UpsertAccountCommandProcessorTests
 {
     private readonly Mock<IHttpRepository> _httpRepositoryMock;
     private readonly Mock<ICurrentUserContext> _currentUserContextMock;
-    private readonly Mock<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>> _createTransactionHandlerMock;
+    private readonly Mock<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>> _createTransactionHandlerMock;
     private readonly UpsertAccountCommandProcessor _upsertAccountCommandProcessor;
 
     public UpsertAccountCommandProcessorTests()
@@ -67,12 +67,12 @@ public class UpsertAccountCommandProcessorTests
             })
             .Verifiable();
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto()
         };
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(
@@ -94,7 +94,7 @@ public class UpsertAccountCommandProcessorTests
     [TestMethod]
     public async Task WhenOpeningBalanceSpecified_InitialBalanceTransactionAreCreated()
     {
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -120,10 +120,10 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionRequest>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) =>
+            .ReturnsAsync((CreateTransactionCommandRequest r, ICurrentUserContext uc, CancellationToken c) =>
             {
                 Assert.AreEqual(TransactionConstants.OpeningBalance, r.TransactionTypeId);
                 Assert.AreEqual(1, r.Transactions.Count);
@@ -142,11 +142,11 @@ public class UpsertAccountCommandProcessorTests
                 Assert.IsNull(transaction.BudgetId);
                 Assert.IsNull(transaction.CategoryId);
                 Assert.IsNull(transaction.BillId);
-                return new CreateTransactionResponse();
+                return new CreateTransactionCommandResponse();
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(
@@ -160,7 +160,7 @@ public class UpsertAccountCommandProcessorTests
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionRequest>(),
+                    It.IsAny<CreateTransactionCommandRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -169,7 +169,7 @@ public class UpsertAccountCommandProcessorTests
     [TestMethod]
     public async Task WhenOpeningBalanceNotSpecified_InitialBalanceTransactionNotCreated()
     {
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -193,12 +193,12 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionRequest>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(
@@ -212,7 +212,7 @@ public class UpsertAccountCommandProcessorTests
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionRequest>(),
+                    It.IsAny<CreateTransactionCommandRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
@@ -226,7 +226,7 @@ public class UpsertAccountCommandProcessorTests
             Id = Guid.NewGuid(),
             CurrencyId = Currency.NZD
         };
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -256,13 +256,13 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionRequest>(),
+                It.IsAny<CreateTransactionCommandRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionResponse())
+            .ReturnsAsync((CreateTransactionCommandRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionCommandResponse())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(
@@ -275,7 +275,7 @@ public class UpsertAccountCommandProcessorTests
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionRequest>(),
+                    It.IsAny<CreateTransactionCommandRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -313,7 +313,7 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -366,7 +366,7 @@ public class UpsertAccountCommandProcessorTests
             .ReturnsAsync(true)
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
 
         _httpRepositoryMock
@@ -426,7 +426,7 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -486,7 +486,7 @@ public class UpsertAccountCommandProcessorTests
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(
@@ -540,7 +540,7 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        var request = new UpsertAccountRequest
+        var request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
@@ -587,7 +587,7 @@ public class UpsertAccountCommandProcessorTests
             .ReturnsAsync(new TransactionJournal())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
 
         _httpRepositoryMock
             .Verify(

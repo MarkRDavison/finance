@@ -1211,6 +1211,12 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("MaxDate")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("MinDate")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)

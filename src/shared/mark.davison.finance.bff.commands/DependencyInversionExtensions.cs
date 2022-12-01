@@ -10,6 +10,7 @@ public static class DependencyInversionExtensions
         services.AddTransient<IUpsertAccountCommandValidator, UpsertAccountCommandValidator>();
         services.AddTransient<IUpsertAccountCommandProcessor, UpsertAccountCommandProcessor>();
         services.AddTransient<ICreateCategoryCommandValidator, CreateCategoryCommandValidator>();
+        services.AddTransient<ICreateTagCommandValidator, CreateTagCommandValidator>();
         services.AddTransient<ICreateTransactionCommandValidator, CreateTransactionCommandValidator>();
         services.AddTransient<ICreateTransactionCommandProcessor, CreateTransactionCommandProcessor>();
         services.AddTransient<ICreateTransactionValidatorStrategyFactory, CreateTransactionValidatorStrategyFactory>();
