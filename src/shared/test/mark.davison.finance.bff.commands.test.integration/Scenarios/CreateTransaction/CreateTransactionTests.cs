@@ -1,29 +1,11 @@
 ﻿namespace mark.davison.finance.bff.commands.test.integration.Scenarios.CreateTransaction;
 
 [TestClass]
-public class CreateTransactionTests : CommandIntegrationTestBase
+public class CreateTransactionTests : CQRSIntegrationTestBase
 {
-    private readonly Guid _assetAccountId = new Guid("704f2e50-51e4-45a6-b05e-7f50df710d44");
-    private readonly Guid _revenueAccountId = new Guid("ee97f134-e098-47f1-a6f5-200b3d558cd9");
-
-    protected override async Task SeedData(IRepository repository)
+    protected override async Task SeedTestData()
     {
-        await base.SeedData(repository);
-
-        await repository.UpsertEntitiesAsync(new List<Account> {
-            new Account
-            {
-                Id = _assetAccountId,
-                AccountTypeId = AccountConstants.Asset,
-                CurrencyId = Currency.NZD
-            },
-            new Account
-            {
-                Id = _revenueAccountId,
-                AccountTypeId = AccountConstants.Revenue,
-                CurrencyId = Currency.NZD
-            }
-        }, CancellationToken.None);
+        await GetRequiredService<AccountSeeder>().CreateStandardAccounts();
     }
 
     [TestMethod]
@@ -39,8 +21,8 @@ public class CreateTransactionTests : CommandIntegrationTestBase
             {
                 new CreateTransactionDto
                 {
-                    SourceAccountId = _revenueAccountId,
-                    DestinationAccountId = _assetAccountId,
+                    SourceAccountId = AccountTestConstants.RevenueAccount1Id,
+                    DestinationAccountId = AccountTestConstants.AssetAccount1Id,
                     CurrencyId = Currency.NZD,
                     Date = DateOnly.FromDateTime(DateTime.UtcNow)
                 }

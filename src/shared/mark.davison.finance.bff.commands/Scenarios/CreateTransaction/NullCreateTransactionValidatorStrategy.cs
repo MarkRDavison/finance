@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction;
 
 public class NullCreateTransactionValidatorStrategy : ICreateTransactionValidatorStrategy
 {

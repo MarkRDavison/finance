@@ -1,12 +1,14 @@
 ﻿namespace mark.davison.finance.bff.commands.test.integration.Scenarios.CreateCategory;
 
 [TestClass]
-public class CreateCategoryTests : CommandIntegrationTestBase
+public class CreateCategoryTests : CQRSIntegrationTestBase
 {
     [TestMethod]
     public async Task SavingNewCategory_Passes()
     {
         var handler = GetRequiredService<ICommandHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>>();
+        var repo = GetRequiredService<IRepository>();
+        var users = await repo.GetEntitiesAsync<User>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
         var request = new CreateCategoryCommandRequest { Id = Guid.NewGuid(), Name = "Category B" };

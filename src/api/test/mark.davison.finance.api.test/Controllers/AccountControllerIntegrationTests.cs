@@ -33,8 +33,9 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
         Assert.AreNotEqual(0, accountSummaryWithOpeningBalance.OpeningBalance);
     }
 
-    protected override async Task SeedData(IRepository repository)
+    protected override async Task SeedData(IServiceProvider serviceProvider)
     {
+        var repository = serviceProvider.GetRequiredService<IRepository>();
         _accounts.AddRange(new List<Account> {
             new Account
             {

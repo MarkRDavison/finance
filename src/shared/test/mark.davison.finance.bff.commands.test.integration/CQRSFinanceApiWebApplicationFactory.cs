@@ -1,11 +1,7 @@
 ﻿namespace mark.davison.finance.bff.commands.test.integration;
 
-public class CommandFinanceApiWebApplicationFactory : FinanceApiWebApplicationFactory
+public class CQRSFinanceApiWebApplicationFactory : FinanceApiWebApplicationFactory
 {
-    public CommandFinanceApiWebApplicationFactory()
-    {
-
-    }
 
     protected override void ConfigureServices(IServiceCollection services)
     {
@@ -24,5 +20,13 @@ public class CommandFinanceApiWebApplicationFactory : FinanceApiWebApplicationFa
         {
             API_ORIGIN = "http://localhost/"
         }, CreateClient);
+        services.UseDataSeeders();
+        services.AddScoped<ICurrentUserContext, CurrentUserContext>(_ => // TODO: FIND AND EXTRACT THIS TO COMMON
+        {
+            var context = new CurrentUserContext();
+            if (ModifyCurrentUserContext != null) { ModifyCurrentUserContext(_, context); }
+            return context;
+        });
     }
+
 }

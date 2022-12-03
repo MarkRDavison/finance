@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\test\mark.davison.finance.data.helpers.test.constants\mark.davison.finance.data.helpers.test.constants.csproj" />
+  </ItemGroup>
+
+</Project>

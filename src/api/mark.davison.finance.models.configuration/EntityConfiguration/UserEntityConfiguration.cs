@@ -1,6 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Identification;
-
-namespace mark.davison.finance.models.EntityConfiguration;
+﻿namespace mark.davison.finance.models.EntityConfiguration;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 {

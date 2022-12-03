@@ -1,4 +1,5 @@
-﻿global using mark.davison.common.Identification;
+﻿global using mark.davison.common;
+global using mark.davison.common.Identification;
 global using mark.davison.common.Repository;
 global using mark.davison.common.server;
 global using mark.davison.common.server.abstractions.Authentication;

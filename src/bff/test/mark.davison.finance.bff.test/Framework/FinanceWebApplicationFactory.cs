@@ -1,8 +1,4 @@
-﻿using mark.davison.common.Identification;
-using mark.davison.common.server.abstractions.Authentication;
-using mark.davison.common.server.abstractions.Identification;
-
-namespace mark.davison.finance.bff.test.Framework;
+﻿namespace mark.davison.finance.bff.test.Framework;
 
 public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
 {

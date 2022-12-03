@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.configuration;
-
-namespace mark.davison.finance.models.EntityConfiguration;
+﻿namespace mark.davison.finance.models.EntityConfiguration;
 
 public abstract class FinanceEntityConfiguration<T> : IEntityTypeConfiguration<T>
     where T : FinanceEntity

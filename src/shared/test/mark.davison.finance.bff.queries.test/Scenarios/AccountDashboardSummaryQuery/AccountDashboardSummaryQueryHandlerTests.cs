@@ -1,8 +1,4 @@
-﻿using mark.davison.finance.bff.queries.Scenarios.AccountDashboardSummaryQuery;
-using mark.davison.finance.models.dtos.Queries.AccountDashboardSummaryQuery;
-using Remote.Linq;
-using Remote.Linq.Text.Json;
-namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
 
 [TestClass]
 public class AccountDashboardSummaryQueryHandlerTests

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.web.features.Transaction.Create;
+﻿namespace mark.davison.finance.web.features.Transaction.Create;
 
 public class TransactionCreateCommandHandler : ICommandHandler<TransactionCreateCommand, TransactionCreateCommandResponse>
 {

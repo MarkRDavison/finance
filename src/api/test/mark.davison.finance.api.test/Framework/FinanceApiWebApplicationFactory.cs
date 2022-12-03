@@ -1,9 +1,19 @@
 ﻿namespace mark.davison.finance.api.test.Framework;
 
+public class TestFinanceHttpRepository : HttpRepository
+{
+    public TestFinanceHttpRepository(string baseUri, JsonSerializerOptions options) : base(baseUri, new HttpClient(), options)
+    {
+
+    }
+    public TestFinanceHttpRepository(string baseUri, HttpClient client, JsonSerializerOptions options) : base(baseUri, client, options)
+    {
+
+    }
+}
+
 public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, ICommonWebApplicationFactory<AppSettings>
 {
-    public virtual Func<IRepository, Task> SeedDataFunc { get; set; } = _ => Task.CompletedTask;
-
     public IServiceProvider ServiceProvider => base.Services;
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -21,14 +31,32 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
 
     protected virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<IFinanceDataSeeder, TestFinanceDataSeeder>(_ =>
-            new TestFinanceDataSeeder(
-                _.GetRequiredService<IRepository>(),
+        services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>(_ =>
+            new FinanceDataSeeder(
+                _.GetRequiredService<IServiceProvider>(),
                 _.GetRequiredService<IOptions<AppSettings>>()
-            )
-            {
-                SeedData = SeedDataFunc
-            });
+            ));
+        services.AddSingleton<IHttpRepository>(_ => new TestFinanceHttpRepository("http://localhost/", CreateClient(), SerializationHelpers.CreateStandardSerializationOptions()));
+        services.UseDataSeeders();
+
+        services
+            .AddHttpClient()
+            .AddHttpContextAccessor();
+
+        services.UseCQRS(
+            typeof(CommandsRootType),
+            typeof(QueriesRootType),
+            typeof(DtosRootType));
+
+        services.AddCommandCQRS();
+        services.AddScoped<ICurrentUserContext, CurrentUserContext>(_ =>
+        {
+            var context = new CurrentUserContext();
+            if (ModifyCurrentUserContext != null) { ModifyCurrentUserContext(_, context); }
+            return context;
+        });
     }
+
+    public Action<IServiceProvider, CurrentUserContext>? ModifyCurrentUserContext { get; set; }
 }
 
