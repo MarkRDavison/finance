@@ -1,11 +1,7 @@
-﻿using mark.davison.finance.accounting.rules;
-using mark.davison.finance.models.dtos.Commands.UpsertAccount;
-using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.commands.test.integration.Scenarios.UpsertAccount;
+﻿namespace mark.davison.finance.bff.commands.test.integration.Scenarios.UpsertAccount;
 
 [TestClass]
-public class UpsertAccountTests : CommandIntegrationTestBase
+public class UpsertAccountTests : CQRSIntegrationTestBase
 {
 
     [TestMethod]

@@ -2,17 +2,17 @@
 
 public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationActions
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IServiceProvider _serviceProvider;
     private readonly IHttpRepository _httpRepository;
     private readonly IOptions<AppSettings> _appSettings;
 
     public FinanceCustomZenoAuthenticationActions(
-        IHttpContextAccessor httpContextAccessor,
+        IServiceProvider serviceProvider,
         IHttpRepository httpRepository,
         IOptions<AppSettings> appSettings
     )
     {
-        _httpContextAccessor = httpContextAccessor;
+        _serviceProvider = serviceProvider;
         _httpRepository = httpRepository;
         _appSettings = appSettings;
     }
@@ -60,7 +60,6 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
         var transactionJournals = new List<TransactionJournal>();
         var transactions = new List<Transaction>();
 
-        // TODO: Create common helper methods? Move FinanceDatatSeederHelpers to common test assembly
         var createTransaction = (Guid transactionTypeId, decimal amount, Guid sourceAccountId, Guid destinationAccountId, string description, DateOnly date) =>
         {
             var transactionGroup = new TransactionGroup { Id = Guid.NewGuid(), UserId = currentUser.Id };

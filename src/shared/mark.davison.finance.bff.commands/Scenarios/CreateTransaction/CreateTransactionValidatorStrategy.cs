@@ -28,7 +28,6 @@ public abstract class CreateTransactionValidatorStrategy : ICreateTransactionVal
         {
             response.Error.Add(VALIDATION_INVALID_ACCOUNT_PAIR);
         }
-        // TODO: Validate that no duplicate tags are passed, warning?
     }
 
     public virtual Task ValidateTransactionGroup(CreateTransactionCommandRequest request, CreateTransactionCommandResponse response, ICreateTransctionValidationContext context)

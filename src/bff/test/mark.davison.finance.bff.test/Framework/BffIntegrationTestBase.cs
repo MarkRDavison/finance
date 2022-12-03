@@ -100,6 +100,5 @@ public class BffIntegrationTestBase
 
     protected FinanceWebApplicationFactory Factory { get; }
     protected HttpClient Client { get; }
-
     protected Action<AppSettings> ConfigureSettings { get; set; } = a => { };
 }

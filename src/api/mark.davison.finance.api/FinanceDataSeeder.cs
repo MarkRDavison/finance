@@ -7,15 +7,15 @@ public interface IFinanceDataSeeder
 
 public class FinanceDataSeeder : IFinanceDataSeeder
 {
-    protected readonly IRepository _repository;
+    protected readonly IServiceProvider _serviceProvider;
     protected readonly AppSettings _appSettings;
 
     public FinanceDataSeeder(
-        IRepository repository,
+        IServiceProvider serviceProvider,
         IOptions<AppSettings> options
     )
     {
-        _repository = repository;
+        _serviceProvider = serviceProvider;
         _appSettings = options.Value;
     }
 
@@ -32,22 +32,24 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     internal async Task EnsureSeeded<T>(List<T> entities, CancellationToken cancellationToken)
         where T : FinanceEntity
     {
-        var existingEntities = await _repository.GetEntitiesAsync<T>(_ => _.UserId == Guid.Empty, cancellationToken);
+        var repository = _serviceProvider.GetRequiredService<IRepository>();
+        var existingEntities = await repository.GetEntitiesAsync<T>(_ => _.UserId == Guid.Empty, cancellationToken);
 
         var newEntities = entities.Where(_ => !existingEntities.Any(e => e.Id == _.Id)).ToList();
 
-        await _repository.UpsertEntitiesAsync(newEntities, cancellationToken);
+        await repository.UpsertEntitiesAsync(newEntities, cancellationToken);
     }
 
     private async Task EnsureUserSeeded(CancellationToken cancellationToken)
     {
+        var repository = _serviceProvider.GetRequiredService<IRepository>();
         var seededUser = new User { Id = Guid.Empty, Email = "financesystem@markdavison.kiwi", First = "Finance", Last = "System", Username = "Finance.System" };
 
-        var existingUser = await _repository.GetEntityAsync<User>(_ => _.Id == Guid.Empty, cancellationToken);
+        var existingUser = await repository.GetEntityAsync<User>(_ => _.Id == Guid.Empty, cancellationToken);
 
         if (existingUser == null)
         {
-            await _repository.UpsertEntityAsync(seededUser, cancellationToken);
+            await repository.UpsertEntityAsync(seededUser, cancellationToken);
         }
 
     }

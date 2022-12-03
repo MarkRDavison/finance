@@ -1,6 +1,4 @@
-﻿using mark.davison.common;
-
-namespace mark.davison.finance.bff;
+﻿namespace mark.davison.finance.bff;
 
 public static class DependencyInversionExtensions
 {
@@ -12,7 +10,7 @@ public static class DependencyInversionExtensions
 
     public static IServiceCollection UseFinanceBff(this IServiceCollection services, AppSettings appSettings, Func<HttpClient>? client)
     {
-        services.AddScoped<ICurrentUserContext>(_ => new CurrentUserContext());
+        services.AddScoped<ICurrentUserContext, CurrentUserContext>();
 
         services.AddSingleton<IHttpRepository>(_ =>
         {

@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.models.dtos.Commands.CreateTransaction;
-
-namespace mark.davison.finance.web.features.test.Transaction.Create;
+﻿namespace mark.davison.finance.web.features.test.Transaction.Create;
 
 [TestClass]
 public class TransactionCreateCommandHandlerTests

@@ -8,7 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="JunitXml.TestLogger" Version="3.0.114" />
-    <PackageReference Include="mark.davison.common.server.test" Version="2.0.2" />
+    <PackageReference Include="mark.davison.common.server.test" Version="2.0.7" />
+    <PackageReference Include="mark.davison.common.test" Version="2.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
@@ -22,6 +23,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
     <ProjectReference Include="..\..\..\shared\mark.davison.finance.accounting.rules\mark.davison.finance.accounting.rules.csproj" />
+    <ProjectReference Include="..\..\..\shared\mark.davison.finance.data.helpers\mark.davison.finance.data.helpers.csproj" />
+    <ProjectReference Include="..\..\..\shared\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
     <ProjectReference Include="..\..\mark.davison.finance.api\mark.davison.finance.api.csproj" />
   </ItemGroup>
 
