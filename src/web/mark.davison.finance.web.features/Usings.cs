@@ -22,3 +22,4 @@ global using mark.davison.finance.web.features.Dashboard.QueryAccountSummary;
 global using mark.davison.finance.web.features.Tag;
 global using mark.davison.finance.web.features.Tag.Fetch;
 global using mark.davison.finance.web.features.Transaction.QueryByAccount;
+global using mark.davison.finance.web.services.AppContext;

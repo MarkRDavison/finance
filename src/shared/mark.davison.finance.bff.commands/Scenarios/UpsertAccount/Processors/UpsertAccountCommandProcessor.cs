@@ -3,11 +3,14 @@
 public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
 {
     private readonly ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> _createTransactionHandler;
+    private readonly IDateService _dateService;
 
     public UpsertAccountCommandProcessor(
-        ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> createTransactionHandler
+        ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> createTransactionHandler,
+        IDateService dateService
     )
     {
+        _dateService = dateService;
         _createTransactionHandler = createTransactionHandler;
     }
 
@@ -44,8 +47,8 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
             account = new Account
             {
                 Id = request.UpsertAccountDto.Id,
-                Created = DateTime.UtcNow,
-                LastModified = DateTime.UtcNow,
+                Created = _dateService.Now,
+                LastModified = _dateService.Now,
                 IsActive = true,
                 Order = -1,
                 UserId = currentUserContext.CurrentUser.Id

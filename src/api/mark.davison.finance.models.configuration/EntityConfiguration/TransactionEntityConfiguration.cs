@@ -16,6 +16,9 @@ public partial class TransactionEntityConfiguration : FinanceEntityConfiguration
 
         builder
             .Property(_ => _.Reconciled);
+
+        builder
+            .Property(_ => _.IsSource);
     }
 }
 

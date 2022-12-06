@@ -75,6 +75,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
 
         await EnsureSeeded(seededAccountTypes, cancellationToken);
     }
+
     private async Task EnsureLinkTypesSeeded(CancellationToken cancellationToken)
     {
         var seededLinkTypes = new List<LinkType>
@@ -86,6 +87,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
         };
         await EnsureSeeded(seededLinkTypes, cancellationToken);
     }
+
     private async Task EnsureTransactionTypesSeeded(CancellationToken cancellationToken)
     {
         var seededTransactionTypes = new List<TransactionType>

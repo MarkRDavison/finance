@@ -11,6 +11,7 @@ public static class DependencyInversionExtensions
     public static IServiceCollection UseFinanceBff(this IServiceCollection services, AppSettings appSettings, Func<HttpClient>? client)
     {
         services.AddScoped<ICurrentUserContext, CurrentUserContext>();
+        services.AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc));
 
         services.AddSingleton<IHttpRepository>(_ =>
         {

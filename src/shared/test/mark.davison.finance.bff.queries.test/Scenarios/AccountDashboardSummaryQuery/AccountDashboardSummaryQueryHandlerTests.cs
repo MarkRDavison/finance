@@ -7,19 +7,6 @@ public class AccountDashboardSummaryQueryHandlerTests
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly AccountDashboardSummaryQueryHandler _handler;
 
-    private Expression<Func<T, bool>>? ExtractExpression<T>(QueryParameters q)
-        where T : class
-    {
-        var options = new JsonSerializerOptions().ConfigureRemoteLinq();
-        var body = JsonSerializer.Deserialize<JsonObject>(q.CreateBody(), options);
-        var expressionText = body!["where"]!.GetValue<string>();
-        var deserialized = JsonSerializer
-            .Deserialize<Remote.Linq.Expressions.Expression>(
-                expressionText,
-                options);
-        return deserialized?.ToLinqExpression() as Expression<Func<T, bool>>;
-    }
-
     public AccountDashboardSummaryQueryHandlerTests()
     {
         _httpRepository = new(MockBehavior.Strict);
@@ -94,11 +81,11 @@ public class AccountDashboardSummaryQueryHandlerTests
     {
         var accounts = new List<Account>
         {
-            new Account { UserId = Guid.NewGuid() },
-            new Account { UserId = Guid.NewGuid() },
-            new Account { UserId = Guid.NewGuid() },
-            new Account { UserId = Guid.NewGuid() },
-            new Account { UserId = _currentUserContext.Object.CurrentUser.Id }
+            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { AccountTypeId = AccountConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id }
         };
 
         var request = new AccountDashboardSummaryQueryRequest
@@ -113,7 +100,7 @@ public class AccountDashboardSummaryQueryHandlerTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
             {
-                var expression = ExtractExpression<Account>(q);
+                var expression = q.ExtractExpression<Account>();
                 Assert.IsNotNull(expression);
 
                 var results = accounts.Where(expression.Compile()).ToList();
@@ -176,7 +163,7 @@ public class AccountDashboardSummaryQueryHandlerTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
             {
-                var expression = ExtractExpression<Transaction>(q);
+                var expression = q.ExtractExpression<Transaction>();
                 Assert.IsNotNull(expression);
 
                 var results = transactions.Where(expression.Compile()).ToList();

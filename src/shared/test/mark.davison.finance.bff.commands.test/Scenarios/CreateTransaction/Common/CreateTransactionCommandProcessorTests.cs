@@ -287,6 +287,7 @@ public class CreateTransactionCommandProcessorTests
                     Assert.AreEqual(-request.Transactions[i].Amount, sourceTransaction.Amount);
                     Assert.AreEqual(-request.Transactions[i].ForeignAmount, sourceTransaction.ForeignAmount);
                     Assert.IsFalse(sourceTransaction.Reconciled);
+                    Assert.IsTrue(sourceTransaction.IsSource);
 
                     Assert.AreNotEqual(Guid.Empty, destinationTransaction.Id);
                     Assert.AreNotEqual(Guid.Empty, destinationTransaction.TransactionJournalId);
@@ -297,6 +298,7 @@ public class CreateTransactionCommandProcessorTests
                     Assert.AreEqual(request.Transactions[i].Amount, destinationTransaction.Amount);
                     Assert.AreEqual(request.Transactions[i].ForeignAmount, destinationTransaction.ForeignAmount);
                     Assert.IsFalse(destinationTransaction.Reconciled);
+                    Assert.IsFalse(destinationTransaction.IsSource);
                 }
                 return e;
             })

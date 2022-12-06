@@ -5,6 +5,7 @@ public class UpsertAccountCommandProcessorTests
 {
     private readonly Mock<IHttpRepository> _httpRepositoryMock;
     private readonly Mock<ICurrentUserContext> _currentUserContextMock;
+    private readonly Mock<IDateService> _dateService;
     private readonly Mock<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>> _createTransactionHandlerMock;
     private readonly UpsertAccountCommandProcessor _upsertAccountCommandProcessor;
 
@@ -12,11 +13,14 @@ public class UpsertAccountCommandProcessorTests
     {
         _httpRepositoryMock = new(MockBehavior.Strict);
         _currentUserContextMock = new(MockBehavior.Strict);
+        _dateService = new(MockBehavior.Strict);
         _createTransactionHandlerMock = new(MockBehavior.Strict);
         _currentUserContextMock.Setup(_ => _.Token).Returns("");
         _currentUserContextMock.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object);
+        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object, _dateService.Object);
+
+        _dateService.Setup(_ => _.Now).Returns(DateTime.Now);
 
         _httpRepositoryMock
             .Setup(_ => _.UpsertEntityAsync(

@@ -4,16 +4,19 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly IHttpRepository _httpRepository;
+    private readonly IDateService _dateService;
     private readonly IOptions<AppSettings> _appSettings;
 
     public FinanceCustomZenoAuthenticationActions(
         IServiceProvider serviceProvider,
         IHttpRepository httpRepository,
+        IDateService dateService,
         IOptions<AppSettings> appSettings
     )
     {
         _serviceProvider = serviceProvider;
         _httpRepository = httpRepository;
+        _dateService = dateService;
         _appSettings = appSettings;
     }
 
@@ -33,11 +36,11 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
                     Id = Guid.NewGuid(),
                     Sub = userProfile.sub,
                     Admin = false,
-                    Created = DateTime.UtcNow,
+                    Created = _dateService.Now,
                     Email = userProfile.email!,
                     First = userProfile.given_name!,
                     Last = userProfile.family_name!,
-                    LastModified = DateTime.UtcNow,
+                    LastModified = _dateService.Now,
                     Username = userProfile.preferred_username!
                 },
                 HeaderParameters.Auth(token, null),
@@ -46,15 +49,16 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
 
     private async Task UpsertTestData(User currentUser, string token, CancellationToken cancellationToken)
     {
-        var header = HeaderParameters.Auth(token, null);
-        var assetAccount1 = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Asset 1", AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD, Name = "Test Asset 1" };
-        var assetAccount2 = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Asset 2", AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD, Name = "Test Asset 2" };
-        var revenueAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Revenue 1", AccountTypeId = AccountConstants.Revenue, CurrencyId = Currency.NZD, Name = "Test Revenue 1" };
-        var expenseAccount1 = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Expense 1", AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Test Expense 1" };
-        var expenseAccount2 = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Expense 2", AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Test Expense 2" };
-        var expenseAccount3 = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountNumber = "Expense 3", AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Test Expense 3" };
-
-        await _httpRepository.UpsertEntitiesAsync(new[] { assetAccount1, assetAccount2, revenueAccount, expenseAccount1, expenseAccount2, expenseAccount3 }.ToList(), header, cancellationToken);
+        var header = HeaderParameters.Auth(token, currentUser);
+        var everydayAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD, Name = "Everyday account" };
+        var savingsAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Asset, CurrencyId = Currency.NZD, Name = "Savings account" };
+        var jobAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Revenue, CurrencyId = Currency.NZD, Name = "Job" };
+        var groceryStoreAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Grocery store" };
+        var gasStationAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Gas station" };
+        var powerGasInternetAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Power, Gas, Internet" };
+        var waterAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Water" };
+        var taxAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Taxes" };
+        var mechanicAccount = new Account { Id = Guid.NewGuid(), UserId = currentUser.Id, AccountTypeId = AccountConstants.Expense, CurrencyId = Currency.NZD, Name = "Mechanic" };
 
         var transactionGroups = new List<TransactionGroup>();
         var transactionJournals = new List<TransactionJournal>();
@@ -64,8 +68,8 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
         {
             var transactionGroup = new TransactionGroup { Id = Guid.NewGuid(), UserId = currentUser.Id };
             var transactionJournal = new TransactionJournal { Id = Guid.NewGuid(), UserId = currentUser.Id, TransactionGroupId = transactionGroup.Id, TransactionTypeId = transactionTypeId, CurrencyId = Currency.NZD, Description = description, Date = date };
-            var sourceTransaction = new Transaction { Id = Guid.NewGuid(), UserId = currentUser.Id, CurrencyId = Currency.NZD, TransactionJournalId = transactionJournal.Id, Amount = -CurrencyRules.ToPersisted(amount), AccountId = sourceAccountId, Description = description };
-            var destTransaction = new Transaction { Id = Guid.NewGuid(), UserId = currentUser.Id, CurrencyId = Currency.NZD, TransactionJournalId = transactionJournal.Id, Amount = +CurrencyRules.ToPersisted(amount), AccountId = destinationAccountId, Description = description };
+            var sourceTransaction = new Transaction { Id = Guid.NewGuid(), UserId = currentUser.Id, CurrencyId = Currency.NZD, TransactionJournalId = transactionJournal.Id, Amount = -CurrencyRules.ToPersisted(amount), AccountId = sourceAccountId, Description = description, IsSource = true };
+            var destTransaction = new Transaction { Id = Guid.NewGuid(), UserId = currentUser.Id, CurrencyId = Currency.NZD, TransactionJournalId = transactionJournal.Id, Amount = +CurrencyRules.ToPersisted(amount), AccountId = destinationAccountId, Description = description, IsSource = false };
 
             transactionGroups.Add(transactionGroup);
             transactionJournals.Add(transactionJournal);
@@ -73,12 +77,34 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
             transactions.Add(destTransaction);
         };
 
-        createTransaction(TransactionConstants.OpeningBalance, 100.0M, Account.OpeningBalance, assetAccount1.Id, "Opening balance", new DateOnly(2022, 1, 15));
-        createTransaction(TransactionConstants.OpeningBalance, 1500.0M, Account.OpeningBalance, assetAccount2.Id, "Opening balance", new DateOnly(2022, 2, 5));
-        createTransaction(TransactionConstants.Deposit, 140.0M, revenueAccount.Id, assetAccount1.Id, "Refund", new DateOnly(2022, 2, 11));
-        createTransaction(TransactionConstants.Deposit, 120.0M, revenueAccount.Id, assetAccount1.Id, "Misc deposit", new DateOnly(2022, 3, 7));
-        createTransaction(TransactionConstants.Transfer, 40.0M, assetAccount1.Id, assetAccount2.Id, "Transfer gas money", new DateOnly(2022, 4, 3));
+        var createStandardMonthlyTransactions = (int year, int month) =>
+        {
+            createTransaction(TransactionConstants.Deposit, 1000.0M, jobAccount.Id, everydayAccount.Id, "Salary", new DateOnly(year, month, 11));
+            createTransaction(TransactionConstants.Transfer, 400.0M, everydayAccount.Id, savingsAccount.Id, "Transfer savings", new DateOnly(year, month, 15));
+            createTransaction(TransactionConstants.Withdrawal, 170.0M, everydayAccount.Id, powerGasInternetAccount.Id, "Monthly utilities", new DateOnly(year, month, 19));
+            createTransaction(TransactionConstants.Withdrawal, 62.0M, everydayAccount.Id, waterAccount.Id, "Monthly water", new DateOnly(year, month, 13));
+            createTransaction(TransactionConstants.Withdrawal, 231.0M, everydayAccount.Id, taxAccount.Id, "Taxes", new DateOnly(year, month, 8));
+        };
 
+
+        bool openingBalancesMade = false;
+        foreach (var year in new[] { 2020, 2021, 2022, 2023 })
+        {
+            if (!openingBalancesMade)
+            {
+                openingBalancesMade = true;
+                createTransaction(TransactionConstants.OpeningBalance, 100.0M, Account.OpeningBalance, everydayAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
+                createTransaction(TransactionConstants.OpeningBalance, 1500.0M, Account.OpeningBalance, savingsAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
+            }
+            for (int month = 1; month <= 12; ++month)
+            {
+                createStandardMonthlyTransactions(year, month);
+            }
+        }
+
+        createTransaction(TransactionConstants.Withdrawal, 585.0M, everydayAccount.Id, taxAccount.Id, "Repairs", new DateOnly(2022, 4, 21));
+
+        await _httpRepository.UpsertEntitiesAsync(new[] { everydayAccount, savingsAccount, jobAccount, groceryStoreAccount, gasStationAccount, powerGasInternetAccount, waterAccount, taxAccount, mechanicAccount }.ToList(), header, cancellationToken);
         await _httpRepository.UpsertEntitiesAsync(transactionGroups, header, cancellationToken);
         await _httpRepository.UpsertEntitiesAsync(transactionJournals, header, cancellationToken);
         await _httpRepository.UpsertEntitiesAsync(transactions, header, cancellationToken);

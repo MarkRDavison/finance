@@ -8,6 +8,7 @@ global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.Middleware;
 global using mark.davison.common.server.Repository;
+global using mark.davison.common.Services;
 global using mark.davison.finance.accounting.constants;
 global using mark.davison.finance.accounting.rules;
 global using mark.davison.finance.bff;

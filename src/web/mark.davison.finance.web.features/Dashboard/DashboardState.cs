@@ -6,6 +6,7 @@ public class DashboardState : IState
     {
 
     }
+
     public DashboardState(
         Dictionary<Guid, string> accountNames,
         Dictionary<Guid, List<AccountDashboardTransactionData>> transactionData)

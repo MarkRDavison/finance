@@ -45,7 +45,8 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
                 ForeignCurrencyId = transaction.ForeignCurrencyId,
                 Description = transaction.Description,
                 Amount = -transaction.Amount,
-                ForeignAmount = -transaction.ForeignAmount
+                ForeignAmount = -transaction.ForeignAmount,
+                IsSource = true
             };
             var destinationTransaction = new Transaction
             {
@@ -56,7 +57,8 @@ public class CreateTransactionCommandProcessor : ICreateTransactionCommandProces
                 ForeignCurrencyId = transaction.ForeignCurrencyId,
                 Description = transaction.Description,
                 Amount = transaction.Amount,
-                ForeignAmount = transaction.ForeignAmount
+                ForeignAmount = transaction.ForeignAmount,
+                IsSource = false
             };
 
             transactions.Add(sourceTransaction);

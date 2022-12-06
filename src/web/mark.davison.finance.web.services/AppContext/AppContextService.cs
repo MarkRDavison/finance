@@ -2,10 +2,13 @@
 
 public class AppContextService : IAppContextService
 {
-    public AppContextService()
+    private readonly IDateService _dateService;
+
+    public AppContextService(IDateService dateService)
     {
-        RangeStart = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month, 1);
-        RangeEnd = new DateOnly(DateOnly.FromDateTime(DateTime.Today).Year, DateOnly.FromDateTime(DateTime.Today).Month, 1); // TODO: This doesn't work properly
+        _dateService = dateService;
+
+        (RangeStart, RangeEnd) = _dateService.Today.GetMonthRange();
     }
 
     public DateOnly RangeStart { get; set; }

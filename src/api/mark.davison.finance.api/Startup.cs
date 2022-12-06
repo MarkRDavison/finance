@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+﻿using mark.davison.common.Services;
 
 namespace mark.davison.finance.api;
 
@@ -57,21 +57,25 @@ public class Startup
         {
             if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
             {
-                AppSettings.CONNECTION_STRING = $"Data Source={Guid.NewGuid()}.db";
+                AppSettings.CONNECTION_STRING = $"Data Source=C:/temp/{Guid.NewGuid()}.db";
             }
             services.AddDbContextFactory<FinanceDbContext>(_ =>
             {
                 _.UseSqlite(
                     AppSettings.CONNECTION_STRING,
                     _ => _.MigrationsAssembly("mark.davison.finance.migrations.sqlite"));
-                _.EnableSensitiveDataLogging();
-                _.EnableDetailedErrors();
+                if (!AppSettings.PRODUCTION_MODE)
+                {
+                    _.EnableSensitiveDataLogging();
+                    _.EnableDetailedErrors();
+                }
             });
         }
         else if (AppSettings.DATABASE_TYPE == "postgres")
         {
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // TODO: Fix/remove when dotnet 7 comes out and we persist dateonly
             var conn = new NpgsqlConnectionStringBuilder();
+            conn.IncludeErrorDetail = !AppSettings.PRODUCTION_MODE;
             conn.Host = AppSettings.DB_HOST;
             conn.Database = AppSettings.DB_DATABASE;
             conn.Port = AppSettings.DB_PORT;
@@ -88,6 +92,7 @@ public class Startup
         }
 
         services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();
+        services.AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc));
 
         services.AddTransient<IRepository>(_ =>
             new FinanceRepository(

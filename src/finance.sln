@@ -83,6 +83,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.data.h
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.data.helpers.test.constants", "shared\test\mark.davison.finance.data.helpers.test.constants\mark.davison.finance.data.helpers.test.constants.csproj", "{38D10AA6-339C-4D89-9340-B1ACD4273016}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.accounting.rules.test", "shared\test\mark.davison.finance.accounting.rules.test\mark.davison.finance.accounting.rules.test.csproj", "{291FC350-398B-44E4-8382-198E7511F87A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -189,6 +191,10 @@ Global
 		{38D10AA6-339C-4D89-9340-B1ACD4273016}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{38D10AA6-339C-4D89-9340-B1ACD4273016}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38D10AA6-339C-4D89-9340-B1ACD4273016}.Release|Any CPU.Build.0 = Release|Any CPU
+		{291FC350-398B-44E4-8382-198E7511F87A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{291FC350-398B-44E4-8382-198E7511F87A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{291FC350-398B-44E4-8382-198E7511F87A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{291FC350-398B-44E4-8382-198E7511F87A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -224,6 +230,7 @@ Global
 		{A35F7202-F572-4670-B504-5CF57565F6D1} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
 		{3AFB0656-3FFE-4D06-98FA-B74AF1A68843} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{38D10AA6-339C-4D89-9340-B1ACD4273016} = {BEDDADA9-5E88-4128-BB62-33E1B4FD5EAA}
+		{291FC350-398B-44E4-8382-198E7511F87A} = {BEDDADA9-5E88-4128-BB62-33E1B4FD5EAA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}

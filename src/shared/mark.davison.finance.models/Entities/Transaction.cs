@@ -11,6 +11,8 @@ public partial class Transaction : FinanceEntity
     public long? ForeignAmount { get; set; }
     public bool Reconciled { get; set; }
 
+    public bool IsSource { get; set; }
+
     public virtual Account? Account { get; set; }
     public virtual TransactionJournal? TransactionJournal { get; set; }
     public virtual Currency? Currency { get; set; }

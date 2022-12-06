@@ -1260,6 +1260,9 @@ namespace mark.davison.finance.migrations.sqlite.Migrations
                     b.Property<Guid?>("ForeignCurrencyId")
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsSource")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("LastModified")
                         .HasColumnType("TEXT");
 
