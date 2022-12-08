@@ -210,7 +210,9 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         var request = new AccountDashboardSummaryQueryRequest
         {
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountConstants.Asset,
+            RangeStart = new DateOnly(2022, 1, 1),
+            RangeEnd = new DateOnly(2022, 1, 31)
         };
 
         _httpRepository
@@ -234,8 +236,10 @@ public class AccountDashboardSummaryQueryHandlerTests
         Assert.AreEqual(accounts.Count, response.AccountNames.Count);
         Assert.AreEqual(accounts.Count, response.TransactionData.Count);
 
-        Assert.AreEqual(4, response.TransactionData[accounts[0].Id].Count);
-        Assert.AreEqual(2, response.TransactionData[accounts[1].Id].Count);
-        Assert.AreEqual(2, response.TransactionData[accounts[2].Id].Count);
+        var daysInMonth = request.RangeEnd.Day - request.RangeStart.Day + 1;
+
+        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[0].Id].Count);
+        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[1].Id].Count);
+        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[2].Id].Count);
     }
 }
