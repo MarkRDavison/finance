@@ -57,7 +57,14 @@ public class Startup
         {
             if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
             {
-                AppSettings.CONNECTION_STRING = $"Data Source=C:/temp/{Guid.NewGuid()}.db";
+                if (Directory.Exists("C:/temp"))
+                {
+                    AppSettings.CONNECTION_STRING = $"Data Source=C:/temp/{Guid.NewGuid()}.db";
+                }
+                else
+                {
+                    AppSettings.CONNECTION_STRING = $"Data Source={Guid.NewGuid()}.db";
+                }
             }
             services.AddDbContextFactory<FinanceDbContext>(_ =>
             {
