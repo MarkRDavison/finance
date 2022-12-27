@@ -2,8 +2,12 @@
 @inject IAppContextService _appContextService
 
 <div class="z-context">
-    <p>@_appContextService.RangeStart.ToString("MMMM d, yyyy") - @_appContextService.RangeEnd.ToString("MMMM dd, yyyy")</p>
-    <p>@_authContext.User?.name</p>
+    <div onclick="@(async () => await OnDateContextClicked())">
+        <span class="unselectable">@_appContextService.RangeStart.ToString("MMMM d, yyyy") - @_appContextService.RangeEnd.ToString("MMMM dd, yyyy")</span>
+    </div>
+    <div>
+        <span class="unselectable">@_authContext.User?.name</span>
+    </div>
     <Button
         Variant="ButtonVariant.Text"
         Type="ButtonType.Secondary"
@@ -21,11 +25,23 @@
     [Parameter]
     public EventCallback<bool> QuickCreateOpenChanged { get; set; }
 
+    [Parameter]
+    public bool DateContextOpen { get; set; }
+
+    [Parameter]
+    public EventCallback<bool> DateContextOpenChanged { get; set; }
+
 
     private async Task OnQuickCreateClicked()
     {
         QuickCreateOpen = !QuickCreateOpen;
         await QuickCreateOpenChanged.InvokeAsync(QuickCreateOpen);
+    }
+
+    private async Task OnDateContextClicked()
+    {
+        DateContextOpen = !DateContextOpen;
+        await DateContextOpenChanged.InvokeAsync(DateContextOpen);
     }
 
 }

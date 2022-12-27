@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.data.h
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.data.helpers.test.constants", "shared\test\mark.davison.finance.data.helpers.test.constants\mark.davison.finance.data.helpers.test.constants.csproj", "{38D10AA6-339C-4D89-9340-B1ACD4273016}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.accounting.rules.test", "shared\test\mark.davison.finance.accounting.rules.test\mark.davison.finance.accounting.rules.test.csproj", "{291FC350-398B-44E4-8382-198E7511F87A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.accounting.rules.test", "shared\test\mark.davison.finance.accounting.rules.test\mark.davison.finance.accounting.rules.test.csproj", "{291FC350-398B-44E4-8382-198E7511F87A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

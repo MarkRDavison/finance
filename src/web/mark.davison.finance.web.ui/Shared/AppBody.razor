@@ -1,11 +1,12 @@
-﻿@using mark.davison.zui.Components.OutsideAlerter
-@inject ICQRSDispatcher _actionDispatcher;
+﻿@inject ICQRSDispatcher _actionDispatcher;
 @inject IAuthenticationContext _authContext
 
 @if (_authContext.IsAuthenticated)
 {
     <div class="z-app-body">
-    <ContextBar @bind-QuickCreateOpen="_quickCreateOpen" />
+    <ContextBar
+        @bind-QuickCreateOpen="_quickCreateOpen" 
+        @bind-DateContextOpen="_dateContextOpen" />
         <div class="z-app-body-middle">
             <div class="z-app-body-inner">
             @ChildContent
@@ -17,7 +18,13 @@
                         TODO: Flyover, dont push everything else out of the way
                               also, clean up the excess styles on app body / inner / middle
                     *@
-                    <QuickCreate IsOpenChanged="@(e => CloseQuickCreate())"  />
+                    <QuickCreate IsOpenChanged="@(e => CloseQuickCreate())"/>
+                </OutsideAlerter>
+            }
+            @if (_dateContextOpen)
+            {
+                <OutsideAlerter OnClickOutside="@CloseDateContext">
+                    <DateContext IsOpenChanged="@(e => CloseDateContext())" />
                 </OutsideAlerter>
             }
         </div>
@@ -26,6 +33,7 @@
 
 @code {
     private bool _quickCreateOpen;
+    private bool _dateContextOpen;
 
     [Parameter, EditorRequired]
     public RenderFragment? ChildContent { get; set; }
@@ -33,6 +41,12 @@
     private void CloseQuickCreate()
     {
         _quickCreateOpen = false;
+        InvokeAsync(StateHasChanged);
+    }
+
+    private void CloseDateContext()
+    {
+        _dateContextOpen = false;
         InvokeAsync(StateHasChanged);
     }
 

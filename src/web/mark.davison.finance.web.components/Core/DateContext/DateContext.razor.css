@@ -1,0 +1,15 @@
+﻿.z-date-context {
+    position: absolute;
+    z-index: 100;
+    right: 0;
+    top: 40px;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    background: #ccc;
+    padding: 5px;
+}
+
+.z-date-context-item {
+    width: 400px;
+}

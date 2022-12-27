@@ -7,10 +7,10 @@ public static class ConfigureSettingsExtensions
         IConfiguration configuration
     )
     {
+        var appSettings = new AppSettings();
         var configured = configuration.GetSection(AppSettings.SECTION);
 
         services.Configure<AppSettings>(configured);
-        var appSettings = new AppSettings();
         configured.Bind(appSettings);
 
         return appSettings;
