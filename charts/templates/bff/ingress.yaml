@@ -4,15 +4,12 @@ metadata:
   name: {{ .Values.bff.app}}-ingress
   labels:
     app: {{ .Values.bff.app }}
-  annotations:
-    kubernetes.io/ingress.class: "nginx"
 spec:
-  {{ if .Values.tls.enabled }}
+  ingressClassName: nginx
   tls:
     - hosts:
-      - {{ .Values.bff.ingress.host }}
-      secretName: {{ .Values.tls.secretName }}
-  {{ end }}
+      - {{ .Values.web.ingress.host }}
+      secretName: finance-bff-ingress-cert
   rules:
   - host: {{ .Values.bff.ingress.host }}
     http:

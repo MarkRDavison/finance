@@ -1,0 +1,47 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-markdavison-kiwi-api
+spec:
+  secretName: finance-api-ingress-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+  duration: 2160h # 90d
+  renewBefore: 720h # 30d before SSL will expire, renew it
+  dnsNames:
+    - "markdavison.kiwi"
+    - "*.markdavison.kiwi"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-markdavison-kiwi-bff
+spec:
+  secretName: finance-bff-ingress-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+  duration: 2160h # 90d
+  renewBefore: 720h # 30d before SSL will expire, renew it
+  dnsNames:
+    - "markdavison.kiwi"
+    - "*.markdavison.kiwi"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-markdavison-kiwi-web
+spec:
+  secretName: finance-web-ingress-cert
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+
+  duration: 2160h # 90d
+  renewBefore: 720h # 30d before SSL will expire, renew it
+  dnsNames:
+    - "markdavison.kiwi"
+    - "*.markdavison.kiwi"
