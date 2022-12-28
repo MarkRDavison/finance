@@ -9,7 +9,7 @@ spec:
   tls:
     - hosts:
       - {{ .Values.web.ingress.host }}
-      secretName: finance-api-ingress-cert
+      secretName: wildcard-markdavison.kiwi
   rules:
   - host: {{ .Values.api.ingress.host }}
     http:
