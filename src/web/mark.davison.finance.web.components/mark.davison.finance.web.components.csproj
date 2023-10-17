@@ -6,28 +6,24 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="wwwroot\**" />
-    <Content Remove="wwwroot\**" />
-    <EmbeddedResource Remove="wwwroot\**" />
-    <None Remove="wwwroot\**" />
-  </ItemGroup>
-
 
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Blazor-ApexCharts" Version="0.9.14-beta" />
-    <PackageReference Include="mark.davison.common.client" Version="2.0.11" />
-    <PackageReference Include="mark.davison.zui" Version="1.0.17" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
+    <PackageReference Include="mark.davison.common.client" Version="7.3.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.12" />
+    <PackageReference Include="MudBlazor" Version="6.11.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.web.features\mark.davison.finance.web.features.csproj" />
     <ProjectReference Include="..\mark.davison.finance.web.services\mark.davison.finance.web.services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

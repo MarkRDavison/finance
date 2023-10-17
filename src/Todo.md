@@ -3,6 +3,9 @@ https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2021_08
 
 Dont validate audience/authority in integration tests, appsettings option?
 
+
+Move zeno dotnet common to github & nuget 
+
 Per user options
 	-	Default currency
 	-	Edit User object

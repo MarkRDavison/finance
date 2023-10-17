@@ -8,7 +8,7 @@ public class AppSettings
     public string CLIENT_ID { get; set; } = "zeno-finance";
     public string CLIENT_SECRET { get; set; } = string.Empty;
     public string SESSION_NAME { get; set; } = "finance-session-name";
-    public string SCOPE { get; set; } = "openid profile email offline_access zeno zeno-finance";
+    public string SCOPE { get; set; } = "openid profile email offline_access zeno-finance";
     public string REDIS_HOST { get; set; } = "redis.markdavison.kiwi";
     public int REDIS_PORT { get; set; } = 6379;
     public string REDIS_PASSWORD { get; set; } = string.Empty;

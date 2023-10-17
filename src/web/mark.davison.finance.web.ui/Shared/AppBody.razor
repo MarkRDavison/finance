@@ -3,52 +3,13 @@
 
 @if (_authContext.IsAuthenticated)
 {
-    <div class="z-app-body">
-    <ContextBar
-        @bind-QuickCreateOpen="_quickCreateOpen" 
-        @bind-DateContextOpen="_dateContextOpen" />
-        <div class="z-app-body-middle">
-            <div class="z-app-body-inner">
-            @ChildContent
-            </div>
-            @if (_quickCreateOpen)
-            {
-                <OutsideAlerter OnClickOutside="@CloseQuickCreate">
-                    @*
-                        TODO: Flyover, dont push everything else out of the way
-                              also, clean up the excess styles on app body / inner / middle
-                    *@
-                    <QuickCreate IsOpenChanged="@(e => CloseQuickCreate())"/>
-                </OutsideAlerter>
-            }
-            @if (_dateContextOpen)
-            {
-                <OutsideAlerter OnClickOutside="@CloseDateContext">
-                    <DateContext IsOpenChanged="@(e => CloseDateContext())" />
-                </OutsideAlerter>
-            }
-        </div>
-    </div>
+    @ChildContent
 }
 
 @code {
-    private bool _quickCreateOpen;
-    private bool _dateContextOpen;
 
     [Parameter, EditorRequired]
     public RenderFragment? ChildContent { get; set; }
-
-    private void CloseQuickCreate()
-    {
-        _quickCreateOpen = false;
-        InvokeAsync(StateHasChanged);
-    }
-
-    private void CloseDateContext()
-    {
-        _dateContextOpen = false;
-        InvokeAsync(StateHasChanged);
-    }
 
     protected override async Task OnInitializedAsync()
     {

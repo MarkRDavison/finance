@@ -1,0 +1,31 @@
+﻿@attribute [Route(Routes.Accounts)]
+@inherits ComponentWithState
+@inject IStateHelper _stateHelper
+@inject IDialogService _dialogService
+
+<MudPaper>
+    <MudStack Row="true" Style="padding: 10px;">
+        <MudText Typo="Typo.h4">Accounts</MudText>
+        <MudTooltip Text="Add">
+            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" OnClick="@(() => OpenEditAccountModal(true))" />
+        </MudTooltip>
+    </MudStack>
+    <MudDataGrid Items="@_items">
+        <Columns>
+            <TemplateColumn Title ="Name">
+                <CellTemplate>
+                    <MudLink Href="@context.Item.Name?.Href">@context.Item.Name?.Text</MudLink>
+                </CellTemplate>
+            </TemplateColumn>
+            <PropertyColumn Title="Account type" Property="_ => _.AccountType" />
+            <PropertyColumn Title="Account number" Property="_ => _.AccountNumber" />
+            <PropertyColumn Title="Current balance" Property="_ => _.CurrentBalance" />
+            <PropertyColumn Title="Balance difference" Property="_ => _.BalanceDifference" />
+            <TemplateColumn Title="Last modified" Property="_ => _.LastModified">
+                <CellTemplate>
+                    <MudText>@context.Item.LastModified.ToShortDateString()</MudText>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudPaper>
