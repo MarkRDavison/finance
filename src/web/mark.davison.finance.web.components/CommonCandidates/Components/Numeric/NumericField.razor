@@ -1,0 +1,8 @@
+﻿<MudNumericField T="decimal?"
+    Label="@Label"
+    @bind-Text="StringValue"
+    OnKeyDown="this.OnKeydown"
+    KeyDownPreventDefault="@_preventKeyDown"
+    @oninput="@OnInput"
+    @onfocus="@(() => OnFocus())"
+    @onblur="@(() => OnBlur())" />

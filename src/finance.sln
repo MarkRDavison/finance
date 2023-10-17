@@ -83,7 +83,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui", "web\mark.davison.finance.web.ui\mark.davison.finance.web.ui.csproj", "{9A6D16AB-839E-4B43-99B5-E6B18C11C403}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.web.ui.tests", "web\test\mark.davison.finance.web.ui.tests\mark.davison.finance.web.ui.tests.csproj", "{AC1D9D53-7FB6-46D9-8C3E-37413EB76A76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui.tests", "web\test\mark.davison.finance.web.ui.tests\mark.davison.finance.web.ui.tests.csproj", "{AC1D9D53-7FB6-46D9-8C3E-37413EB76A76}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

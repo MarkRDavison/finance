@@ -1,10 +1,4 @@
-﻿using mark.davison.common.client.abstractions.State;
-using mark.davison.finance.models.dtos.Queries.AccountListQuery;
-using mark.davison.finance.web.components.Pages.Accounts.EditAccount;
-using mark.davison.finance.web.features.Account;
-using MudBlazor;
-
-namespace mark.davison.finance.web.components.Pages.Accounts;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts;
 
 public partial class AccountsList
 {

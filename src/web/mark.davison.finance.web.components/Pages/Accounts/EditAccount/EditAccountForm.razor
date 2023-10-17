@@ -1,4 +1,5 @@
-﻿@inherits ComponentWithState
+﻿@using mark.davison.finance.web.components.CommonCandidates.Components.Currency
+@inherits ComponentWithState
 
 <MudGrid>
     <MudPaper Class="pa-4">
@@ -18,6 +19,7 @@
                 }
             </MudSelect>
             <MudNumericField Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" />
+            <CurrencyField Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" CurrencyInfo="@_currencyInfo" />
             <MudNumericField Label="Opening balance" @bind-Value="ViewModel.OpeningBalance" />
             <MudDatePicker Label="Opening balance date" @bind-Date="ViewModel.OpeningBalanceDate" />
         </MudForm>

@@ -1,5 +1,6 @@
 ﻿@inject ICQRSDispatcher _actionDispatcher;
 @inject IAuthenticationContext _authContext
+@inject IStateHelper _stateHelper;
 
 @if (_authContext.IsAuthenticated)
 {
@@ -15,6 +16,7 @@
     {
         if (_authContext.IsAuthenticated)
         {
+            // await _stateHelper.FetchLookups(); // TODO:
             await _actionDispatcher.Dispatch<UpdateLookupsAction>(CancellationToken.None);
         }
 
