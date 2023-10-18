@@ -21,18 +21,28 @@ public class FinanceDataSeeder : IFinanceDataSeeder
 
     public virtual async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
-        await EnsureUserSeeded(cancellationToken);
-        await EnsureAccountTypesSeeded(cancellationToken);
-        await EnsureLinkTypesSeeded(cancellationToken);
-        await EnsureTransactionTypesSeeded(cancellationToken);
-        await EnsureCurrenciesSeeded(cancellationToken);
-        await EnsureCoreAccountsSeeded(cancellationToken);
+        try
+        {
+            var repository = _serviceProvider.GetRequiredService<IRepository>();
+            await using (repository.BeginTransaction())
+            {
+                await EnsureUserSeeded(repository, cancellationToken);
+                await EnsureAccountTypesSeeded(repository, cancellationToken);
+                await EnsureLinkTypesSeeded(repository, cancellationToken);
+                await EnsureTransactionTypesSeeded(repository, cancellationToken);
+                await EnsureCurrenciesSeeded(repository, cancellationToken);
+                await EnsureCoreAccountsSeeded(repository, cancellationToken);
+            }
+        }
+        catch (Exception e)
+        {
+            throw;
+        }
     }
 
-    internal async Task EnsureSeeded<T>(List<T> entities, CancellationToken cancellationToken)
-        where T : FinanceEntity
+    internal async Task EnsureSeeded<T>(IRepository repository, List<T> entities, CancellationToken cancellationToken)
+        where T : FinanceEntity, new()
     {
-        var repository = _serviceProvider.GetRequiredService<IRepository>();
         var existingEntities = await repository.GetEntitiesAsync<T>(_ => _.UserId == Guid.Empty, cancellationToken);
 
         var newEntities = entities.Where(_ => !existingEntities.Any(e => e.Id == _.Id)).ToList();
@@ -40,9 +50,8 @@ public class FinanceDataSeeder : IFinanceDataSeeder
         await repository.UpsertEntitiesAsync(newEntities, cancellationToken);
     }
 
-    private async Task EnsureUserSeeded(CancellationToken cancellationToken)
+    private async Task EnsureUserSeeded(IRepository repository, CancellationToken cancellationToken)
     {
-        var repository = _serviceProvider.GetRequiredService<IRepository>();
         var seededUser = new User { Id = Guid.Empty, Email = "financesystem@markdavison.kiwi", First = "Finance", Last = "System", Username = "Finance.System" };
 
         var existingUser = await repository.GetEntityAsync<User>(_ => _.Id == Guid.Empty, cancellationToken);
@@ -54,7 +63,7 @@ public class FinanceDataSeeder : IFinanceDataSeeder
 
     }
 
-    private async Task EnsureAccountTypesSeeded(CancellationToken cancellationToken)
+    private async Task EnsureAccountTypesSeeded(IRepository repository, CancellationToken cancellationToken)
     {
         var seededAccountTypes = new List<AccountType>
         {
@@ -73,10 +82,10 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             new AccountType{ Id = AccountConstants.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
         };
 
-        await EnsureSeeded(seededAccountTypes, cancellationToken);
+        await EnsureSeeded(repository, seededAccountTypes, cancellationToken);
     }
 
-    private async Task EnsureLinkTypesSeeded(CancellationToken cancellationToken)
+    private async Task EnsureLinkTypesSeeded(IRepository repository, CancellationToken cancellationToken)
     {
         var seededLinkTypes = new List<LinkType>
         {
@@ -85,10 +94,10 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             new LinkType{ Id = LinkType.Paid, Name = "Paid", Inward = "is (partially) paid for by", Outward = "(partially) pays for", Editable = false, UserId= Guid.Empty },
             new LinkType{ Id = LinkType.Reimbursement, Name = "Reimbursement", Inward = "is (partially) reimbursed by", Outward = "(partially) reimburses", Editable = false, UserId= Guid.Empty },
         };
-        await EnsureSeeded(seededLinkTypes, cancellationToken);
+        await EnsureSeeded(repository, seededLinkTypes, cancellationToken);
     }
 
-    private async Task EnsureTransactionTypesSeeded(CancellationToken cancellationToken)
+    private async Task EnsureTransactionTypesSeeded(IRepository repository, CancellationToken cancellationToken)
     {
         var seededTransactionTypes = new List<TransactionType>
         {
@@ -100,10 +109,10 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             new TransactionType{ Id = TransactionConstants.Invalid, Type = "Invalid", UserId = Guid.Empty },
             new TransactionType{ Id = TransactionConstants.LiabilityCredit, Type = "Liability credit", UserId = Guid.Empty },
         };
-        await EnsureSeeded(seededTransactionTypes, cancellationToken);
+        await EnsureSeeded(repository, seededTransactionTypes, cancellationToken);
     }
 
-    private async Task EnsureCurrenciesSeeded(CancellationToken cancellationToken)
+    private async Task EnsureCurrenciesSeeded(IRepository repository, CancellationToken cancellationToken)
     {
         var seededCurrencies = new List<Currency>
         {
@@ -117,16 +126,16 @@ public class FinanceDataSeeder : IFinanceDataSeeder
             new Currency { Id = Currency.RMB, Code = "RMB", Name = "Chinese Yuan", Symbol = "¥", DecimalPlaces = 2  },
             new Currency { Id = Currency.INT, Code = "INT", Name = "Internal", Symbol = "$", DecimalPlaces = 2  },
         };
-        await EnsureSeeded(seededCurrencies, cancellationToken);
+        await EnsureSeeded(repository, seededCurrencies, cancellationToken);
     }
 
-    private async Task EnsureCoreAccountsSeeded(CancellationToken cancellationToken)
+    private async Task EnsureCoreAccountsSeeded(IRepository repository, CancellationToken cancellationToken)
     {
         var seededAccounts = new List<Account>
         {
             new Account { Id = Account.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT, Name = "Opening balance" },
             new Account { Id = Account.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT, Name = "Reconcilation" }
         };
-        await EnsureSeeded(seededAccounts, cancellationToken);
+        await EnsureSeeded(repository, seededAccounts, cancellationToken);
     }
 }

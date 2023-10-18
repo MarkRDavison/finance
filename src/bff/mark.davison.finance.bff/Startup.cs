@@ -1,5 +1,10 @@
 ﻿namespace mark.davison.finance.bff;
 
+[mark.davison.common.source.generators.CQRS.UseCQRSServer(
+    typeof(BffRootType),
+    typeof(CommandsRootType),
+    typeof(QueriesRootType),
+    typeof(DtosRootType))]
 public class Startup
 {
     const string KeycloakRealmToWellKnown = "/.well-known/openid-configuration";
@@ -15,11 +20,7 @@ public class Startup
         if (AppSettings == null) { throw new InvalidOperationException(); }
 
         services
-            .AddControllers()
-            .ConfigureApplicationPartManager(manager =>
-            {
-                manager.ApplicationParts.Add(new AssemblyPart(typeof(AuthController).Assembly));
-            });
+            .AddControllers();
         services.ConfigureHealthCheckServices();
 
         services.AddCors(options =>
@@ -106,11 +107,7 @@ public class Startup
             endpoints
                 .MapControllers();
             endpoints
-                .ConfigureCQRSEndpoints(
-                    typeof(BffRootType),
-                    typeof(CommandsRootType),
-                    typeof(QueriesRootType),
-                    typeof(DtosRootType));
+                .ConfigureCQRSEndpoints();
         });
     }
 

@@ -43,10 +43,7 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.UseCQRS(
-            typeof(CommandsRootType),
-            typeof(QueriesRootType),
-            typeof(DtosRootType));
+        services.UseCQRSServer();
 
         services.AddCommandCQRS();
         services.AddScoped<ICurrentUserContext, CurrentUserContext>(_ =>

@@ -20,8 +20,11 @@ public class ApiIntegrationTestBase : IntegrationTestBase<FinanceApiWebApplicati
     {
         await base.SeedData(serviceProvider);
         var repository = serviceProvider.GetRequiredService<IRepository>();
-        await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
-        await SeedTestData();
+        await using (repository.BeginTransaction())
+        {
+            await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
+            await SeedTestData();
+        }
     }
 
     protected virtual Task SeedTestData() => Task.CompletedTask;

@@ -100,10 +100,13 @@ public class AccountControllerIntegrationTests : IntegrationTestBase<FinanceApiW
             }
         });
 
-        await repository.UpsertEntitiesAsync(_accounts, CancellationToken.None);
-        await repository.UpsertEntitiesAsync(_transactionGroups, CancellationToken.None);
-        await repository.UpsertEntitiesAsync(_transactionJournals, CancellationToken.None);
-        await repository.UpsertEntitiesAsync(_transactions, CancellationToken.None);
+        await using (repository.BeginTransaction())
+        {
+            await repository.UpsertEntitiesAsync(_accounts, CancellationToken.None);
+            await repository.UpsertEntitiesAsync(_transactionGroups, CancellationToken.None);
+            await repository.UpsertEntitiesAsync(_transactionJournals, CancellationToken.None);
+            await repository.UpsertEntitiesAsync(_transactions, CancellationToken.None);
+        }
     }
 
 }

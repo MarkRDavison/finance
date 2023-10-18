@@ -110,7 +110,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
         await _httpRepository.UpsertEntitiesAsync(transactions, header, cancellationToken);
     }
 
-    public async Task OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
+    public async Task<User?> OnUserAuthenticated(UserProfile userProfile, IZenoAuthenticationSession zenoAuthenticationSession, CancellationToken cancellationToken)
     {
         var token = zenoAuthenticationSession.GetString(ZenoAuthenticationConstants.SessionNames.AccessToken);
         var user = await GetUser(userProfile.sub, cancellationToken);
@@ -129,5 +129,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
         {
             zenoAuthenticationSession.SetString(ZenoAuthenticationConstants.SessionNames.User, JsonSerializer.Serialize(user));
         }
+
+        return user;
     }
 }

@@ -29,48 +29,51 @@ public class AccountController : BaseFinanceController<Account>
 
         using (_logger.ProfileOperation(context: $"GET api/{typeof(Account).Name.ToLowerInvariant()}/summary"))
         {
-            var accounts = await _repository.GetEntitiesAsync<Account>(where, includes, cancellationToken);
-            var accountIds = accounts.Select(_ => _.Id).ToList();
-            var openingBalances = await _repository.GetEntitiesAsync<TransactionJournal>(
-                _ =>
-                    _.Transactions.Any(__ => accountIds.Contains(__.AccountId)) &&
-                    _.TransactionTypeId == TransactionConstants.OpeningBalance,
-                new Expression<Func<TransactionJournal, object>>[] {
-                    _ => _.Transactions!
-                },
-                cancellationToken);
-
-            var summaries = new List<AccountSummary>();
-            foreach (var account in accounts
-                .Where(_ =>
-                    _.Id != Account.Reconciliation && // TODO: Better single place that creates expression to filter these or add property to account
-                    _.Id != Account.OpeningBalance))
+            await using (_repository.BeginTransaction())
             {
-                var openingBalanceTransactionJournal = openingBalances
-                    .FirstOrDefault(_ =>
-                        _.Transactions.Any(__ =>
-                            __.AccountId == account.Id));
-                var openingBalanceTransaction = openingBalanceTransactionJournal?
-                    .Transactions
-                    .FirstOrDefault(_ => _.AccountId == account.Id);
+                var accounts = await _repository.GetEntitiesAsync<Account>(where, includes, cancellationToken);
+                var accountIds = accounts.Select(_ => _.Id).ToList();
+                var openingBalances = await _repository.GetEntitiesAsync<TransactionJournal>(
+                    _ =>
+                        _.Transactions.Any(__ => accountIds.Contains(__.AccountId)) &&
+                        _.TransactionTypeId == TransactionConstants.OpeningBalance,
+                    new Expression<Func<TransactionJournal, object>>[] {
+                    _ => _.Transactions!
+                    },
+                    cancellationToken);
 
-                summaries.Add(new AccountSummary
+                var summaries = new List<AccountSummary>();
+                foreach (var account in accounts
+                    .Where(_ =>
+                        _.Id != Account.Reconciliation && // TODO: Better single place that creates expression to filter these or add property to account
+                        _.Id != Account.OpeningBalance))
                 {
-                    Id = account.Id,
-                    Name = account.Name,
-                    AccountNumber = account.AccountNumber,
-                    AccountType = account.AccountType!.Type,
-                    AccountTypeId = account.AccountTypeId,
-                    IsActive = account.IsActive,
-                    CurrencyId = account.CurrencyId,
-                    LastActivity = account.LastModified,
-                    VirtualBalance = account.VirtualBalance,
-                    OpeningBalance = openingBalanceTransaction?.Amount,
-                    OpeningBalanceDate = openingBalanceTransactionJournal?.Date
-                });
-            }
+                    var openingBalanceTransactionJournal = openingBalances
+                        .FirstOrDefault(_ =>
+                            _.Transactions.Any(__ =>
+                                __.AccountId == account.Id));
+                    var openingBalanceTransaction = openingBalanceTransactionJournal?
+                        .Transactions
+                        .FirstOrDefault(_ => _.AccountId == account.Id);
 
-            return Ok(summaries);
+                    summaries.Add(new AccountSummary
+                    {
+                        Id = account.Id,
+                        Name = account.Name,
+                        AccountNumber = account.AccountNumber,
+                        AccountType = account.AccountType!.Type,
+                        AccountTypeId = account.AccountTypeId,
+                        IsActive = account.IsActive,
+                        CurrencyId = account.CurrencyId,
+                        LastActivity = account.LastModified,
+                        VirtualBalance = account.VirtualBalance,
+                        OpeningBalance = openingBalanceTransaction?.Amount,
+                        OpeningBalanceDate = openingBalanceTransactionJournal?.Date
+                    });
+                }
+
+                return Ok(summaries);
+            }
         }
     }
 
