@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.web.components.Pages.Accounts;
+﻿using mark.davison.finance.web.components.CommonCandidates.Form;
+using mark.davison.finance.web.components.CommonCandidates.Form.Example;
+
+namespace mark.davison.finance.web.components.Pages.Accounts;
 
 public partial class AccountsList
 {
@@ -39,6 +42,8 @@ public partial class AccountsList
     private void OpenEditAccountModal(bool add)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        _dialogService.Show<EditAccountModal>(add ? "Add account" : "Edit account", options);
+        //_dialogService.Show<EditAccountModal>(add ? "Add account" : "Edit account", options);
+
+        _dialogService.Show<Modal<ExampleModalViewModel, ExampleFormViewModel, ExampleForm>>("Example modal", options);
     }
 }

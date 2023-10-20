@@ -1,17 +1,16 @@
 ﻿using mark.davison.common.client.abstractions.CQRS;
 using mark.davison.finance.accounting.rules;
-using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 using mark.davison.finance.web.features.Account.Add;
 using mark.davison.finance.web.features.Account.Create;
 
 namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
 
-public class EditAccountViewModel
+public class EditAccountModalViewModel
 {
 
     private readonly ICQRSDispatcher _dispatcher;
 
-    public EditAccountViewModel(
+    public EditAccountModalViewModel(
         ICQRSDispatcher dispatcher
     )
     {
@@ -37,10 +36,10 @@ public class EditAccountViewModel
             Id = EditAccountFormViewModel.Id,
             Name = EditAccountFormViewModel.Name,
             AccountNumber = EditAccountFormViewModel.AccountNumber,
-            VirtualBalance = CurrencyRules.ToPersisted(EditAccountFormViewModel.VirtualBalance),
+            VirtualBalance = CurrencyRules.ToPersisted(EditAccountFormViewModel.VirtualBalance ?? 0),
             AccountTypeId = EditAccountFormViewModel.AccountTypeId ?? Guid.Empty,
             CurrencyId = EditAccountFormViewModel.CurrencyId ?? Guid.Empty,
-            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(EditAccountFormViewModel.OpeningBalance) : null,
+            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(EditAccountFormViewModel.OpeningBalance ?? 0) : null,
             OpeningBalanceDate = (openingBalanceSpecified && EditAccountFormViewModel.OpeningBalanceDate != null) ? DateOnly.FromDateTime(EditAccountFormViewModel.OpeningBalanceDate.Value) : null,
         };
         var response = await _dispatcher.Dispatch<CreateAccountCommandRequest, CreateAccountCommandResponse>(request, CancellationToken.None);

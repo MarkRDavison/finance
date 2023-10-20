@@ -1,4 +1,5 @@
-﻿@using mark.davison.finance.web.components.CommonCandidates.Components.Currency
+﻿@using mark.davison.finance.web.components.CommonCandidates.Components.Numeric
+
 @inherits ComponentWithState
 
 <MudGrid>
@@ -18,75 +19,9 @@
                     <MudSelectItem Value="@id">@text</MudSelectItem>
                 }
             </MudSelect>
-            <MudNumericField Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" />
-            <CurrencyField Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" CurrencyInfo="@_currencyInfo" />
-            <MudNumericField Label="Opening balance" @bind-Value="ViewModel.OpeningBalance" />
+            <NumericField HideSpinButtons Label="Opening balance" @bind-Value="ViewModel.OpeningBalance" AllowNegative="false" DecimalPlaces="@ViewModel.DecimalPlaces" />
+            <NumericField HideSpinButtons Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" AllowNegative="false" DecimalPlaces="@ViewModel.DecimalPlaces"/>
             <MudDatePicker Label="Opening balance date" @bind-Date="ViewModel.OpeningBalanceDate" />
         </MudForm>
     </MudPaper>
 </MudGrid>
-
-@* 
-<div>
-    <TextInput 
-        Id="add-account-form-name"
-        Label="Name" 
-        IsLabelDisplay="true"
-        Width="100%"
-        @bind-Value="ViewModel.Name"/>
-    <TextInput 
-        Id="add-account-form-account-number"
-        Label="Account Number" 
-        IsLabelDisplay="true"
-        Width="100%"
-        @bind-Value="ViewModel.AccountNumber"/>
-    <DropdownList
-        TId="Guid"
-        Id="add-account-form-account-type"
-        Label="Account type" 
-        IsLabelDisplay="true"
-        Width="100%"
-        Placeholder="Select account type"
-        Items="@_accountTypeItems"
-        @bind-Value="ViewModel.AccountTypeId"/>
-    <DropdownList
-        TId="Guid"
-        Id="add-account-form-currency"
-        Label="Currency" 
-        IsLabelDisplay="true"
-        Width="100%"
-        Placeholder="Select currency"
-        Items="@_currencyItems"
-        @bind-Value="ViewModel.CurrencyId"/>
-    <CurrencyInput
-        Id="add-account-form-virtual-balance"
-        Label="Virtual balance" 
-        IsLabelDisplay="true"
-        Width="100%"
-        CurrencyInfo="@_selectedCurrency"
-        @bind-Value="@ViewModel.VirtualBalance"/>
-    <CurrencyInput
-        @ref="_openingBalance"
-        Id="add-account-form-opening-balance"
-        Label="Opening balance" 
-        IsLabelDisplay="true"
-        Width="100%"
-        CurrencyInfo="@_selectedCurrency"
-        @bind-Value="@ViewModel.OpeningBalance"/>
-    <DateInput
-        Width="100%"
-        Id="add-account-form-opening-balance-date"
-        IsLabelDisplay="true"
-        Label="Opening balance date"
-        @bind-Value="ViewModel.OpeningBalanceDate" />
-</div> *@
-@* 
-@code {
-    private List<IDropdownItem<Guid>> _accountTypeItems => ViewModel.LookupState.Instance.AccountTypes.Select(_ => new DropdownItem<Guid>(_.Id, _.Type)).Cast<IDropdownItem<Guid>>().ToList();
-
-    private List<IDropdownItem<Guid>> _currencyItems => ViewModel.LookupState.Instance.Currencies.Select(_ => new DropdownItem<Guid>(_.Id, _.Name)).Cast<IDropdownItem<Guid>>().ToList();
-
-    private CurrencyInfo? _selectedCurrency => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
-
-
-} *@

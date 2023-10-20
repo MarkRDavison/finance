@@ -1,4 +1,4 @@
-﻿using mark.davison.finance.web.components.Pages.Accounts.EditAccount;
+﻿using mark.davison.finance.web.components.CommonCandidates.Form.Example;
 using Microsoft.Extensions.DependencyInjection;
 using MudBlazor.Services;
 
@@ -9,7 +9,8 @@ public static class DependecyInjectionExtensions
     public static IServiceCollection UseFinanceComponents(this IServiceCollection services)
     {
         services.AddMudServices();
-        services.AddTransient<EditAccountViewModel>();
+        services.AddTransient<EditAccountModalViewModel>();
+        services.AddTransient<ExampleModalViewModel>();
         return services;
     }
 }

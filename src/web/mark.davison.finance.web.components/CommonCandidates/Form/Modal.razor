@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Extensions.DependencyInjection;
+
+@typeparam TModalViewModel where TModalViewModel : IModalViewModel<TFormViewModel, TForm>
+@typeparam TFormViewModel where TFormViewModel : IFormViewModel
+@typeparam TForm where TForm : Form<TFormViewModel>
+
+@inject IServiceProvider _serviceProvider;
+
+<MudDialog >
+    <DialogContent>
+        <EditForm EditContext="@_editContext" OnSubmit="@Primary">
+            @ModalContent
+        </EditForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Secondary">@SecondaryText</MudButton>
+        <MudButton Disabled="@_primaryDisabled" Color="Color.Primary" OnClick="Primary">
+            @if (_inProgress)
+            {
+                <MudProgressCircular Size="Size.Small" Color="Color.Primary" Indeterminate="true" />
+            }
+            else {
+                @PrimaryText;
+            }
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private bool _inProgress;
+    public bool _primaryDisabled => _inProgress || !ModalViewModel.FormViewModel.Valid;
+
+    private EditContext? _editContext;
+
+    [Parameter]
+    public string PrimaryText { get; set; } = "Ok";
+    [Parameter]
+    public string SecondaryText { get; set; } = "Cancel";
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter]
+    public RenderFragment ModalContent { get; set; } = default!;
+
+    [Parameter]
+    public TModalViewModel ModalViewModel { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        ModalContent = _ =>
+        {
+            _.OpenComponent<TForm>(0);
+            _.AddAttribute(1, nameof(Form<TFormViewModel>.FormViewModel), ModalViewModel.FormViewModel);
+            _.CloseComponent();
+        };
+
+        Reset();
+    }
+
+    protected void Reset()
+    {
+        ModalViewModel = _serviceProvider.GetRequiredService<TModalViewModel>();
+
+        if (_editContext != null)
+        {
+            _editContext.OnFieldChanged -= FieldChanged;
+        }
+
+        _editContext = new EditContext(ModalViewModel.FormViewModel);
+        _editContext.OnFieldChanged += FieldChanged;
+    }
+
+    async Task Primary()
+    {
+        _inProgress = true;
+        if (ModalViewModel.FormViewModel.Valid &&
+            await ModalViewModel.Primary(ModalViewModel.FormViewModel))
+        {
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        _inProgress = false;
+    }
+
+    void Secondary()
+    {
+        MudDialog.Cancel();
+    }
+
+    private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
+}

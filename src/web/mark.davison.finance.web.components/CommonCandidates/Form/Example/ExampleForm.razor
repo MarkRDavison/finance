@@ -1,0 +1,8 @@
+﻿@inherits Form<ExampleFormViewModel>
+
+<MudGrid>
+    <MudPaper Class="pa-4">
+        <MudTextField Immediate="true" Label="Name" Required="true" @bind-Text="FormViewModel.Text" For="@(() => FormViewModel.Text)" />
+        <MudDatePicker Label="Date" Required="true" @bind-Date="FormViewModel.Date" For="@(() => FormViewModel.Date)" />
+    </MudPaper>
+</MudGrid>

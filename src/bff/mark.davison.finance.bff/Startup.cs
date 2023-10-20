@@ -106,9 +106,9 @@ public class Startup
                 .UseAuthenticationEndpoints();
 
             MapProxyCQRSGet(endpoints, "/api/startup-query");
-            MapProxyCQRSGet(endpoints, "/api/user-context-request");
-            MapProxyCQRSGet(endpoints, "/api/user-index-request");
-            MapProxyCQRSGet(endpoints, "/api/app-context-request");
+            MapProxyCQRSGet(endpoints, "/api/account-list-query");
+            MapProxyCQRSGet(endpoints, "/api/category-list-query");
+            MapProxyCQRSGet(endpoints, "/api/tag-list-query");
         });
     }
 

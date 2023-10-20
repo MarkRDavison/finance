@@ -1,5 +1,4 @@
-﻿using mark.davison.finance.web.components.CommonCandidates.Components.Currency;
-using mark.davison.finance.web.features.Lookup;
+﻿using mark.davison.finance.web.features.Lookup;
 
 namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
 
@@ -14,7 +13,7 @@ public partial class EditAccountForm
 
     public IEnumerable<Tuple<Guid?, string>> _currencyItems => ViewModel.LookupState.Instance.Currencies.Select(_ => new Tuple<Guid?, string>(_.Id, _.Name));
 
-    public ICurrencyInfo? _currencyInfo => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
+    //public ICurrencyInfo? _currencyInfo => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
 
     protected override void OnInitialized()
     {
