@@ -32,8 +32,12 @@ public abstract class CQRSIntegrationTestBase : IntegrationTestBase<CQRSFinanceA
     protected override async Task SeedData(IServiceProvider serviceProvider)
     {
         await base.SeedData(serviceProvider);
-        var repository = serviceProvider.GetRequiredService<IRepository>();
-        await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
+        using var scope = GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+        await using (repository.BeginTransaction())
+        {
+            await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
+        }
         await SeedTestData();
     }
 

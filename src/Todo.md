@@ -1,13 +1,14 @@
-# FIRST BIG TODO:
-move from controllers to minimal apis
+Rename shared command/query projects to shared/remove bff reference
+
+Review uses if IRepository and verify if we need to grab it from the IServiceScopeFactory, or whether the cqrs pipeline service provider will work
+
+create helper class for RepositoryPredicate<T>, RepositoryInclude<T> etc
 
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2020_06_07_063612_changes_for_v530.php
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2021_08_28_073733_user_groups.php
 
 Dont validate audience/authority in integration tests, appsettings option?
 
-
-Move zeno dotnet common to github & nuget 
 
 Per user options
 	-	Default currency

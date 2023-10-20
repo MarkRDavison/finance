@@ -1,8 +1,5 @@
 ﻿namespace mark.davison.finance.models.dtos.Commands.CreateCategory;
 
-public class CreateCategoryCommandResponse // TODO: Common base class
+public class CreateCategoryCommandResponse : Response
 {
-    public bool Success { get; set; }
-    public List<string> Error { get; set; } = new();
-    public List<string> Warning { get; set; } = new();
 }

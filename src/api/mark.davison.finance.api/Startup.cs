@@ -1,7 +1,13 @@
-﻿using mark.davison.common.Services;
+﻿using mark.davison.common.server.Endpoints;
+using mark.davison.common.Services;
+using mark.davison.common.source.generators.CQRS;
+using mark.davison.finance.bff.commands;
+using mark.davison.finance.bff.queries;
+using mark.davison.finance.models.dtos;
 
 namespace mark.davison.finance.api;
 
+[UseCQRSServer(typeof(DtosRootType), typeof(CommandsRootType), typeof(QueriesRootType))]
 public class Startup
 {
     public IConfiguration Configuration { get; }
@@ -101,12 +107,18 @@ public class Startup
         services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();
         services.AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc));
 
-        services.AddTransient<IRepository>(_ =>
+        services.AddScoped<IRepository>(_ =>
             new FinanceRepository(
                 _.GetRequiredService<IDbContextFactory<FinanceDbContext>>(),
                 _.GetRequiredService<ILogger<FinanceRepository>>())
             );
 
+
+        services
+            .AddHttpClient()
+            .AddHttpContextAccessor();
+        services.AddCommandCQRS();
+        services.UseCQRSServer();
         services.UseFinancePersistence();
     }
 
@@ -132,8 +144,50 @@ public class Startup
         {
             endpoints
                 .MapHealthChecks();
+
             endpoints
-                .MapControllers();
+                .ConfigureCQRSEndpoints();
+
+            endpoints
+                .UseGet<User>()
+                .UseGetById<User>()
+                .UsePost<User>();
+
+            //.UseGet<Account>()
+            //.UseGetById<Account>()
+            //.UsePost<Account>()
+
+            //.UseGet<AccountType>()
+            //.UseGetById<AccountType>()
+            //.UsePost<AccountType>()
+
+            //.UseGet<Category>()
+            //.UseGetById<Category>()
+            //.UsePost<Category>()
+
+            //.UseGet<Currency>()
+            //.UseGetById<Currency>()
+            //.UsePost<Currency>()
+
+            //.UseGet<Tag>()
+            //.UseGetById<Tag>()
+            //.UsePost<Tag>()
+
+            //.UseGet<Transaction>()
+            //.UseGetById<Transaction>()
+            //.UsePost<Transaction>()
+
+            //.UseGet<TransactionJournal>()
+            //.UseGetById<TransactionJournal>()
+            //.UsePost<TransactionJournal>()
+
+            //.UseGet<TransactionGroup>()
+            //.UseGetById<TransactionGroup>()
+            //.UsePost<TransactionGroup>()
+
+            //.UseGet<TransactionType>()
+            //.UseGetById<TransactionType>()
+            //.UsePost<TransactionType>();
         });
 
     }

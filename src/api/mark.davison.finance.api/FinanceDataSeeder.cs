@@ -7,36 +7,30 @@ public interface IFinanceDataSeeder
 
 public class FinanceDataSeeder : IFinanceDataSeeder
 {
-    protected readonly IServiceProvider _serviceProvider;
+    protected readonly IServiceScopeFactory _serviceScopeFactory;
     protected readonly AppSettings _appSettings;
 
     public FinanceDataSeeder(
-        IServiceProvider serviceProvider,
+        IServiceScopeFactory serviceScopeFactory,
         IOptions<AppSettings> options
     )
     {
-        _serviceProvider = serviceProvider;
+        _serviceScopeFactory = serviceScopeFactory;
         _appSettings = options.Value;
     }
 
     public virtual async Task EnsureDataSeeded(CancellationToken cancellationToken)
     {
-        try
+        using var scope = _serviceScopeFactory.CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
+        await using (repository.BeginTransaction())
         {
-            var repository = _serviceProvider.GetRequiredService<IRepository>();
-            await using (repository.BeginTransaction())
-            {
-                await EnsureUserSeeded(repository, cancellationToken);
-                await EnsureAccountTypesSeeded(repository, cancellationToken);
-                await EnsureLinkTypesSeeded(repository, cancellationToken);
-                await EnsureTransactionTypesSeeded(repository, cancellationToken);
-                await EnsureCurrenciesSeeded(repository, cancellationToken);
-                await EnsureCoreAccountsSeeded(repository, cancellationToken);
-            }
-        }
-        catch (Exception e)
-        {
-            throw;
+            await EnsureUserSeeded(repository, cancellationToken);
+            await EnsureAccountTypesSeeded(repository, cancellationToken);
+            await EnsureLinkTypesSeeded(repository, cancellationToken);
+            await EnsureTransactionTypesSeeded(repository, cancellationToken);
+            await EnsureCurrenciesSeeded(repository, cancellationToken);
+            await EnsureCoreAccountsSeeded(repository, cancellationToken);
         }
     }
 

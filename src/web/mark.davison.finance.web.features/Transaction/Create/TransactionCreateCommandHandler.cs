@@ -11,14 +11,14 @@ public class TransactionCreateCommandHandler : ICommandHandler<TransactionCreate
     }
     public async Task<TransactionCreateCommandResponse> Handle(TransactionCreateCommand command, CancellationToken cancellationToken)
     {
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Description = command.Description,
             TransactionTypeId = command.TransactionTypeId,
             Transactions = command.CreateTransactionDtos
         };
 
-        var response = await _repository.Post<CreateTransactionCommandResponse, CreateTransactionCommandRequest>(request, cancellationToken);
+        var response = await _repository.Post<CreateTransactionResponse, CreateTransactionRequest>(request, cancellationToken);
 
         return new TransactionCreateCommandResponse
         {

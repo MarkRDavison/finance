@@ -6,10 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+	<ItemGroup>
+		<PackageReference Include="markdavison.common.server" Version="7.4.6" />
+	</ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models\mark.davison.finance.models.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.shared.utilities\mark.davison.finance.shared.utilities.csproj" />
   </ItemGroup>
 
 </Project>

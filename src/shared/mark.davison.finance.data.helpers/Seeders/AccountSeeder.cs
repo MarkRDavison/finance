@@ -27,7 +27,7 @@ public class AccountSeeder
             var result = await CreateAccount(account);
             if (!result.Success)
             {
-                throw new InvalidOperationException("CreateAccount failed.");
+                throw new InvalidOperationException("CreateAccount failed: " + string.Join(", ", result.Error));
             }
         }
     }

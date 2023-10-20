@@ -2,21 +2,19 @@
 
 public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
 
-    public TransactionByAccountQueryHandler(IHttpRepository httpRepository)
+    public TransactionByAccountQueryHandler(IRepository repository)
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
     }
 
     public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TransactionByAccountQueryResponse();
 
-        var transactions = await _httpRepository.GetEntitiesAsync<Transaction>(
-            $"transaction/account/{query.AccountId}",
-            new QueryParameters(),
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
+        var transactions = await _repository.GetEntitiesAsync<Transaction>(
+            _ => _.AccountId == query.AccountId,
             cancellationToken);
 
         response.Transactions.AddRange(transactions

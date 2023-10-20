@@ -3,15 +3,15 @@
 [TestClass]
 public class CreateTagCommandValidatorTests
 {
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly CreateTagCommandValidator _validator;
 
     public CreateTagCommandValidatorTests()
     {
-        _httpRepository = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
-        _validator = new(_httpRepository.Object);
+        _validator = new(_repository.Object);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
     }
@@ -25,21 +25,19 @@ public class CreateTagCommandValidatorTests
             Name = "Tag Name"
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntityAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(() => null)
             .Verifiable();
 
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(_ =>
                 _.GetEntityAsync<Tag>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Tag, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
@@ -56,27 +54,19 @@ public class CreateTagCommandValidatorTests
             Name = "Tag Name"
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntityAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(q.ContainsKey(nameof(Tag.Name)));
-                Assert.IsTrue(q.ContainsKey(nameof(Tag.UserId)));
-
-                return new Tag();
-            })
+            .ReturnsAsync(new Tag())
             .Verifiable();
 
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(_ =>
                 _.GetEntityAsync<Tag>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Tag, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
@@ -93,27 +83,19 @@ public class CreateTagCommandValidatorTests
             Name = "Tag Name"
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntityAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(q.ContainsKey(nameof(Tag.Name)));
-                Assert.IsTrue(q.ContainsKey(nameof(Tag.UserId)));
-
-                return null;
-            })
+            .ReturnsAsync((Tag?)null)
             .Verifiable();
 
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(_ =>
                 _.GetEntityAsync<Tag>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Tag, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands;
+﻿using mark.davison.finance.bff.commands.Scenarios.CreateCategory;
+
+namespace mark.davison.finance.bff.commands;
 
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
@@ -9,12 +11,15 @@ public static class DependencyInversionExtensions
         //       and auto register them
         services.AddTransient<IUpsertAccountCommandValidator, UpsertAccountCommandValidator>();
         services.AddTransient<IUpsertAccountCommandProcessor, UpsertAccountCommandProcessor>();
-        services.AddTransient<ICreateCategoryCommandValidator, CreateCategoryCommandValidator>();
         services.AddTransient<ICreateTagCommandValidator, CreateTagCommandValidator>();
-        services.AddTransient<ICreateTransactionCommandValidator, CreateTransactionCommandValidator>();
-        services.AddTransient<ICreateTransactionCommandProcessor, CreateTransactionCommandProcessor>();
+        services.AddTransient<ICommandValidator<CreateTransactionRequest, CreateTransactionResponse>, CreateTransactionCommandValidator>();
+        services.AddTransient<ICommandProcessor<CreateTransactionRequest, CreateTransactionResponse>, CreateTransactionCommandProcessor>();
         services.AddTransient<ICreateTransactionValidatorStrategyFactory, CreateTransactionValidatorStrategyFactory>();
         services.AddTransient<ICreateTransctionValidationContext, CreateTransctionValidationContext>();
+
+
+        services.AddTransient<ICommandValidator<CreateCategoryCommandRequest, CreateCategoryCommandResponse>, CreateCategoryCommandValidator>();
+        services.AddTransient<ICommandProcessor<CreateCategoryCommandRequest, CreateCategoryCommandResponse>, CreateCategoryCommandProcessor>();
 
     }
 }

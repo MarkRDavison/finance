@@ -19,12 +19,13 @@ public class ApiIntegrationTestBase : IntegrationTestBase<FinanceApiWebApplicati
     protected override async Task SeedData(IServiceProvider serviceProvider)
     {
         await base.SeedData(serviceProvider);
-        var repository = serviceProvider.GetRequiredService<IRepository>();
+        using var scope = Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
+        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
         await using (repository.BeginTransaction())
         {
             await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
-            await SeedTestData();
         }
+        await SeedTestData();
     }
 
     protected virtual Task SeedTestData() => Task.CompletedTask;

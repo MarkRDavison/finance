@@ -3,7 +3,6 @@
 [TestClass]
 public class UpsertAccountCommandHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepositoryMock;
     private readonly Mock<ICurrentUserContext> _currentUserContextMock;
     private readonly UpsertAccountCommandHandler _upsertAccountCommandHandler;
     private readonly Mock<IUpsertAccountCommandValidator> _upsertAccountCommandValidatorMock;
@@ -11,7 +10,6 @@ public class UpsertAccountCommandHandlerTests
 
     public UpsertAccountCommandHandlerTests()
     {
-        _httpRepositoryMock = new(MockBehavior.Strict);
         _currentUserContextMock = new(MockBehavior.Strict);
         _upsertAccountCommandProcessorMock = new(MockBehavior.Strict);
         _currentUserContextMock.Setup(_ => _.Token).Returns("");
@@ -19,7 +17,6 @@ public class UpsertAccountCommandHandlerTests
         _upsertAccountCommandValidatorMock = new Mock<IUpsertAccountCommandValidator>(MockBehavior.Strict);
 
         _upsertAccountCommandHandler = new UpsertAccountCommandHandler(
-            _httpRepositoryMock.Object,
             _upsertAccountCommandValidatorMock.Object,
             _upsertAccountCommandProcessorMock.Object);
 

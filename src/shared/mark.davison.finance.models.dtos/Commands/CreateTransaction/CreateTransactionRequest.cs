@@ -1,7 +1,7 @@
 ﻿namespace mark.davison.finance.models.dtos.Commands.CreateTransaction;
 
 [PostRequest(Path = "create-transaction")]
-public class CreateTransactionCommandRequest : ICommand<CreateTransactionCommandRequest, CreateTransactionCommandResponse>
+public class CreateTransactionRequest : ICommand<CreateTransactionRequest, CreateTransactionResponse>
 {
     public Guid TransactionTypeId { get; set; }
     public string Description { get; set; } = string.Empty;

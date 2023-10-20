@@ -1,10 +1,7 @@
-﻿namespace mark.davison.finance.bff;
+﻿using mark.davison.common.CQRS;
 
-[mark.davison.common.source.generators.CQRS.UseCQRSServer(
-    typeof(BffRootType),
-    typeof(CommandsRootType),
-    typeof(QueriesRootType),
-    typeof(DtosRootType))]
+namespace mark.davison.finance.bff;
+
 public class Startup
 {
     const string KeycloakRealmToWellKnown = "/.well-known/openid-configuration";
@@ -36,7 +33,7 @@ public class Startup
         services.AddAuthentication(ZenoAuthenticationConstants.ZenoAuthenticationScheme);
         services.AddAuthorization();
         services.AddTransient<ICustomZenoAuthenticationActions, FinanceCustomZenoAuthenticationActions>();
-
+        services.AddHttpClient("PROXY");
         services.UseFinanceBff(AppSettings);
 
         services
@@ -104,11 +101,52 @@ public class Startup
         {
             endpoints
                 .MapHealthChecks();
+
             endpoints
-                .MapControllers();
-            endpoints
-                .ConfigureCQRSEndpoints();
+                .UseAuthenticationEndpoints();
+
+            MapProxyCQRSGet(endpoints, "/api/startup-query");
+            MapProxyCQRSGet(endpoints, "/api/user-context-request");
+            MapProxyCQRSGet(endpoints, "/api/user-index-request");
+            MapProxyCQRSGet(endpoints, "/api/app-context-request");
         });
+    }
+
+    static void MapProxyCQRSGet(IEndpointRouteBuilder endpoints, string path)
+    {
+        endpoints.MapGet(
+            path,
+            async (HttpContext context, IOptions<AppSettings> options, IHttpClientFactory httpClientFactory, ICurrentUserContext currentUserContext, CancellationToken cancellationToken) =>
+            {
+                if (string.IsNullOrEmpty(currentUserContext.Token))
+                {
+                    return Results.Unauthorized();
+                }
+
+                var client = httpClientFactory.CreateClient("PROXY");
+
+                var headers = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
+
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Value.API_ORIGIN.TrimEnd('/')}{path}");
+
+                foreach (var k in headers)
+                {
+                    request.Headers.Add(k.Key, k.Value);
+                }
+
+                var response = await client.SendAsync(request, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return Results.Text(content);
+                }
+
+                return Results.BadRequest(new Response
+                {
+                    Errors = new() { $"Error: {response.StatusCode}" }
+                });
+            });
     }
 
     public IConfiguration Configuration { get; }

@@ -7,12 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="markdavison.common.client.abstractions" Version="7.4.3" />
+    <PackageReference Include="markdavison.common.client.abstractions" Version="7.4.4" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
     <ProjectReference Include="..\mark.davison.finance.web.services\mark.davison.finance.web.services.csproj" />
   </ItemGroup>
 

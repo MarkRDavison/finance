@@ -27,10 +27,6 @@ public static class DependencyInversionExtensions
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.UseCQRSServer();
-
-        services.AddCommandCQRS();
-
         return services;
     }
 

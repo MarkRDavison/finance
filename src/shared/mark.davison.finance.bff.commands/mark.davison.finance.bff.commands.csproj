@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="markdavison.common.server" Version="7.4.6" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
   </ItemGroup>
 
@@ -15,6 +16,7 @@
     <ProjectReference Include="..\mark.davison.finance.accounting.rules\mark.davison.finance.accounting.rules.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models\mark.davison.finance.models.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.shared.utilities\mark.davison.finance.shared.utilities.csproj" />
   </ItemGroup>
 
 </Project>

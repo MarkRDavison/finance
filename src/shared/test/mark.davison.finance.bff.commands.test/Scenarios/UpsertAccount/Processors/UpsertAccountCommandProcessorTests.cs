@@ -3,96 +3,52 @@
 [TestClass]
 public class UpsertAccountCommandProcessorTests
 {
-    private readonly Mock<IHttpRepository> _httpRepositoryMock;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContextMock;
     private readonly Mock<IDateService> _dateService;
-    private readonly Mock<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>> _createTransactionHandlerMock;
+    private readonly Mock<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>> _createTransactionHandlerMock;
     private readonly UpsertAccountCommandProcessor _upsertAccountCommandProcessor;
 
     public UpsertAccountCommandProcessorTests()
     {
-        _httpRepositoryMock = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
         _currentUserContextMock = new(MockBehavior.Strict);
         _dateService = new(MockBehavior.Strict);
         _createTransactionHandlerMock = new(MockBehavior.Strict);
         _currentUserContextMock.Setup(_ => _.Token).Returns("");
         _currentUserContextMock.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object, _dateService.Object);
+        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object, _dateService.Object, _repository.Object);
 
         _dateService.Setup(_ => _.Now).Returns(DateTime.Now);
 
-        _httpRepositoryMock
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
+
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<Account>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, HeaderParameters h, CancellationToken c) => a);
+            .ReturnsAsync((Account a, CancellationToken c) => a);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Account>(
                 It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((Account?)null);
 
-        _httpRepositoryMock
-            .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+        _repository
+            .Setup(_ => _.GetEntityAsync<TransactionJournal>(
+                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Transaction?)null);
-    }
+            .ReturnsAsync((TransactionJournal?)null);
 
-    [TestMethod]
-    public async Task FetchesExistingAccountAndOpeningBalance()
-    {
-        _httpRepositoryMock
-            .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+        _createTransactionHandlerMock
+            .Setup(_ => _.Handle(
+                It.IsAny<CreateTransactionRequest>(),
+                It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(q.ContainsKey("TransactionJournal.TransactionTypeId"));
-                Assert.IsTrue(q.ContainsKey(nameof(Transaction.AccountId)));
-                return null;
-            })
-            .Verifiable();
-
-        _httpRepositoryMock
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Guid id, HeaderParameters h, CancellationToken c) =>
-            {
-                return null;
-            })
-            .Verifiable();
-
-        var request = new UpsertAccountCommandRequest
-        {
-            UpsertAccountDto = new UpsertAccountDto()
-        };
-
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
-
-        _httpRepositoryMock
-            .Verify(
-                _ => _.GetEntityAsync<Transaction>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        _httpRepositoryMock
-            .Verify(
-                _ => _.GetEntityAsync<Account>(
-                    It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionResponse());
     }
 
     [TestMethod]
@@ -110,12 +66,11 @@ public class UpsertAccountCommandProcessorTests
 
         Account? persistedAccount = null;
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<Account>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((Account a, CancellationToken c) =>
             {
                 persistedAccount = a;
                 return a;
@@ -124,10 +79,10 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionCommandRequest>(),
+                It.IsAny<CreateTransactionRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateTransactionCommandRequest r, ICurrentUserContext uc, CancellationToken c) =>
+            .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) =>
             {
                 Assert.AreEqual(TransactionConstants.OpeningBalance, r.TransactionTypeId);
                 Assert.AreEqual(1, r.Transactions.Count);
@@ -146,17 +101,16 @@ public class UpsertAccountCommandProcessorTests
                 Assert.IsNull(transaction.BudgetId);
                 Assert.IsNull(transaction.CategoryId);
                 Assert.IsNull(transaction.BillId);
-                return new CreateTransactionCommandResponse();
+                return new CreateTransactionResponse();
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync(
                     It.IsAny<Account>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         Assert.IsNotNull(persistedAccount);
@@ -164,7 +118,7 @@ public class UpsertAccountCommandProcessorTests
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionCommandRequest>(),
+                    It.IsAny<CreateTransactionRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -183,12 +137,11 @@ public class UpsertAccountCommandProcessorTests
 
         Account? persistedAccount = null;
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<Account>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((Account a, CancellationToken c) =>
             {
                 persistedAccount = a;
                 return a;
@@ -197,18 +150,17 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionCommandRequest>(),
+                It.IsAny<CreateTransactionRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync(
                     It.IsAny<Account>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         Assert.IsNotNull(persistedAccount);
@@ -216,7 +168,7 @@ public class UpsertAccountCommandProcessorTests
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionCommandRequest>(),
+                    It.IsAny<CreateTransactionRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
@@ -240,19 +192,17 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Account>(
                 It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<Account>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((Account a, CancellationToken c) =>
             {
                 return a;
             })
@@ -260,26 +210,25 @@ public class UpsertAccountCommandProcessorTests
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
-                It.IsAny<CreateTransactionCommandRequest>(),
+                It.IsAny<CreateTransactionRequest>(),
                 It.IsAny<ICurrentUserContext>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateTransactionCommandRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionCommandResponse())
+            .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionResponse())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync(
                     It.IsAny<Account>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
         _createTransactionHandlerMock
             .Verify(
                 _ => _.Handle(
-                    It.IsAny<CreateTransactionCommandRequest>(),
+                    It.IsAny<CreateTransactionRequest>(),
                     It.IsAny<ICurrentUserContext>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
@@ -325,75 +274,67 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Account>(
                 It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction.TransactionJournal);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.DeleteEntitiesAsync<Transaction>(
                 It.IsAny<List<Guid>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true)
+            .ReturnsAsync(new List<Transaction>())
             .Verifiable();
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.DeleteEntityAsync<TransactionJournal>(
                 transaction.TransactionJournal.Id,
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true)
+            .ReturnsAsync(new TransactionJournal())
             .Verifiable();
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.DeleteEntityAsync<TransactionGroup>(
                 transaction.TransactionJournal.TransactionGroupId,
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true)
+            .ReturnsAsync(new TransactionGroup())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.DeleteEntitiesAsync<Transaction>(
                     It.IsAny<List<Guid>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.DeleteEntityAsync<TransactionJournal>(
                     transaction.TransactionJournal.Id,
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.DeleteEntityAsync<TransactionGroup>(
                     transaction.TransactionJournal.TransactionGroupId,
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -440,33 +381,30 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Account>(
                 It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction.TransactionJournal);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<Transaction>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<Transaction> e, CancellationToken c) =>
             {
                 var sourceAccountTransaction = e.First(_ => _.AccountId == Account.OpeningBalance);
                 var destinationAccountTransaction = e.First(_ => _.AccountId == account.Id);
@@ -478,33 +416,30 @@ public class UpsertAccountCommandProcessorTests
             })
             .Verifiable();
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<TransactionJournal>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionJournal tj, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((TransactionJournal tj, CancellationToken c) =>
             {
                 Assert.AreEqual(request.UpsertAccountDto.OpeningBalanceDate, tj.Date);
                 return new TransactionJournal();
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<Transaction>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync(
                     It.IsAny<TransactionJournal>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -554,58 +489,51 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Account>(
                 It.IsAny<Guid>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(account);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transaction.TransactionJournal);
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<Transaction>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Transaction>())
             .Verifiable();
 
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<TransactionJournal>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new TransactionJournal())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _httpRepositoryMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<Transaction>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
 
-        _httpRepositoryMock
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync(
                     It.IsAny<TransactionJournal>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Never);
     }

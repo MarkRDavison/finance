@@ -1,159 +1,154 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.UpsertAccount.Processors;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.finance.bff.commands.Scenarios.UpsertAccount.Processors;
 
 public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
 {
-    private readonly ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> _createTransactionHandler;
+    private readonly ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> _createTransactionHandler;
     private readonly IDateService _dateService;
+    private readonly IRepository _repository;
 
     public UpsertAccountCommandProcessor(
-        ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse> createTransactionHandler,
-        IDateService dateService
+        ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> createTransactionHandler,
+        IDateService dateService,
+        IRepository repository
     )
     {
         _dateService = dateService;
         _createTransactionHandler = createTransactionHandler;
+        _repository = repository;
     }
 
     public async Task<UpsertAccountCommandResponse> Process(
         UpsertAccountCommandRequest request,
         UpsertAccountCommandResponse response,
         ICurrentUserContext currentUserContext,
-        IHttpRepository httpRepository,
         CancellationToken cancellationToken)
     {
-        var headerParameters = HeaderParameters.Auth(
-                currentUserContext.Token,
-                currentUserContext.CurrentUser);
 
-        var existingAccount = await httpRepository.GetEntityAsync<Account>(
-            request.UpsertAccountDto.Id,
-            headerParameters,
-            cancellationToken);
-
-        var transactionQuery = new QueryParameters();
-        transactionQuery.Add(nameof(Transaction.AccountId), request.UpsertAccountDto.Id.ToString());
-        transactionQuery.Add(string.Format("{0}.{1}",
-                nameof(Transaction.TransactionJournal),
-                nameof(TransactionJournal.TransactionTypeId)
-            ), TransactionConstants.OpeningBalance.ToString());
-        var existingOpeningBalance = await httpRepository.GetEntityAsync<Transaction>(
-            transactionQuery,
-            headerParameters,
-            cancellationToken);
-
-        Account account;
-        if (existingAccount == null)
+        await using (_repository.BeginTransaction())
         {
-            account = new Account
-            {
-                Id = request.UpsertAccountDto.Id,
-                Created = _dateService.Now,
-                LastModified = _dateService.Now,
-                IsActive = true,
-                Order = -1,
-                UserId = currentUserContext.CurrentUser.Id
-            };
-        }
-        else
-        {
-            account = existingAccount;
-        }
 
-        account.Name = request.UpsertAccountDto.Name;
-        account.VirtualBalance = request.UpsertAccountDto.VirtualBalance;
-        account.AccountNumber = request.UpsertAccountDto.AccountNumber;
-        account.AccountTypeId = request.UpsertAccountDto.AccountTypeId;
-        account.CurrencyId = request.UpsertAccountDto.CurrencyId;
-
-        await httpRepository.UpsertEntityAsync(
-            account,
-            headerParameters,
-            cancellationToken);
-
-        bool requestHasOpeningBalance =
-            request.UpsertAccountDto.OpeningBalance != null &&
-            request.UpsertAccountDto.OpeningBalanceDate != null;
-
-        bool openingBalanceNeedsEditing = requestHasOpeningBalance && existingOpeningBalance != null;
-        bool openingBalanceNeedsDeleting = !requestHasOpeningBalance && existingOpeningBalance != null;
-
-        if (requestHasOpeningBalance && existingOpeningBalance == null)
-        {
-            await _createTransactionHandler.Handle(new()
-            {
-                TransactionTypeId = TransactionConstants.OpeningBalance,
-                Transactions =
-                {
-                    new CreateTransactionDto
-                    {
-                        Id = Guid.NewGuid(),
-                        Amount = request.UpsertAccountDto.OpeningBalance!.Value,
-                        Description = "Opening balance",
-                        CurrencyId = account.CurrencyId,
-                        SourceAccountId = Account.OpeningBalance,
-                        DestinationAccountId = account.Id,
-                        Date = request.UpsertAccountDto.OpeningBalanceDate!.Value
-                    }
-                }
-            }, currentUserContext, cancellationToken);
-        }
-        else if (openingBalanceNeedsEditing || openingBalanceNeedsDeleting)
-        {
-            var transactionJournalQuery = new QueryParameters();
-            transactionJournalQuery.Add(nameof(TransactionJournal.Id), existingOpeningBalance!.TransactionJournalId.ToString());
-            transactionJournalQuery.Include(nameof(TransactionJournal.Transactions));
-            var transactionJournal = await httpRepository.GetEntityAsync<TransactionJournal>(
-                transactionJournalQuery,
-                headerParameters,
+            var existingAccount = await _repository.GetEntityAsync<Account>(
+                request.UpsertAccountDto.Id,
                 cancellationToken);
 
-            if (openingBalanceNeedsEditing)
-            {
-                var sourceAccountTransaction = transactionJournal!
-                        .Transactions
-                        .First(_ => _.AccountId == Account.OpeningBalance);
-                var destinationAccountTransaction = transactionJournal!
-                        .Transactions
-                        .First(_ => _.AccountId == account.Id);
 
-                if (sourceAccountTransaction.Amount != -request.UpsertAccountDto.OpeningBalance!.Value ||
-                    destinationAccountTransaction.Amount != +request.UpsertAccountDto.OpeningBalance!.Value ||
-                    transactionJournal!.Date != request.UpsertAccountDto.OpeningBalanceDate!.Value)
+            var existingOpeningBalanceTransactionJournal = await _repository.GetEntityAsync<TransactionJournal>(
+                _ =>
+                    _.TransactionTypeId == TransactionConstants.OpeningBalance &&
+                    _.Transactions.Any(__ =>
+                        __.AccountId == request.UpsertAccountDto.Id),
+                new Expression<Func<TransactionJournal, object>>[]
                 {
-                    sourceAccountTransaction.Amount = -request.UpsertAccountDto.OpeningBalance!.Value;
-                    destinationAccountTransaction.Amount = +request.UpsertAccountDto.OpeningBalance!.Value;
-                    transactionJournal.Date = request.UpsertAccountDto.OpeningBalanceDate!.Value;
+                        _ => _.Transactions!
+                },
+                cancellationToken);
 
-                    await httpRepository.UpsertEntitiesAsync<Transaction>(new()
+            Account account;
+            if (existingAccount == null)
             {
-                sourceAccountTransaction,
-                destinationAccountTransaction
-            }, headerParameters, cancellationToken);
+                account = new Account
+                {
+                    Id = request.UpsertAccountDto.Id,
+                    Created = _dateService.Now,
+                    LastModified = _dateService.Now,
+                    IsActive = true,
+                    Order = -1,
+                    UserId = currentUserContext.CurrentUser.Id
+                };
+            }
+            else
+            {
+                account = existingAccount;
+            }
 
-                    await httpRepository.UpsertEntityAsync(
-                        transactionJournal!,
-                        headerParameters,
+            account.Name = request.UpsertAccountDto.Name;
+            account.VirtualBalance = request.UpsertAccountDto.VirtualBalance;
+            account.AccountNumber = request.UpsertAccountDto.AccountNumber;
+            account.AccountTypeId = request.UpsertAccountDto.AccountTypeId;
+            account.CurrencyId = request.UpsertAccountDto.CurrencyId;
+
+            // TODO: handle roll back/repository insert failure
+            await _repository.UpsertEntityAsync(
+                account,
+                cancellationToken);
+
+            bool requestHasOpeningBalance =
+                request.UpsertAccountDto.OpeningBalance != null &&
+                request.UpsertAccountDto.OpeningBalanceDate != null;
+
+            bool openingBalanceNeedsEditing = requestHasOpeningBalance && existingOpeningBalanceTransactionJournal != null;
+            bool openingBalanceNeedsDeleting = !requestHasOpeningBalance && existingOpeningBalanceTransactionJournal != null;
+
+            if (requestHasOpeningBalance && existingOpeningBalanceTransactionJournal == null)
+            {
+                // TODO: Replace with IDispatcher/ICQRSDispatcher and handle failure...
+                await _createTransactionHandler.Handle(new()
+                {
+                    TransactionTypeId = TransactionConstants.OpeningBalance,
+                    Transactions =
+                    {
+                        new CreateTransactionDto
+                        {
+                            Id = Guid.NewGuid(),
+                            Amount = request.UpsertAccountDto.OpeningBalance!.Value,
+                            Description = "Opening balance",
+                            CurrencyId = account.CurrencyId,
+                            SourceAccountId = Account.OpeningBalance,
+                            DestinationAccountId = account.Id,
+                            Date = request.UpsertAccountDto.OpeningBalanceDate!.Value
+                        }
+                    }
+                }, currentUserContext, cancellationToken);
+            }
+            else if (openingBalanceNeedsEditing || openingBalanceNeedsDeleting)
+            {
+
+                if (openingBalanceNeedsEditing)
+                {
+                    var sourceAccountTransaction = existingOpeningBalanceTransactionJournal!
+                            .Transactions
+                            .First(_ => _.AccountId == Account.OpeningBalance);
+                    var destinationAccountTransaction = existingOpeningBalanceTransactionJournal!
+                            .Transactions
+                            .First(_ => _.AccountId == account.Id);
+
+                    if (sourceAccountTransaction.Amount != -request.UpsertAccountDto.OpeningBalance!.Value ||
+                        destinationAccountTransaction.Amount != +request.UpsertAccountDto.OpeningBalance!.Value ||
+                        existingOpeningBalanceTransactionJournal!.Date != request.UpsertAccountDto.OpeningBalanceDate!.Value)
+                    {
+                        sourceAccountTransaction.Amount = -request.UpsertAccountDto.OpeningBalance!.Value;
+                        destinationAccountTransaction.Amount = +request.UpsertAccountDto.OpeningBalance!.Value;
+                        existingOpeningBalanceTransactionJournal.Date = request.UpsertAccountDto.OpeningBalanceDate!.Value;
+
+                        await _repository.UpsertEntitiesAsync<Transaction>(new()
+                        {
+                            sourceAccountTransaction,
+                            destinationAccountTransaction
+                        }, cancellationToken);
+
+                        await _repository.UpsertEntityAsync(
+                            existingOpeningBalanceTransactionJournal!,
+                            cancellationToken);
+                    }
+
+                }
+                else if (openingBalanceNeedsDeleting)
+                {
+                    await _repository.DeleteEntitiesAsync<Transaction>(
+                        existingOpeningBalanceTransactionJournal!.Transactions.Select(_ => _.Id).ToList(),
+                        cancellationToken);
+                    await _repository.DeleteEntityAsync<TransactionJournal>(
+                        existingOpeningBalanceTransactionJournal!.Id,
+                        cancellationToken);
+                    await _repository.DeleteEntityAsync<TransactionGroup>(
+                        existingOpeningBalanceTransactionJournal!.TransactionGroupId,
                         cancellationToken);
                 }
+            }
 
-            }
-            else if (openingBalanceNeedsDeleting)
-            {
-                await httpRepository.DeleteEntityAsync<TransactionJournal>(
-                    transactionJournal!.Id,
-                    headerParameters,
-                    cancellationToken);
-                await httpRepository.DeleteEntityAsync<TransactionGroup>(
-                    transactionJournal!.TransactionGroupId,
-                    headerParameters,
-                    cancellationToken);
-                await httpRepository.DeleteEntitiesAsync<Transaction>(
-                    transactionJournal!.Transactions.Select(_ => _.Id).ToList(),
-                    headerParameters,
-                    cancellationToken);
-            }
+            return response;
         }
-
-        return response;
     }
 }

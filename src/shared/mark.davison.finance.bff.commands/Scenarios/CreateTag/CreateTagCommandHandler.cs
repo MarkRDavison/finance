@@ -2,15 +2,15 @@
 
 public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, CreateTagCommandResponse>
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
     private readonly ICreateTagCommandValidator _createTagCommandValidator;
 
     public CreateTagCommandHandler(
-        IHttpRepository httpRepository,
+        IRepository repository,
         ICreateTagCommandValidator createTagCommandValidator
     )
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
         _createTagCommandValidator = createTagCommandValidator;
     }
 
@@ -23,6 +23,7 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, 
             return response;
         }
 
+        // TODO: Replace with validator/processor pattern
         var category = new Tag
         {
             Id = command.Id,
@@ -30,12 +31,14 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, 
             UserId = currentUserContext.CurrentUser.Id
         };
 
-        await _httpRepository.UpsertEntityAsync(
+        var tag = await _repository.UpsertEntityAsync(
             category,
-            HeaderParameters.Auth(
-                currentUserContext.Token,
-                currentUserContext.CurrentUser),
             cancellationToken);
+
+        if (tag == null)
+        {
+            response.Error.Add("DB_UPSERT_ERROR"); // TODO: Standard db errors
+        }
 
         return response;
     }

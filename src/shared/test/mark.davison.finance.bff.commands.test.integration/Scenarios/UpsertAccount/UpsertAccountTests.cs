@@ -26,11 +26,14 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
         Assert.IsTrue(response.Success);
 
         var repository = GetRequiredService<IRepository>();
-        var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-        Assert.IsNotNull(account);
+        await using (repository.BeginTransaction())
+        {
+            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
+            Assert.IsNotNull(account);
 
-        var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id));
-        Assert.IsNull(transactionJournal);
+            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id));
+            Assert.IsNull(transactionJournal);
+        }
     }
 
     [TestMethod]
@@ -58,17 +61,20 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
         Assert.IsTrue(response.Success);
 
         var repository = GetRequiredService<IRepository>();
-        var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-        Assert.IsNotNull(account);
+        await using (repository.BeginTransaction())
+        {
+            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
+            Assert.IsNotNull(account);
 
-        var includes = new Expression<Func<TransactionJournal, object>>[] {
-            _ => _.TransactionGroup!
-        };
-        var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-            _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-            includes,
-            CancellationToken.None);
-        Assert.IsNotNull(transactionJournal);
+            var includes = new Expression<Func<TransactionJournal, object>>[] {
+                _ => _.TransactionGroup!
+            };
+            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
+                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
+                includes,
+                CancellationToken.None);
+            Assert.IsNotNull(transactionJournal);
+        }
     }
 
     [TestMethod]
@@ -93,19 +99,15 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        var repository = GetRequiredService<IRepository>();
-        var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-        Assert.IsNotNull(account);
-
         request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
-                AccountNumber = account.AccountNumber,
-                Name = account.Name,
-                CurrencyId = account.CurrencyId,
-                Id = account.Id,
-                AccountTypeId = account.AccountTypeId,
+                AccountNumber = request.UpsertAccountDto.AccountNumber,
+                Name = request.UpsertAccountDto.Name,
+                CurrencyId = request.UpsertAccountDto.CurrencyId,
+                Id = request.UpsertAccountDto.Id,
+                AccountTypeId = request.UpsertAccountDto.AccountTypeId,
                 OpeningBalance = CurrencyRules.ToPersisted(100.0M),
                 OpeningBalanceDate = DateOnly.FromDateTime(DateTime.UtcNow)
             }
@@ -115,15 +117,19 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        var includes = new Expression<Func<TransactionJournal, object>>[] {
-            _ => _.TransactionGroup!
-        };
-        var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-            _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-            includes,
-            CancellationToken.None);
+        var repository = GetRequiredService<IRepository>();
+        await using (repository.BeginTransaction())
+        {
+            var includes = new Expression<Func<TransactionJournal, object>>[] {
+                _ => _.TransactionGroup!
+            };
+            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
+                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
+                includes,
+                CancellationToken.None);
 
-        Assert.IsNotNull(transactionJournal);
+            Assert.IsNotNull(transactionJournal);
+        }
     }
 
     [TestMethod]
@@ -150,28 +156,33 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        var repository = GetRequiredService<IRepository>();
-        var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-        Assert.IsNotNull(account);
-
-        var includes = new Expression<Func<TransactionJournal, object>>[] {
+        var includes = new Expression<Func<TransactionJournal, object>>[]
+        {
             _ => _.TransactionGroup!
         };
-        var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-            _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-            includes,
-            CancellationToken.None);
-        Assert.IsNotNull(transactionJournal);
+
+        var repository = GetRequiredService<IRepository>();
+        await using (repository.BeginTransaction())
+        {
+            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
+            Assert.IsNotNull(account);
+
+            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
+                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
+                includes,
+                CancellationToken.None);
+            Assert.IsNotNull(transactionJournal);
+        }
 
         request = new UpsertAccountCommandRequest
         {
             UpsertAccountDto = new UpsertAccountDto
             {
-                AccountNumber = account.AccountNumber,
-                Name = account.Name,
-                CurrencyId = account.CurrencyId,
-                Id = account.Id,
-                AccountTypeId = account.AccountTypeId
+                AccountNumber = request.UpsertAccountDto.AccountNumber,
+                Name = request.UpsertAccountDto.Name,
+                CurrencyId = request.UpsertAccountDto.CurrencyId,
+                Id = request.UpsertAccountDto.Id,
+                AccountTypeId = request.UpsertAccountDto.AccountTypeId
             }
         };
 
@@ -179,12 +190,16 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
+        repository = GetRequiredService<IRepository>();
+        await using (repository.BeginTransaction())
+        {
+            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
             _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
             includes,
             CancellationToken.None);
 
-        Assert.IsNull(transactionJournal);
+            Assert.IsNull(transactionJournal);
+        }
     }
 
 }

@@ -19,10 +19,10 @@ public class TransactionCreateCommandHandlerTests
 
         _httpClientRepository
             .Setup(_ => _
-                .Post<CreateTransactionCommandResponse, CreateTransactionCommandRequest>(
-                    It.IsAny<CreateTransactionCommandRequest>(),
+                .Post<CreateTransactionResponse, CreateTransactionRequest>(
+                    It.IsAny<CreateTransactionRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new CreateTransactionCommandResponse())
+            .ReturnsAsync(new CreateTransactionResponse())
             .Verifiable();
 
         await _handler.Handle(command, CancellationToken.None);
@@ -30,8 +30,8 @@ public class TransactionCreateCommandHandlerTests
         _httpClientRepository
             .Verify(
                 _ => _
-                    .Post<CreateTransactionCommandResponse, CreateTransactionCommandRequest>(
-                        It.IsAny<CreateTransactionCommandRequest>(),
+                    .Post<CreateTransactionResponse, CreateTransactionRequest>(
+                        It.IsAny<CreateTransactionRequest>(),
                         It.IsAny<CancellationToken>()),
                 Times.Once);
     }

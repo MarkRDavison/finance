@@ -2,25 +2,20 @@
 
 public class CreateTagCommandValidator : ICreateTagCommandValidator
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
     public const string VALIDATION_DUPLICATE_TAG_NAME = "VALIDATION_DUPLICATE_TAG_NAME";
 
-    public CreateTagCommandValidator(IHttpRepository httpRepository)
+    public CreateTagCommandValidator(IRepository repository)
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
     }
 
     public async Task<CreateTagCommandResponse> Validate(CreateTagCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CreateTagCommandResponse { };
 
-        var duplicate = await _httpRepository.GetEntityAsync<Tag>(
-            new QueryParameters
-            {
-                { nameof(Tag.Name), request.Name },
-                { nameof(Tag.UserId), currentUserContext.CurrentUser.Id.ToString() }
-            },
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
+        var duplicate = await _repository.GetEntityAsync<Tag>(
+            _ => _.UserId == currentUserContext.CurrentUser.Id && _.Name == request.Name,
             cancellationToken);
 
         if (duplicate != null)

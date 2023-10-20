@@ -1,7 +1,8 @@
-﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common.Validators;
+﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
 
-public class CreateTransactionCommandValidator : ICreateTransactionCommandValidator
+public class CreateTransactionCommandValidator : ICommandValidator<CreateTransactionRequest, CreateTransactionResponse>
 {
+    // TODO: Move to validation messages class
     public const string VALIDATION_TRANSACTION_TYPE = "INVALID_TRANSACTION_TYPE";
     public const string VALIDATION_CURRENCY_ID = "INVALID_CURRENCY_ID${0}";
     public const string VALIDATION_FOREIGN_CURRENCY_ID = "INVALID_FOREIGN_CURRENCY_ID${0}";
@@ -11,35 +12,36 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
     public const string VALIDATION_DATE = "INVALID_DATE${0}";
     public const string VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT = "DUP_ACT${0}";
     public const string VALIDATION_DUPLICATE_TAGS = "DUP_ACT${0}";
+    public const string VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE = "INVALID_DEST_ACCT_TYPE";
+    public const string VALIDATION_INVALID_ACCOUNT_PAIR = "INVALID_ACCT_PAIR";
+    public const string VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE = "INVALID_SRC_ACCT_TYPE";
 
-    private readonly IHttpRepository _httpRepository;
-    private readonly ICreateTransctionValidationContext _createTransctionValidationContext;
     private readonly ICreateTransactionValidatorStrategyFactory _createTransactionValidatorStrategyFactory;
+    private readonly ICreateTransctionValidationContext _createTransctionValidationContext;
 
     public CreateTransactionCommandValidator(
-        IHttpRepository httpRepository,
-        ICreateTransctionValidationContext createTransctionValidationContext,
-        ICreateTransactionValidatorStrategyFactory createTransactionValidatorStrategyFactory)
+        ICreateTransactionValidatorStrategyFactory createTransactionValidatorStrategyFactory,
+        ICreateTransctionValidationContext createTransctionValidationContext
+    )
     {
-        _httpRepository = httpRepository;
-        _createTransctionValidationContext = createTransctionValidationContext;
         _createTransactionValidatorStrategyFactory = createTransactionValidatorStrategyFactory;
+        _createTransctionValidationContext = createTransctionValidationContext;
     }
 
-    public async Task<CreateTransactionCommandResponse> Validate(CreateTransactionCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<CreateTransactionResponse> ValidateAsync(CreateTransactionRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         var transctionTypeValidator = _createTransactionValidatorStrategyFactory.CreateStrategy(request.TransactionTypeId);
 
         if (!TransactionConstants.Ids.Contains(request.TransactionTypeId))
         {
-            response.Error.Add(VALIDATION_TRANSACTION_TYPE);
+            response.Errors.Add(VALIDATION_TRANSACTION_TYPE);
         }
 
         if (request.Transactions.Count > 1 && string.IsNullOrEmpty(request.Description))
         {
-            response.Error.Add(VALIDATION_GROUP_DESCRIPTION);
+            response.Errors.Add(VALIDATION_GROUP_DESCRIPTION);
         }
 
         await transctionTypeValidator.ValidateTransactionGroup(request, response, _createTransctionValidationContext);
@@ -50,44 +52,46 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
             await transctionTypeValidator.ValidateTranasction(transaction, response, _createTransctionValidationContext);
         }
 
-        response.Success = !response.Error.Any();
-
         return response;
     }
 
-    private async Task ValidateTransaction(CreateTransactionCommandResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    private async Task ValidateTransaction(CreateTransactionResponse response, CreateTransactionDto transaction, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         await Task.CompletedTask;
 
         if (transaction.Date == default)
         {
-            response.Error.Add(string.Format(VALIDATION_DATE, transaction.Id));
+            response.Errors.Add(string.Format(VALIDATION_DATE, transaction.Id));
         }
 
         if (transaction.SourceAccountId == transaction.DestinationAccountId)
         {
-            response.Error.Add(string.Format(VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT, transaction.Id));
+            response.Errors.Add(string.Format(VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT, transaction.Id));
         }
 
-        if (transaction.CategoryId != null && await _createTransctionValidationContext.GetCategoryById(transaction.CategoryId.Value, cancellationToken) == null)
+        if (transaction.CategoryId != null)
         {
-            response.Error.Add(string.Format(VALIDATION_CATEGORY_ID, transaction.Id));
+
+            if (null == await _createTransctionValidationContext.GetCategoryById(transaction.CategoryId.Value, cancellationToken))
+            {
+                response.Errors.Add(string.Format(VALIDATION_CATEGORY_ID, transaction.Id));
+            }
         }
 
         if (!Currency.Ids.Contains(transaction.CurrencyId))
         {
-            response.Error.Add(string.Format(VALIDATION_CURRENCY_ID, transaction.Id));
+            response.Errors.Add(string.Format(VALIDATION_CURRENCY_ID, transaction.Id));
         }
 
         if (transaction.ForeignCurrencyId.HasValue && !Currency.Ids.Contains(transaction.ForeignCurrencyId.Value))
         {
-            response.Error.Add(string.Format(VALIDATION_FOREIGN_CURRENCY_ID, transaction.Id));
+            response.Errors.Add(string.Format(VALIDATION_FOREIGN_CURRENCY_ID, transaction.Id));
         }
 
         if (transaction.ForeignCurrencyId.HasValue &&
             transaction.ForeignCurrencyId.Value == transaction.CurrencyId)
         {
-            response.Error.Add(string.Format(VALIDATION_DUPLICATE_CURRENCY, transaction.Id));
+            response.Errors.Add(string.Format(VALIDATION_DUPLICATE_CURRENCY, transaction.Id));
         }
 
         var duplicates = transaction.Tags.GroupBy(_ => _)
@@ -96,7 +100,7 @@ public class CreateTransactionCommandValidator : ICreateTransactionCommandValida
               .ToList();
         if (duplicates.Any())
         {
-            response.Warning.Add(string.Format(VALIDATION_DUPLICATE_TAGS, string.Join(",", duplicates)));
+            response.Warnings.Add(string.Format(VALIDATION_DUPLICATE_TAGS, string.Join(",", duplicates)));
         }
     }
 }
