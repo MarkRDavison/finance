@@ -7,7 +7,7 @@
     <MudPaper Class="pa-4">
         <MudForm>
             <MudTextField T="string" Label="Name" Required="true" @bind-Text="FormViewModel.Name" For="@(() => FormViewModel.Name)" />
-            <MudTextField T="string" Label="Account number" Required="true" @bind-Text="FormViewModel.AccountNumber" For="@(() => FormViewModel.AccountNumber)" />
+            <MudTextField T="string" Label="Account number" @bind-Text="FormViewModel.AccountNumber" For="@(() => FormViewModel.AccountNumber)" />
             <MudSelect T="Guid?" Label="Account type" Required="true" @bind-Value="FormViewModel.AccountTypeId" For="@(() => FormViewModel.AccountTypeId)">
                 @foreach (var (id, text) in _accountTypes)
                 {
