@@ -1,13 +1,13 @@
 ﻿using mark.davison.common.client.abstractions.CQRS;
 using mark.davison.finance.accounting.rules;
+using mark.davison.finance.web.components.CommonCandidates.Form;
 using mark.davison.finance.web.features.Account.Add;
 using mark.davison.finance.web.features.Account.Create;
 
 namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
 
-public class EditAccountModalViewModel
+public class EditAccountModalViewModel : IModalViewModel<EditAccountFormViewModel, EditAccountForm>
 {
-
     private readonly ICQRSDispatcher _dispatcher;
 
     public EditAccountModalViewModel(
@@ -17,31 +17,32 @@ public class EditAccountModalViewModel
         _dispatcher = dispatcher;
     }
 
-    public EditAccountFormViewModel EditAccountFormViewModel { get; set; } = new();
+    public EditAccountFormViewModel FormViewModel { get; set; } = new();
 
-    public async Task<bool> OnSave()
+    public async Task<bool> Primary(EditAccountFormViewModel formViewModel)
     {
-        if (!EditAccountFormViewModel.Valid)
+        if (!FormViewModel.Valid)
         {
             return false;
         }
 
-        var currency = EditAccountFormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == EditAccountFormViewModel.CurrencyId);
-        var accountType = EditAccountFormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == EditAccountFormViewModel.AccountTypeId);
+        var currency = FormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == FormViewModel.CurrencyId);
+        var accountType = FormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == FormViewModel.AccountTypeId);
 
-        bool openingBalanceSpecified = EditAccountFormViewModel.OpeningBalance != default;
+        bool openingBalanceSpecified = FormViewModel.OpeningBalance != default;
 
         var request = new CreateAccountCommandRequest
         {
-            Id = EditAccountFormViewModel.Id,
-            Name = EditAccountFormViewModel.Name,
-            AccountNumber = EditAccountFormViewModel.AccountNumber,
-            VirtualBalance = CurrencyRules.ToPersisted(EditAccountFormViewModel.VirtualBalance ?? 0),
-            AccountTypeId = EditAccountFormViewModel.AccountTypeId ?? Guid.Empty,
-            CurrencyId = EditAccountFormViewModel.CurrencyId ?? Guid.Empty,
-            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(EditAccountFormViewModel.OpeningBalance ?? 0) : null,
-            OpeningBalanceDate = (openingBalanceSpecified && EditAccountFormViewModel.OpeningBalanceDate != null) ? DateOnly.FromDateTime(EditAccountFormViewModel.OpeningBalanceDate.Value) : null,
+            Id = FormViewModel.Id,
+            Name = FormViewModel.Name,
+            AccountNumber = FormViewModel.AccountNumber,
+            VirtualBalance = CurrencyRules.ToPersisted(FormViewModel.VirtualBalance ?? 0),
+            AccountTypeId = FormViewModel.AccountTypeId ?? Guid.Empty,
+            CurrencyId = FormViewModel.CurrencyId ?? Guid.Empty,
+            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(FormViewModel.OpeningBalance ?? 0) : null,
+            OpeningBalanceDate = (openingBalanceSpecified && FormViewModel.OpeningBalanceDate != null) ? DateOnly.FromDateTime(FormViewModel.OpeningBalanceDate.Value) : null,
         };
+
         var response = await _dispatcher.Dispatch<CreateAccountCommandRequest, CreateAccountCommandResponse>(request, CancellationToken.None);
 
         if (response.Success && response.ItemId != Guid.Empty)
@@ -50,8 +51,8 @@ public class EditAccountModalViewModel
             {
                 new AccountListItemDto {
                     Id = response.ItemId,
-                    Name = EditAccountFormViewModel.Name,
-                    AccountNumber = EditAccountFormViewModel.AccountNumber,
+                    Name = FormViewModel.Name,
+                    AccountNumber = FormViewModel.AccountNumber,
                     AccountType = accountType.Type,
                     Active = true,
                     BalanceDifference = 0, // TODO: Understand this
@@ -67,10 +68,5 @@ public class EditAccountModalViewModel
         }
 
         return false;
-    }
-
-    public async Task OnCancel()
-    {
-        await Task.CompletedTask;
     }
 }

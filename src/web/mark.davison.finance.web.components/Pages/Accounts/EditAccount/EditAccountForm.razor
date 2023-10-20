@@ -1,27 +1,28 @@
 ﻿@using mark.davison.finance.web.components.CommonCandidates.Components.Numeric
+@using mark.davison.finance.web.components.CommonCandidates.Form;
 
-@inherits ComponentWithState
+@inherits FormWithState<EditAccountFormViewModel>
 
 <MudGrid>
     <MudPaper Class="pa-4">
-        <MudForm @ref="_form">
-            <MudTextField T="string" Label="Name" Required="true" @bind-Text="ViewModel.Name" />
-            <MudTextField T="string" Label="Account number" Required="true" @bind-Text="ViewModel.AccountNumber" />
-            <MudSelect T="Guid?" Label="Account type" Required="true" @bind-Value="ViewModel.AccountTypeId">
+        <MudForm>
+            <MudTextField T="string" Label="Name" Required="true" @bind-Text="FormViewModel.Name" For="@(() => FormViewModel.Name)" />
+            <MudTextField T="string" Label="Account number" Required="true" @bind-Text="FormViewModel.AccountNumber" For="@(() => FormViewModel.AccountNumber)" />
+            <MudSelect T="Guid?" Label="Account type" Required="true" @bind-Value="FormViewModel.AccountTypeId" For="@(() => FormViewModel.AccountTypeId)">
                 @foreach (var (id, text) in _accountTypes)
                 {
                     <MudSelectItem Value="@id">@text</MudSelectItem>
                 }
             </MudSelect>
-            <MudSelect T="Guid?" Label="Currency" Required="true" @bind-Value="ViewModel.CurrencyId">
+            <MudSelect T="Guid?" Label="Currency" Required="true" @bind-Value="FormViewModel.CurrencyId" For="@(() => FormViewModel.CurrencyId)">
                 @foreach (var (id, text) in _currencyItems)
                 {
                     <MudSelectItem Value="@id">@text</MudSelectItem>
                 }
             </MudSelect>
-            <NumericField HideSpinButtons Label="Opening balance" @bind-Value="ViewModel.OpeningBalance" AllowNegative="false" DecimalPlaces="@ViewModel.DecimalPlaces" />
-            <NumericField HideSpinButtons Label="Virtual balance" @bind-Value="ViewModel.VirtualBalance" AllowNegative="false" DecimalPlaces="@ViewModel.DecimalPlaces"/>
-            <MudDatePicker Label="Opening balance date" @bind-Date="ViewModel.OpeningBalanceDate" />
+            <NumericField HideSpinButtons Label="Opening balance" @bind-Value="FormViewModel.OpeningBalance" AllowNegative="false" DecimalPlaces="@FormViewModel.DecimalPlaces" For="@(() => FormViewModel.OpeningBalance)" />
+             <NumericField HideSpinButtons Label="Virtual balance" @bind-Value="FormViewModel.VirtualBalance" AllowNegative="false" DecimalPlaces="@FormViewModel.DecimalPlaces" For="@(() => FormViewModel.VirtualBalance)" />
+             <MudDatePicker Label="Opening balance date" @bind-Date="FormViewModel.OpeningBalanceDate" For="@(() => FormViewModel.OpeningBalanceDate)" />
         </MudForm>
     </MudPaper>
 </MudGrid>

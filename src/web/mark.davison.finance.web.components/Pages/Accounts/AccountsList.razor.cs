@@ -1,5 +1,4 @@
 ﻿using mark.davison.finance.web.components.CommonCandidates.Form;
-using mark.davison.finance.web.components.CommonCandidates.Form.Example;
 
 namespace mark.davison.finance.web.components.Pages.Accounts;
 
@@ -39,11 +38,16 @@ public partial class AccountsList
 
     private Task EnsureStateLoaded() => _stateHelper.FetchAccountList(false);
 
-    private void OpenEditAccountModal(bool add)
+    private async void OpenEditAccountModal(bool add)
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
-        //_dialogService.Show<EditAccountModal>(add ? "Add account" : "Edit account", options);
 
-        _dialogService.Show<Modal<ExampleModalViewModel, ExampleFormViewModel, ExampleForm>>("Example modal", options);
+        var param = new DialogParameters<Modal<EditAccountModalViewModel, EditAccountFormViewModel, EditAccountForm>>
+        {
+            { _ => _.PrimaryText, "Save" },
+            { _ => _.Instance, null } // Pass instance of TFormViewModel to be an edit instead of a create
+        };
+        var dialog = _dialogService.Show<Modal<EditAccountModalViewModel, EditAccountFormViewModel, EditAccountForm>>(add ? "Add account" : "Edit account", param, options);
+        await dialog.Result;
     }
 }

@@ -4,20 +4,13 @@ namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
 
 public partial class EditAccountForm
 {
-    private MudForm _form = default!;
+    public IEnumerable<Tuple<Guid?, string>> _accountTypes => FormViewModel.LookupState.Instance.AccountTypes.Select(_ => new Tuple<Guid?, string>(_.Id, _.Type));
 
-    [Parameter, EditorRequired]
-    public EditAccountFormViewModel ViewModel { get; set; } = default!;
-
-    public IEnumerable<Tuple<Guid?, string>> _accountTypes => ViewModel.LookupState.Instance.AccountTypes.Select(_ => new Tuple<Guid?, string>(_.Id, _.Type));
-
-    public IEnumerable<Tuple<Guid?, string>> _currencyItems => ViewModel.LookupState.Instance.Currencies.Select(_ => new Tuple<Guid?, string>(_.Id, _.Name));
-
-    //public ICurrencyInfo? _currencyInfo => ViewModel.LookupState.Instance.Currencies.Where(_ => _.Id == ViewModel.CurrencyId).Select(_ => new CurrencyInfo(_.Symbol, _.DecimalPlaces)).FirstOrDefault();
+    public IEnumerable<Tuple<Guid?, string>> _currencyItems => FormViewModel.LookupState.Instance.Currencies.Select(_ => new Tuple<Guid?, string>(_.Id, _.Name));
 
     protected override void OnInitialized()
     {
-        ViewModel.LookupState = GetState<LookupState>();
+        FormViewModel.LookupState = GetState<LookupState>();
         base.OnInitialized();
     }
 }

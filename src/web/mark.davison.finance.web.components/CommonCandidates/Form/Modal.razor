@@ -1,13 +1,10 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
-@using Microsoft.Extensions.DependencyInjection;
-
-@typeparam TModalViewModel where TModalViewModel : IModalViewModel<TFormViewModel, TForm>
-@typeparam TFormViewModel where TFormViewModel : IFormViewModel
-@typeparam TForm where TForm : Form<TFormViewModel>
+﻿@typeparam TModalViewModel where TModalViewModel : class, IModalViewModel<TFormViewModel, TForm>
+@typeparam TFormViewModel where TFormViewModel : class, IFormViewModel
+@typeparam TForm where TForm : ComponentBase, IForm<TFormViewModel>
 
 @inject IServiceProvider _serviceProvider;
 
-<MudDialog >
+<MudDialog>
     <DialogContent>
         <EditForm EditContext="@_editContext" OnSubmit="@Primary">
             @ModalContent
@@ -33,19 +30,23 @@
 
     private EditContext? _editContext;
 
+    [CascadingParameter, EditorRequired]
+    public required MudDialogInstance MudDialog { get; set; }
+
     [Parameter]
     public string PrimaryText { get; set; } = "Ok";
+
     [Parameter]
     public string SecondaryText { get; set; } = "Cancel";
-
-    [CascadingParameter]
-    MudDialogInstance MudDialog { get; set; } = default!;
 
     [Parameter]
     public RenderFragment ModalContent { get; set; } = default!;
 
     [Parameter]
     public TModalViewModel ModalViewModel { get; set; } = default!;
+
+    [Parameter]
+    public TFormViewModel? Instance { get; set; }
 
     protected override void OnInitialized()
     {
@@ -62,6 +63,12 @@
     protected void Reset()
     {
         ModalViewModel = _serviceProvider.GetRequiredService<TModalViewModel>();
+
+        if (Instance != null)
+        {
+            ModalViewModel.FormViewModel = Instance;
+            Instance = null;
+        }
 
         if (_editContext != null)
         {
@@ -83,10 +90,7 @@
         _inProgress = false;
     }
 
-    void Secondary()
-    {
-        MudDialog.Cancel();
-    }
+    void Secondary() => MudDialog.Cancel();
 
     private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
 }
