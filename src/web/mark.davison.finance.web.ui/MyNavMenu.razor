@@ -1,9 +1,23 @@
 ﻿<MudNavMenu>
     <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
-    <MudNavLink Href="/servers" Match="NavLinkMatch.Prefix">Servers</MudNavLink>
-    <MudNavGroup Title="Settings" Expanded="true">
-        <MudNavLink Href="/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
-        <MudNavLink Href="/security" Match="NavLinkMatch.Prefix">Security</MudNavLink>
+    <MudNavGroup Title="FINANCIAL CONTROL" Expanded="true">
+        <MudNavLink Href="/budgets" Match="NavLinkMatch.Prefix">Budgets</MudNavLink>
+        <MudNavLink Href="/bills" Match="NavLinkMatch.Prefix">Bills</MudNavLink>
+        <MudNavLink Href="/piggybanks" Match="NavLinkMatch.Prefix">Piggy Banks</MudNavLink>
     </MudNavGroup>
-    <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+    <MudNavGroup Title="ACCOUNTING" Expanded="true">
+        <MudNavLink Href="/transactions" Match="NavLinkMatch.Prefix">Transactions</MudNavLink>
+        <MudNavLink Href="/automation" Match="NavLinkMatch.Prefix">Automation</MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="OTHERS" Expanded="true">
+        <MudNavGroup Title="Accounts" Expanded="true">
+            <MudNavLink Href="/accounts" Match="NavLinkMatch.Prefix">Test accounts</MudNavLink>
+            <MudNavLink Href="/accounts/asset" Match="NavLinkMatch.Prefix">Asset accounts</MudNavLink>
+            <MudNavLink Href="/accounts/expense" Match="NavLinkMatch.Prefix">Expense accounts</MudNavLink>
+            <MudNavLink Href="/accounts/revenue" Match="NavLinkMatch.Prefix">Revenue accounts</MudNavLink>
+        </MudNavGroup>
+    </MudNavGroup>
+    <MudNavLink Href="/classification" Match="NavLinkMatch.Prefix">Classification</MudNavLink>
+    <MudNavLink Href="/reports" Match="NavLinkMatch.Prefix">Reports</MudNavLink>
+    <MudNavLink Href="/options" Match="NavLinkMatch.Prefix">Options</MudNavLink>
 </MudNavMenu>
