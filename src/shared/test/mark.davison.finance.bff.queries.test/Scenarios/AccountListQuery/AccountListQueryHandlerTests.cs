@@ -18,6 +18,8 @@ public class AccountListQueryHandlerTests
 
         _handler = new AccountListQueryHandler(_repository.Object);
 
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
+
         _repository
             .Setup(_ => _.GetEntitiesAsync<TransactionJournal>(
                 It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
