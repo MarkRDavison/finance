@@ -1,4 +1,5 @@
 ﻿using mark.davison.finance.accounting.constants;
+using mark.davison.finance.accounting.rules.Account;
 using System.Linq.Expressions;
 
 namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
@@ -20,8 +21,8 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
         {
             var accounts = await _repository.GetEntitiesAsync<Account>(
                 _ =>
-                    _.Id != Account.Reconciliation && // TODO: Better single place that creates expression to filter these or add property to account
-                    _.Id != Account.OpeningBalance,
+                    _.Id != BuiltinAccountNames.Reconciliation && // TODO: Better single place that creates expression to filter these or add property to account
+                    _.Id != BuiltinAccountNames.OpeningBalance,
                 new Expression<Func<Account, object>>[]
                 {
                 _ => _.AccountType!

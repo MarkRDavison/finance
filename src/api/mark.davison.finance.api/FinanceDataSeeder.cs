@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api;
+﻿using mark.davison.finance.accounting.rules.Account;
+
+namespace mark.davison.finance.api;
 
 public interface IFinanceDataSeeder
 {
@@ -127,8 +129,8 @@ public class FinanceDataSeeder : IFinanceDataSeeder
     {
         var seededAccounts = new List<Account>
         {
-            new Account { Id = Account.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT, Name = "Opening balance" },
-            new Account { Id = Account.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT, Name = "Reconcilation" }
+            new Account { Id = BuiltinAccountNames.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountConstants.InitialBalance, CurrencyId = Currency.INT, Name = "Opening balance" },
+            new Account { Id = BuiltinAccountNames.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountConstants.Reconciliation, CurrencyId = Currency.INT, Name = "Reconcilation" }
         };
         await EnsureSeeded(repository, seededAccounts, cancellationToken);
     }

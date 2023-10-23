@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.test.Scenarios.UpsertAccount.Processors;
+﻿using mark.davison.finance.accounting.rules.Account;
+
+namespace mark.davison.finance.bff.commands.test.Scenarios.UpsertAccount.Processors;
 
 [TestClass]
 public class UpsertAccountCommandProcessorTests
@@ -93,7 +95,7 @@ public class UpsertAccountCommandProcessorTests
                 Assert.IsNull(transaction.ForeignAmount);
                 Assert.IsFalse(string.IsNullOrEmpty(transaction.Description));
                 Assert.AreEqual(persistedAccount?.Id, transaction.DestinationAccountId);
-                Assert.AreEqual(Account.OpeningBalance, transaction.SourceAccountId);
+                Assert.AreEqual(BuiltinAccountNames.OpeningBalance, transaction.SourceAccountId);
                 Assert.AreEqual(request.UpsertAccountDto.OpeningBalanceDate, transaction.Date);
                 Assert.AreEqual(request.UpsertAccountDto.CurrencyId, transaction.CurrencyId);
                 Assert.IsNull(transaction.ForeignAmount);
@@ -257,7 +259,7 @@ public class UpsertAccountCommandProcessorTests
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = Account.OpeningBalance
+                    AccountId = BuiltinAccountNames.OpeningBalance
                 }
             },
             TransactionGroup = new TransactionGroup
@@ -362,7 +364,7 @@ public class UpsertAccountCommandProcessorTests
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = Account.OpeningBalance
+                    AccountId = BuiltinAccountNames.OpeningBalance
                 }
             },
             TransactionGroup = new TransactionGroup
@@ -406,7 +408,7 @@ public class UpsertAccountCommandProcessorTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((List<Transaction> e, CancellationToken c) =>
             {
-                var sourceAccountTransaction = e.First(_ => _.AccountId == Account.OpeningBalance);
+                var sourceAccountTransaction = e.First(_ => _.AccountId == BuiltinAccountNames.OpeningBalance);
                 var destinationAccountTransaction = e.First(_ => _.AccountId == account.Id);
 
                 Assert.AreEqual(-request.UpsertAccountDto.OpeningBalance, sourceAccountTransaction.Amount);
@@ -469,7 +471,7 @@ public class UpsertAccountCommandProcessorTests
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = Account.OpeningBalance,
+                    AccountId = BuiltinAccountNames.OpeningBalance,
                     Amount = -CurrencyRules.ToPersisted(100.0M)
                 }
             },

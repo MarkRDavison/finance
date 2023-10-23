@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using mark.davison.finance.accounting.rules.Account;
+using System.Linq.Expressions;
 
 namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
@@ -67,8 +68,8 @@ public class AccountListQueryHandlerTests
     public async Task Handle_DoesNotRetrieveHiddenAccounts()
     {
         var accounts = new List<Account> {
-            new Account{ Id = Account.OpeningBalance, AccountType = new() },
-            new Account{ Id = Account.Reconciliation, AccountType = new() }
+            new Account{ Id = BuiltinAccountNames.OpeningBalance, AccountType = new() },
+            new Account{ Id = BuiltinAccountNames.Reconciliation, AccountType = new() }
         };
 
         _repository

@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.Authentication;
+﻿using mark.davison.finance.accounting.rules.Account;
+
+namespace mark.davison.finance.bff.Authentication;
 
 public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationActions
 {
@@ -47,6 +49,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
                 cancellationToken);
     }
 
+    // TODO: Make api endpoint to do this and remove the random crud api endpoints. or replace with cqrs calls
     private async Task UpsertTestData(User currentUser, string token, CancellationToken cancellationToken)
     {
         var header = HeaderParameters.Auth(token, currentUser);
@@ -93,8 +96,8 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
             if (!openingBalancesMade)
             {
                 openingBalancesMade = true;
-                createTransaction(TransactionConstants.OpeningBalance, 100.0M, Account.OpeningBalance, everydayAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
-                createTransaction(TransactionConstants.OpeningBalance, 1500.0M, Account.OpeningBalance, savingsAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
+                createTransaction(TransactionConstants.OpeningBalance, 100.0M, BuiltinAccountNames.OpeningBalance, everydayAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
+                createTransaction(TransactionConstants.OpeningBalance, 1500.0M, BuiltinAccountNames.OpeningBalance, savingsAccount.Id, "Opening balance", new DateOnly(year, 1, 1));
             }
             for (int month = 1; month <= 12; ++month)
             {
@@ -102,7 +105,7 @@ public class FinanceCustomZenoAuthenticationActions : ICustomZenoAuthenticationA
             }
         }
 
-        createTransaction(TransactionConstants.Withdrawal, 585.0M, everydayAccount.Id, taxAccount.Id, "Repairs", new DateOnly(2022, 4, 21));
+        createTransaction(TransactionConstants.Withdrawal, 585.0M, everydayAccount.Id, mechanicAccount.Id, "Repairs", new DateOnly(2022, 4, 21));
 
         await _httpRepository.UpsertEntitiesAsync(new[] { everydayAccount, savingsAccount, jobAccount, groceryStoreAccount, gasStationAccount, powerGasInternetAccount, waterAccount, taxAccount, mechanicAccount }.ToList(), header, cancellationToken);
         await _httpRepository.UpsertEntitiesAsync(transactionGroups, header, cancellationToken);

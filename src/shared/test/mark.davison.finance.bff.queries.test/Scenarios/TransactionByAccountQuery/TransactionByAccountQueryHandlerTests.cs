@@ -25,10 +25,11 @@ public class TransactionByAccountQueryHandlerTests
         Guid accountId = Guid.NewGuid();
         _repository
             .Setup(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<Expression<Func<Transaction, bool>>>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Transaction>())
+            .ReturnsAsync(new List<TransactionJournal>())
             .Verifiable();
 
         await _handler.Handle(new TransactionByAccountQueryRequest { AccountId = accountId }, _currentUserContext.Object, CancellationToken.None);
@@ -44,19 +45,20 @@ public class TransactionByAccountQueryHandlerTests
     [TestMethod]
     public async Task Handle_ReturnsRepositoryReturnedTransactions()
     {
-        var transactions = new List<Transaction> {
-                new Transaction {  },
-                new Transaction {  }
+        var transactionJournals = new List<TransactionJournal> {
+                new TransactionJournal {  },
+                new TransactionJournal {  }
         };
         _repository
             .Setup(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<Expression<Func<Transaction, bool>>>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transactions);
+            .ReturnsAsync(transactionJournals);
 
         var response = await _handler.Handle(new TransactionByAccountQueryRequest { }, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(transactions.Count, response.Transactions.Count);
+        Assert.AreEqual(transactionJournals.Count, response.Transactions.Count);
     }
 }

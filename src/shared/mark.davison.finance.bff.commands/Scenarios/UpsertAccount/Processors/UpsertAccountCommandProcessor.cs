@@ -95,7 +95,7 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
                             Amount = request.UpsertAccountDto.OpeningBalance!.Value,
                             Description = "Opening balance",
                             CurrencyId = account.CurrencyId,
-                            SourceAccountId = Account.OpeningBalance,
+                            SourceAccountId = BuiltinAccountNames.OpeningBalance,
                             DestinationAccountId = account.Id,
                             Date = request.UpsertAccountDto.OpeningBalanceDate!.Value
                         }
@@ -109,7 +109,7 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
                 {
                     var sourceAccountTransaction = existingOpeningBalanceTransactionJournal!
                             .Transactions
-                            .First(_ => _.AccountId == Account.OpeningBalance);
+                            .First(_ => _.AccountId == BuiltinAccountNames.OpeningBalance);
                     var destinationAccountTransaction = existingOpeningBalanceTransactionJournal!
                             .Transactions
                             .First(_ => _.AccountId == account.Id);

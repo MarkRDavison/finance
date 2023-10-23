@@ -13,15 +13,18 @@ public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, 
     {
         var response = new CategoryListQueryResponse();
 
-        var categories = await _repository.GetEntitiesAsync<Category>(
-            _ => _.UserId == currentUserContext.CurrentUser.Id,
-            cancellationToken);
-
-        response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
+        await using (_repository.BeginTransaction())
         {
-            Id = _.Id,
-            Name = _.Name
-        }));
+            var categories = await _repository.GetEntitiesAsync<Category>(
+                _ => _.UserId == currentUserContext.CurrentUser.Id,
+                cancellationToken);
+
+            response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
+            {
+                Id = _.Id,
+                Name = _.Name
+            }));
+        }
 
         return response;
     }

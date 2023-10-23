@@ -110,6 +110,7 @@ public class Startup
             MapProxyCQRSGet(endpoints, "/api/account-list-query");
             MapProxyCQRSGet(endpoints, "/api/category-list-query");
             MapProxyCQRSGet(endpoints, "/api/tag-list-query");
+            MapProxyCQRSGet(endpoints, "/api/transaction-by-account-query");
 
             MapProxyCQRSPost(endpoints, "/api/upsert-account");
         });
@@ -168,7 +169,7 @@ public class Startup
 
                 var headers = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
 
-                var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Value.API_ORIGIN.TrimEnd('/')}{path}");
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Value.API_ORIGIN.TrimEnd('/')}{path}{context.Request.QueryString}");
 
                 foreach (var k in headers)
                 {

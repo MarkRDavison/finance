@@ -16,4 +16,6 @@ public class TransactionDto
     public long Amount { get; set; }
     public long? ForeignAmount { get; set; }
     public bool Reconciled { get; set; }
+    public bool Source { get; set; }
+    public Guid TransactionTypeId { get; set; }
 }

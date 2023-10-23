@@ -21,7 +21,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        var AppSettings = services.ConfigureSettingsServices(Configuration);
+        AppSettings = services.ConfigureSettingsServices(Configuration);
         if (AppSettings == null) { throw new InvalidOperationException(); }
 
         services.AddLogging();
@@ -153,41 +153,45 @@ public class Startup
                 .UseGetById<User>()
                 .UsePost<User>();
 
-            //.UseGet<Account>()
-            //.UseGetById<Account>()
-            //.UsePost<Account>()
+            if (!AppSettings.PRODUCTION_MODE)
+            {
+                endpoints
+                    .UseGet<Account>()
+                    .UseGetById<Account>()
+                    .UsePost<Account>()
 
-            //.UseGet<AccountType>()
-            //.UseGetById<AccountType>()
-            //.UsePost<AccountType>()
+                    .UseGet<AccountType>()
+                    .UseGetById<AccountType>()
+                    .UsePost<AccountType>()
 
-            //.UseGet<Category>()
-            //.UseGetById<Category>()
-            //.UsePost<Category>()
+                    .UseGet<Category>()
+                    .UseGetById<Category>()
+                    .UsePost<Category>()
 
-            //.UseGet<Currency>()
-            //.UseGetById<Currency>()
-            //.UsePost<Currency>()
+                    .UseGet<Currency>()
+                    .UseGetById<Currency>()
+                    .UsePost<Currency>()
 
-            //.UseGet<Tag>()
-            //.UseGetById<Tag>()
-            //.UsePost<Tag>()
+                    .UseGet<Tag>()
+                    .UseGetById<Tag>()
+                    .UsePost<Tag>()
 
-            //.UseGet<Transaction>()
-            //.UseGetById<Transaction>()
-            //.UsePost<Transaction>()
+                    .UseGet<Transaction>()
+                    .UseGetById<Transaction>()
+                    .UsePost<Transaction>()
 
-            //.UseGet<TransactionJournal>()
-            //.UseGetById<TransactionJournal>()
-            //.UsePost<TransactionJournal>()
+                    .UseGet<TransactionJournal>()
+                    .UseGetById<TransactionJournal>()
+                    .UsePost<TransactionJournal>()
 
-            //.UseGet<TransactionGroup>()
-            //.UseGetById<TransactionGroup>()
-            //.UsePost<TransactionGroup>()
+                    .UseGet<TransactionGroup>()
+                    .UseGetById<TransactionGroup>()
+                    .UsePost<TransactionGroup>()
 
-            //.UseGet<TransactionType>()
-            //.UseGetById<TransactionType>()
-            //.UsePost<TransactionType>();
+                    .UseGet<TransactionType>()
+                    .UseGetById<TransactionType>()
+                    .UsePost<TransactionType>();
+            }
         });
 
     }
