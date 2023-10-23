@@ -15,7 +15,7 @@
             <TemplateColumn SortBy="_ => _.TransactionType" Title="">
                 <CellTemplate>
                     @{
-                        // TODO: Constant names
+                        // TODO: Constant names, or helper for transaction type -> icon
                         if (context.Item.TransactionType == "Deposit")
                         {
                             <MudIcon Icon="@Icons.Material.Filled.ArrowRightAlt" Title="Deposit" />

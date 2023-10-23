@@ -17,6 +17,8 @@ public class TransactionByAccountQueryHandlerTests
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
         _handler = new TransactionByAccountQueryHandler(_repository.Object);
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
     }
 
     [TestMethod]
@@ -36,8 +38,9 @@ public class TransactionByAccountQueryHandlerTests
 
         _repository
             .Verify(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<Expression<Func<Transaction, bool>>>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -46,8 +49,8 @@ public class TransactionByAccountQueryHandlerTests
     public async Task Handle_ReturnsRepositoryReturnedTransactions()
     {
         var transactionJournals = new List<TransactionJournal> {
-                new TransactionJournal {  },
-                new TransactionJournal {  }
+                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  },
+                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  }
         };
         _repository
             .Setup(_ => _.
@@ -59,6 +62,6 @@ public class TransactionByAccountQueryHandlerTests
 
         var response = await _handler.Handle(new TransactionByAccountQueryRequest { }, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(transactionJournals.Count, response.Transactions.Count);
+        Assert.AreEqual(transactionJournals.SelectMany(_ => _.Transactions).Count(), response.Transactions.Count);
     }
 }

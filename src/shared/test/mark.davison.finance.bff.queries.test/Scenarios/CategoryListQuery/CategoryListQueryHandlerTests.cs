@@ -17,6 +17,8 @@ public class CategoryListQueryHandlerTests
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
         _handler = new CategoryListQueryHandler(_repository.Object);
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
     }
 
     [TestMethod]
