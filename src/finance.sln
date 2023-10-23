@@ -87,6 +87,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.shared.utilities", "shared\mark.davison.finance.shared.utilities\mark.davison.finance.shared.utilities.csproj", "{A52CD91B-221A-44A8-83AA-2183F828EAE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.web.components.test", "web\test\mark.davison.finance.web.components.test\mark.davison.finance.web.components.test.csproj", "{DBF0087E-5BA8-4EAB-B534-41A56B368025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -201,6 +203,10 @@ Global
 		{A52CD91B-221A-44A8-83AA-2183F828EAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A52CD91B-221A-44A8-83AA-2183F828EAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A52CD91B-221A-44A8-83AA-2183F828EAE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -238,6 +244,7 @@ Global
 		{9A6D16AB-839E-4B43-99B5-E6B18C11C403} = {FF363D6D-ACB3-48B1-89A2-A13855FB4F9E}
 		{AC1D9D53-7FB6-46D9-8C3E-37413EB76A76} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
 		{A52CD91B-221A-44A8-83AA-2183F828EAE8} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
+		{DBF0087E-5BA8-4EAB-B534-41A56B368025} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B6ADCC52-BA89-4BDF-A7FA-81DBA45DA4AB}
