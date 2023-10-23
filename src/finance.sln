@@ -87,7 +87,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.ui
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.shared.utilities", "shared\mark.davison.finance.shared.utilities\mark.davison.finance.shared.utilities.csproj", "{A52CD91B-221A-44A8-83AA-2183F828EAE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.web.components.test", "web\test\mark.davison.finance.web.components.test\mark.davison.finance.web.components.test.csproj", "{DBF0087E-5BA8-4EAB-B534-41A56B368025}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.components.test", "web\test\mark.davison.finance.web.components.test\mark.davison.finance.web.components.test.csproj", "{DBF0087E-5BA8-4EAB-B534-41A56B368025}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
