@@ -1,4 +1,5 @@
-﻿using mark.davison.finance.web.components.Pages.Accounts.EditAccount;
+﻿using Bunit;
+using mark.davison.finance.web.components.Pages.Accounts.EditAccount;
 using mark.davison.finance.web.features.Lookup;
 
 namespace mark.davison.finance.web.components.test.Pages.Accounts.EditAccount;
@@ -7,15 +8,32 @@ namespace mark.davison.finance.web.components.test.Pages.Accounts.EditAccount;
 public class EditAccountFormTests : BunitTestContext
 {
     [TestMethod]
-    public async Task POC_BUNIT_TEST()
+    public void ExpectedControlsAreRender()
     {
         SetState(new LookupState());
 
         var cut = RenderComponent<EditAccountForm>(_ => _
             .Add(__ => __.FormViewModel, new EditAccountFormViewModel()));
 
-        await Task.CompletedTask;
+        var name = cut.Find("#edit-account-form-name");
+        Assert.IsNotNull(name);
 
-        Assert.Fail();
+        var accountNumber = cut.Find("#edit-account-form-account-number");
+        Assert.IsNotNull(accountNumber);
+
+        var accountType = cut.Find("#edit-account-form-account-type");
+        Assert.IsNotNull(accountType);
+
+        var currency = cut.Find("#edit-account-form-currency");
+        Assert.IsNotNull(currency);
+
+        var openingBalance = cut.Find("#edit-account-form-opening-balance");
+        Assert.IsNotNull(openingBalance);
+
+        var virtualBalance = cut.Find("#edit-account-form-virtual-balance");
+        Assert.IsNotNull(virtualBalance);
+
+        var openingBalanceDate = cut.Find("#edit-account-form-opening-balance-date");
+        Assert.IsNotNull(openingBalanceDate);
     }
 }
