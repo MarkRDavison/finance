@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
 
 public partial class EditAccountForm
 {

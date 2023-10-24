@@ -6,6 +6,7 @@ public class Routes
 
     public const string Accounts = "/accounts";
     public const string Account = "/accounts/{id:guid}";
+    public const string AccountNew = "/accounts/new/{type:guid}";
 
     public const string Categories = "/categories";
     public const string Category = "/categories/{id:guid}";
@@ -21,6 +22,7 @@ public class Routes
 public static class RouteHelpers
 {
     public static string Account(Guid id) => Routes.Account.Replace("{id:guid}", id.ToString());
+    public static string AccountNew(Guid type) => Routes.AccountNew.Replace("{type:guid}", type.ToString());
     public static string Category(Guid id) => Routes.Category.Replace("{id:guid}", id.ToString());
     public static string Tag(Guid id) => Routes.Tag.Replace("{id:guid}", id.ToString());
     public static string TransactionNew(Guid type) => Routes.TransactionNew.Replace("{type:guid}", type.ToString());

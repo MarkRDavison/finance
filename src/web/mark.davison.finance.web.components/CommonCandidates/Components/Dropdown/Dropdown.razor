@@ -1,6 +1,6 @@
 ﻿<MudSelect T="Guid?" id="@Id" Value="@Value" ValueChanged="@ValueChanged" Label="@Label" For="@For" Required="@Required">
     @foreach (var item in Items)
     {
-        <MudSelectItem Value="@item.Id">@item.Name</MudSelectItem>
+        <MudSelectItem T="Guid?" Value="@item.Id">@item.Name</MudSelectItem>
     }
 </MudSelect>

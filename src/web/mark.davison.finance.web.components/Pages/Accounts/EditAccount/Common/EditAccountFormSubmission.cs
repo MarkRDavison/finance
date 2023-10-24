@@ -1,46 +1,48 @@
 ﻿using mark.davison.common.client.abstractions.CQRS;
 using mark.davison.finance.accounting.rules;
-using mark.davison.finance.web.components.CommonCandidates.Form;
 using mark.davison.finance.web.features.Account.Add;
 using mark.davison.finance.web.features.Account.Create;
 
-namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount;
+namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
 
-public class EditAccountModalViewModel : IModalViewModel<EditAccountFormViewModel, EditAccountForm>
+public class EditAccountFormSubmission : IEditAccountFormSubmission
 {
     private readonly ICQRSDispatcher _dispatcher;
 
-    public EditAccountModalViewModel(
+    public EditAccountFormSubmission(
         ICQRSDispatcher dispatcher
     )
     {
         _dispatcher = dispatcher;
     }
 
-    public EditAccountFormViewModel FormViewModel { get; set; } = new();
-
     public async Task<bool> Primary(EditAccountFormViewModel formViewModel)
     {
-        if (!FormViewModel.Valid)
+        if (!formViewModel.Valid)
         {
             return false;
         }
 
-        var currency = FormViewModel.LookupState.Instance.Currencies.First(_ => _.Id == FormViewModel.CurrencyId);
-        var accountType = FormViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == FormViewModel.AccountTypeId);
+        if (formViewModel.Id == Guid.Empty)
+        {
+            formViewModel.Id = Guid.NewGuid();
+        }
 
-        bool openingBalanceSpecified = FormViewModel.OpeningBalance != default;
+        var currency = formViewModel.LookupState.Instance.Currencies.First(_ => _.Id == formViewModel.CurrencyId);
+        var accountType = formViewModel.LookupState.Instance.AccountTypes.First(_ => _.Id == formViewModel.AccountTypeId);
+
+        bool openingBalanceSpecified = formViewModel.OpeningBalance != default;
 
         var request = new CreateAccountCommandRequest
         {
-            Id = FormViewModel.Id,
-            Name = FormViewModel.Name,
-            AccountNumber = FormViewModel.AccountNumber,
-            VirtualBalance = CurrencyRules.ToPersisted(FormViewModel.VirtualBalance ?? 0),
-            AccountTypeId = FormViewModel.AccountTypeId ?? Guid.Empty,
-            CurrencyId = FormViewModel.CurrencyId ?? Guid.Empty,
-            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(FormViewModel.OpeningBalance ?? 0) : null,
-            OpeningBalanceDate = (openingBalanceSpecified && FormViewModel.OpeningBalanceDate != null) ? DateOnly.FromDateTime(FormViewModel.OpeningBalanceDate.Value) : null,
+            Id = formViewModel.Id,
+            Name = formViewModel.Name,
+            AccountNumber = formViewModel.AccountNumber,
+            VirtualBalance = CurrencyRules.ToPersisted(formViewModel.VirtualBalance ?? 0),
+            AccountTypeId = formViewModel.AccountTypeId ?? Guid.Empty,
+            CurrencyId = formViewModel.CurrencyId ?? Guid.Empty,
+            OpeningBalance = openingBalanceSpecified ? CurrencyRules.ToPersisted(formViewModel.OpeningBalance ?? 0) : null,
+            OpeningBalanceDate = openingBalanceSpecified && formViewModel.OpeningBalanceDate != null ? DateOnly.FromDateTime(formViewModel.OpeningBalanceDate.Value) : null,
         };
 
         var response = await _dispatcher.Dispatch<CreateAccountCommandRequest, CreateAccountCommandResponse>(request, CancellationToken.None);
@@ -51,8 +53,8 @@ public class EditAccountModalViewModel : IModalViewModel<EditAccountFormViewMode
             {
                 new AccountListItemDto {
                     Id = response.ItemId,
-                    Name = FormViewModel.Name,
-                    AccountNumber = FormViewModel.AccountNumber,
+                    Name = formViewModel.Name,
+                    AccountNumber = formViewModel.AccountNumber,
                     AccountType = accountType.Type,
                     Active = true,
                     BalanceDifference = 0, // TODO: Understand this

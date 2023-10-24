@@ -12,13 +12,13 @@
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Secondary">@SecondaryText</MudButton>
-        <MudButton Disabled="@_primaryDisabled" Color="Color.Primary" OnClick="Primary">
+        <MudButton Disabled="@_primaryDisabled" Color="Color.Success" OnClick="Primary">
             @if (_inProgress)
             {
-                <MudProgressCircular Size="Size.Small" Color="Color.Primary" Indeterminate="true" />
+                <MudProgressCircular Size="Size.Small" Color="Color.Success" Indeterminate="true" />
             }
             else {
-                @PrimaryText;
+                @PrimaryText
             }
         </MudButton>
     </DialogActions>
@@ -79,7 +79,7 @@
         _editContext.OnFieldChanged += FieldChanged;
     }
 
-    async Task Primary()
+    private async Task Primary()
     {
         _inProgress = true;
         if (ModalViewModel.FormViewModel.Valid &&

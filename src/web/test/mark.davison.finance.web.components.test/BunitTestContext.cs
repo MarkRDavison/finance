@@ -1,14 +1,6 @@
-﻿using Bunit;
-using mark.davison.common.client;
-using mark.davison.common.client.abstractions.State;
-using mark.davison.finance.web.components.Ignition;
-using mark.davison.finance.web.features;
-using mark.davison.finance.web.services;
-using Microsoft.Extensions.DependencyInjection;
+﻿namespace mark.davison.finance.web.components.test;
 
-namespace mark.davison.finance.web.components.test;
-
-// TODO: move to mark.davison.common.client.test
+// TODO: move version to mark.davison.common.client.test
 public abstract class BunitTestContext : TestContextWrapper
 {
     [TestInitialize]

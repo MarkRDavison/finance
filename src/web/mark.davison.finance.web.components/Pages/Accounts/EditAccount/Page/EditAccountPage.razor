@@ -1,0 +1,29 @@
+﻿@attribute [Route(Routes.AccountNew)]
+@inherits ComponentWithState
+@inject IStateHelper _stateHelper
+@inject IClientNavigationManager _navigation
+@inject IFormSubmission<EditAccountFormViewModel> _formSubmission
+
+<MudGrid>
+    <MudItem Class="py-4">
+        <MudText Typo="Typo.h4">New @_lookupState.Instance.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type account</MudText>
+    </MudItem>
+    
+    <MudItem Class="d-flex align-center justify-left mud-width-full py-8">
+        <EditForm EditContext="@_editContext" OnSubmit="@OnCreate">
+            <EditAccountForm FormViewModel="@FormViewModel" />
+        </EditForm>
+    </MudItem>
+
+    <MudButton Disabled="@_primaryDisabled" Variant="Variant.Filled" OnClick="@OnCreate" Color="Color.Success">
+        @if (_inProgress)
+        {
+            <MudProgressCircular Size="Size.Small" Color="Color.Success" Indeterminate="true" />
+        }
+        else
+        {
+            var t = "Create account";
+            @t
+        }
+    </MudButton>
+</MudGrid>
