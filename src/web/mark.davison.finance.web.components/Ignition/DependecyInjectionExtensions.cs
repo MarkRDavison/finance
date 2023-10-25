@@ -1,12 +1,4 @@
-﻿using mark.davison.common.client.abstractions.CQRS;
-using mark.davison.common.client.CQRS;
-using mark.davison.finance.web.components.CommonCandidates.Form;
-using mark.davison.finance.web.components.Pages.Accounts.EditAccount.Modal;
-using Microsoft.Extensions.DependencyInjection;
-using MudBlazor.Services;
-using System.Reflection;
-
-namespace mark.davison.finance.web.components.Ignition;
+﻿namespace mark.davison.finance.web.components.Ignition;
 
 public static class DependecyInjectionExtensions
 {
@@ -15,7 +7,9 @@ public static class DependecyInjectionExtensions
         services.AddMudServices();
         services.AddTransient<EditAccountModalViewModel>();
         services.AddTransient<IFormSubmission<EditAccountFormViewModel>, EditAccountFormSubmission>();
-        services.AddTransient<IEditAccountFormSubmission, EditAccountFormSubmission>();
+        services.AddTransient<EditTransactionFormSubmission>();
+        services.AddTransient<IFormSubmission<EditTransactionFormViewModel>, EditTransactionFormSubmission>();
+
         return services;
     }
     private static void AddSingleton<TAbstraction, TImplementation>(IServiceCollection services) where TAbstraction : class where TImplementation : class, TAbstraction

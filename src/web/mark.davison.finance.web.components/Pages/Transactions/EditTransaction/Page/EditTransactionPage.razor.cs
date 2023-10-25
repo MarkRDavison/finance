@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Page;
+namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Page;
 
 // TODO: Common base class between edit transaction/account
-public partial class EditAccountPage
+public partial class EditTransactionPage
 {
     private IStateInstance<LookupState> _lookupState { get; set; } = default!;
 
@@ -14,7 +14,7 @@ public partial class EditAccountPage
     [Parameter, EditorRequired]
     public required Guid Type { get; set; }
 
-    public EditAccountFormViewModel FormViewModel { get; set; } = default!;
+    public EditTransactionFormViewModel FormViewModel { get; set; } = default!;
 
     protected override Task OnInitializedAsync()
     {
@@ -22,8 +22,8 @@ public partial class EditAccountPage
 
         FormViewModel = new()
         {
-            AccountTypeId = Type,
-            HideAccountType = true
+            TransactionTypeId = Type,
+            HideTransactionType = true
         };
 
         if (_editContext != null)
@@ -47,7 +47,7 @@ public partial class EditAccountPage
         if (FormViewModel.Valid &&
             await _formSubmission.Primary(FormViewModel))
         {
-            _navigation.NavigateTo(RouteHelpers.Account(FormViewModel.Id));
+            _navigation.NavigateTo(RouteHelpers.Transaction(FormViewModel.Id));
         }
         _inProgress = false;
     }

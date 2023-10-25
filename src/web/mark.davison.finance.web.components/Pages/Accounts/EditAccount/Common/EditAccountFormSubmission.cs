@@ -1,11 +1,6 @@
-﻿using mark.davison.common.client.abstractions.CQRS;
-using mark.davison.finance.accounting.rules;
-using mark.davison.finance.web.features.Account.Add;
-using mark.davison.finance.web.features.Account.Create;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
 
-namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
-
-public class EditAccountFormSubmission : IEditAccountFormSubmission
+public class EditAccountFormSubmission : IFormSubmission<EditAccountFormViewModel>
 {
     private readonly ICQRSDispatcher _dispatcher;
 
