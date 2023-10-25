@@ -1,5 +1,4 @@
 ﻿using mark.davison.finance.web.components.CommonCandidates.Form;
-using mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
 using mark.davison.finance.web.components.Pages.Accounts.EditAccount.Modal;
 
 namespace mark.davison.finance.web.components.Pages.Accounts;
@@ -7,7 +6,10 @@ namespace mark.davison.finance.web.components.Pages.Accounts;
 public partial class AccountsList
 {
     private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
-    private IEnumerable<AccountListItemViewModel> _items => _accountListState.Instance.Accounts.Select(AccountListStateToViewModel);
+    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
+    private IEnumerable<AccountListItemViewModel> _items => _accountListState.Instance.Accounts.Where(_ => Type == null || _.AccountTypeId == Type).Select(AccountListStateToViewModel);
+
+    private string _title => Type == null ? "Accounts" : (_lookupState.Instance.AccountTypes.First(_ => _.Id == Type).Type + " accounts");
 
     private static AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
     {
@@ -31,6 +33,7 @@ public partial class AccountsList
     protected override async Task OnInitializedAsync()
     {
         _accountListState = GetState<AccountListState>();
+        _lookupState = GetState<LookupState>();
         await EnsureStateLoaded();
     }
     protected override async Task OnParametersSetAsync()
@@ -52,4 +55,7 @@ public partial class AccountsList
         var dialog = _dialogService.Show<Modal<EditAccountModalViewModel, EditAccountFormViewModel, EditAccountForm>>(add ? "Add account" : "Edit account", param, options);
         await dialog.Result;
     }
+
+    [Parameter]
+    public Guid? Type { get; set; }
 }
