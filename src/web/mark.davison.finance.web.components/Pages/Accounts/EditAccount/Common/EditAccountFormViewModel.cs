@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.web.components.CommonCandidates.Form;
-
-namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Common;
 
 public class EditAccountFormViewModel : IFormViewModel
 {

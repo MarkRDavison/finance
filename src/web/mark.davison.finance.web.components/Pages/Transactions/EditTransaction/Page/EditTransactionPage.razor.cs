@@ -22,9 +22,10 @@ public partial class EditTransactionPage
 
         FormViewModel = new()
         {
-            TransactionTypeId = Type,
-            HideTransactionType = true
+            TransactionTypeId = Type
         };
+
+        FormViewModel.AddSplit();
 
         if (_editContext != null)
         {
