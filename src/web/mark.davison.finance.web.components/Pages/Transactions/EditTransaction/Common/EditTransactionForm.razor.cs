@@ -81,4 +81,7 @@ public partial class EditTransactionForm
     }
 
     private static string Id(string id, int index) => $"{id}-{index}";
+
+    [Parameter, EditorRequired]
+    public bool Processing { get; set; }
 }

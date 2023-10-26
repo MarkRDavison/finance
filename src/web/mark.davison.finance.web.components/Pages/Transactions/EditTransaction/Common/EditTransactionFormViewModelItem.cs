@@ -8,4 +8,19 @@ public class EditTransactionFormViewModelItem
     public Guid? DestinationAccountId { get; set; }
     public decimal? Amount { get; set; }
     public Guid? CategoryId { get; set; }
+    public Guid? ForeignCurrencyId { get; set; }
+    public decimal? ForeignAmount { get; set; }
+
+    public bool Valid =>
+        SourceAccountId != null &&
+        SourceAccountId != Guid.Empty &&
+        DestinationAccountId != null &&
+        DestinationAccountId != Guid.Empty &&
+        Amount != null &&
+        Amount > 0.0M &&
+        CategoryId != Guid.Empty &&
+        (ForeignCurrencyId == null ||
+            (ForeignCurrencyId != Guid.Empty &&
+            ForeignAmount != null &&
+            ForeignAmount > 0.0M));
 }

@@ -7,7 +7,11 @@ public class EditTransactionFormViewModel : IFormViewModel
     public Guid Id { get; set; }
     public Guid TransactionTypeId { get; set; }
     public DateTime? Date { get; set; }
-    public bool Valid => false;
+    public string SplitDescription { get; set; } = string.Empty;
+    public bool Valid => Items.All(_ => _.Valid) && (Items.Count > 1 ? (SplitValid) : (NonSplitValid));
+
+    private bool SplitValid => !string.IsNullOrEmpty(SplitDescription);
+    private bool NonSplitValid => string.IsNullOrEmpty(SplitDescription);
 
     public void AddSplit()
     {
@@ -24,6 +28,11 @@ public class EditTransactionFormViewModel : IFormViewModel
         if (toRemove != null)
         {
             Items.Remove(toRemove);
+        }
+
+        if (Items.Count == 1)
+        {
+            SplitDescription = string.Empty;
         }
     }
 

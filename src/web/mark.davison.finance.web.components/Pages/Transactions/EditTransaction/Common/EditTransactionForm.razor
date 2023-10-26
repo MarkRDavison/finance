@@ -30,8 +30,17 @@
         </MudPaper>
     }
 
+    @if (FormViewModel.Items.Count > 1)
+    {
+        <MudDivider DividerType="DividerType.FullWidth" Class="my-6" />
+        
+        <MudPaper Class="mb-4 pa-6">
+            <MudTextField id="edit-transaction-form-split-description" T="string" Label="Split transaction description" Required="true" @bind-Text="FormViewModel.SplitDescription" For="@(() => FormViewModel.SplitDescription)" />
+        </MudPaper>
+    }
+
     <MudDivider DividerType="DividerType.FullWidth" Class="my-6" />
 
-    <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="@FormViewModel.AddSplit">Add another split</MudButton>
+    <MudButton Disabled="@Processing" Variant="Variant.Filled" Color="Color.Success" OnClick="@FormViewModel.AddSplit">Add another split</MudButton>
 
 </MudForm>
