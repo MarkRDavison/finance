@@ -43,6 +43,18 @@ public partial class ViewTransaction
             .GroupBy(_ => _.TransactionJournalId)
             .Select(_ =>
             {
+                // TODO: NEXT: CURRENT: MEPLEASE:
+                //  
+                // Source and dest are not determined for this display using the Source property
+                //
+                // Instead it is based on the transaction type
+                //  - Transfer: is a special case, uses blue and its neither a positive or a negative
+                //  - Deposit: source is the revenue account, i.e. from work account -> (GREEN) -> saving account
+                //  - Withdrawal: source is the asset account, i.e. from checking -> (RED) -> supermarket account
+                //
+                // Need to make a utility for getting the styles on the numbers, css/c#???
+                //
+
                 var source = _.First(__ => __.Source);
                 var dest = _.First(__ => !__.Source);
 
