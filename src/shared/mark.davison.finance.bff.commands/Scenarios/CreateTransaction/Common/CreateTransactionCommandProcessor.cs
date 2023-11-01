@@ -82,10 +82,10 @@ public class CreateTransactionCommandProcessor : ICommandProcessor<CreateTransac
             await _repository.UpsertEntitiesAsync(transactions, cancellationToken);
         }
 
-        // TODO: populate
-        response.Group = new TransactionGroupDto();
-        response.Journals.AddRange(journals.Select(_ => new TransactionJournalDto { }));
-        response.Transactions.AddRange(transactions.Select(_ => new TransactionDto { }));
+        // TODO: populate!!!
+        response.Group = transactionGroup.ToDto();
+        response.Journals.AddRange(journals.Select(_ => _.ToDto()));
+        response.Transactions.AddRange(transactions.Select(_ => _.ToDto(journals.First(__ => __.Id == _.TransactionJournalId), transactionGroup)));
 
         return response;
     }

@@ -1,4 +1,12 @@
 https://mudblazor.com/components/grid#grid-builder
+https://mudblazor.com/features/breakpoints#breakpoints
+
+Make sure breakpoints work well.
+ - The sidebar needs to collapse when we hit the first one, i.e. on view transaction page half width goes to full, sidebar should collapse then
+
+In web features/web ui we have commands that wrap bff/api commands, so we dispatch web command and in the handler we call the clienthttprepository and submit the api command.  This seems wasteful???
+
+numeric/decimal input not triggering form validation
 
 Replace guids in urls with snippets/words?
 
@@ -11,6 +19,14 @@ create helper class for RepositoryPredicate<T>, RepositoryInclude<T> etc
 Account > Account Role
 
 CreateTransaction > EditTransaction ???
+
+Using state helpers, if you are going to be querying, set an in progress flag?  So the ui can show loading
+ - example bad scenario, create transaction, populates local cache with 1 item, open that account, shows just the one transaction while it loads the rest
+ - maybe desired but check ...
+
+Audit log when we share accounts/whatever between people???
+
+IStateHelper.FetchAccountList(bool showActive) -> Need some config value for showing active etc???
 
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2020_06_07_063612_changes_for_v530.php
 https://github.com/firefly-iii/firefly-iii/blob/main/database/migrations/2021_08_28_073733_user_groups.php

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\api\mark.davison.finance.persistence\mark.davison.finance.persistence.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
   </ItemGroup>
 
 </Project>

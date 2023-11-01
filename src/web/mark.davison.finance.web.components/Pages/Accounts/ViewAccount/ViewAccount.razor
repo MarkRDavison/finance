@@ -1,10 +1,9 @@
-﻿@using mark.davison.finance.web.components.CommonCandidates.Components.CommandMenu
-@attribute [Route(Routes.Account)]
+﻿@attribute [Route(Routes.Account)]
 @inherits ComponentWithState
 @inject IStateHelper _stateHelper
 
 <MudPaper>
-    <MudStack Row="true" Style="padding: 10px;">
+    <MudStack Row="true" Class="pa-10">
         <MudText Typo="Typo.h4">@_currentAccount?.Name</MudText>
         <MudTooltip Text="Add">
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" />

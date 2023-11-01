@@ -1,5 +1,4 @@
-﻿global using mark.davison.common.Repository;
-global using mark.davison.common.server.abstractions;
+﻿global using mark.davison.common.server.abstractions;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;
 global using mark.davison.common.server.abstractions.Repository;
@@ -24,5 +23,6 @@ global using mark.davison.finance.models.dtos.Commands.CreateTransaction;
 global using mark.davison.finance.models.dtos.Commands.UpsertAccount;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;
+global using mark.davison.finance.shared.utilities.Extensions;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Diagnostics.CodeAnalysis;

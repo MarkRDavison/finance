@@ -1,11 +1,11 @@
-﻿namespace mark.davison.finance.web.features.Transaction.QueryByAccount;
+﻿namespace mark.davison.finance.web.features.Transaction.QueryById;
 
-public class TransactionQueryByAccountActionHandler : IActionHandler<TransactionQueryByAccountAction>
+public class TransactionQueryByIdActionHandler : IActionHandler<TransactionQueryByIdAction>
 {
     private readonly IClientHttpRepository _repository;
     private readonly IStateStore _stateStore;
 
-    public TransactionQueryByAccountActionHandler(
+    public TransactionQueryByIdActionHandler(
         IClientHttpRepository repository,
         IStateStore stateStore)
     {
@@ -13,16 +13,16 @@ public class TransactionQueryByAccountActionHandler : IActionHandler<Transaction
         _stateStore = stateStore;
     }
 
-    public async Task Handle(TransactionQueryByAccountAction action, CancellationToken cancellationToken)
+    public async Task Handle(TransactionQueryByIdAction action, CancellationToken cancellationToken)
     {
         var updated = _stateStore.GetState<TransactionState>().Instance.Transactions.ToDictionary(_ => _.Id, _ => _);
 
-        var response = await _repository.Get<TransactionByAccountQueryResponse, TransactionByAccountQueryRequest>(new TransactionByAccountQueryRequest
+        var response = await _repository.Get<TransactionByIdQueryResponse, TransactionByIdQueryRequest>(new TransactionByIdQueryRequest
         {
-            AccountId = action.AccountId
+            TransactionGroupId = action.TransactionGroupId
         }, cancellationToken);
 
-        // TODO: Consolidate with TransactionQueryByIdActionHandler??
+        // TODO: Consolidate with TransactionQueryByAccountActionHandler??
         foreach (var item in response.Transactions)
         {
             updated[item.Id] = item;

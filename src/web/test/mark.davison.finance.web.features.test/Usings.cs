@@ -27,7 +27,6 @@ global using mark.davison.finance.web.features.Tag;
 global using mark.davison.finance.web.features.Tag.Create;
 global using mark.davison.finance.web.features.Tag.Update;
 global using mark.davison.finance.web.features.Transaction;
-global using mark.davison.finance.web.features.Transaction.Create;
 global using mark.davison.finance.web.features.Transaction.QueryByAccount;
 global using mark.davison.finance.web.services.AppContext;
 global using Microsoft.VisualStudio.TestTools.UnitTesting;

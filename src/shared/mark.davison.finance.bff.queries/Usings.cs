@@ -1,5 +1,4 @@
-﻿global using mark.davison.common.Repository;
-global using mark.davison.common.server.abstractions.Authentication;
+﻿global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;
 global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.finance.models.dtos.Queries.AccountDashboardSummaryQuery;
@@ -8,6 +7,8 @@ global using mark.davison.finance.models.dtos.Queries.CategoryListQuery;
 global using mark.davison.finance.models.dtos.Queries.StartupQuery;
 global using mark.davison.finance.models.dtos.Queries.TagListQuery;
 global using mark.davison.finance.models.dtos.Queries.TransactionByAccountQuery;
+global using mark.davison.finance.models.dtos.Queries.TransactionByIdQuery;
 global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;
-global using mark.davison.finance.models.Models;
+global using mark.davison.finance.shared.utilities.Extensions;
+global using System.Linq.Expressions;

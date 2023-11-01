@@ -3,7 +3,7 @@
 public class CreateTransactionResponse : Response // TODO: Base response class?
 {
 
-    public TransactionGroupDto? Group { get; set; }
+    public TransactionGroupDto Group { get; set; } = new();
     public List<TransactionJournalDto> Journals { get; set; } = new();
     public List<TransactionDto> Transactions { get; set; } = new();
 }

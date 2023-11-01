@@ -12,6 +12,7 @@ public class EditTransactionFormViewModelItem
     public decimal? ForeignAmount { get; set; }
 
     public bool Valid =>
+        !string.IsNullOrEmpty(Description) &&
         SourceAccountId != null &&
         SourceAccountId != Guid.Empty &&
         DestinationAccountId != null &&

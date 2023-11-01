@@ -1,12 +1,4 @@
-﻿using mark.davison.finance.accounting.rules;
-using mark.davison.finance.accounting.rules.Account;
-using mark.davison.finance.web.components.CommonCandidates.Components.CommandMenu;
-using mark.davison.finance.web.components.CommonCandidates.Components.Link;
-using mark.davison.finance.web.features.Category;
-using mark.davison.finance.web.features.Lookup;
-using mark.davison.finance.web.features.Transaction;
-
-namespace mark.davison.finance.web.components.Pages.Accounts.ViewAccount;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts.ViewAccount;
 
 public partial class ViewAccount
 {
@@ -184,6 +176,7 @@ public partial class ViewAccount
         {
             if (_.Amount < 0.0M)
             {
+                // TODO: Common utility
                 style += "color: #e47365; ";
             }
             else

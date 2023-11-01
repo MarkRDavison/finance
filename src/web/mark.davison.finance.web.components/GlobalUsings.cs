@@ -1,9 +1,14 @@
 ﻿global using mark.davison.common.client.abstractions.Authentication;
 global using mark.davison.common.client.abstractions.CQRS;
+global using mark.davison.common.client.abstractions.Repository;
 global using mark.davison.common.client.abstractions.State;
 global using mark.davison.common.client.CQRS;
 global using mark.davison.finance.accounting.rules;
+global using mark.davison.finance.accounting.rules.Account;
+global using mark.davison.finance.models.dtos.Commands.CreateTransaction;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
+global using mark.davison.finance.models.dtos.Shared;
+global using mark.davison.finance.web.components.CommonCandidates.Components.CommandMenu;
 global using mark.davison.finance.web.components.CommonCandidates.Components.Dropdown;
 global using mark.davison.finance.web.components.CommonCandidates.Components.Link;
 global using mark.davison.finance.web.components.CommonCandidates.Form;
@@ -13,7 +18,10 @@ global using mark.davison.finance.web.components.Pages.Transactions.EditTransact
 global using mark.davison.finance.web.features.Account;
 global using mark.davison.finance.web.features.Account.Add;
 global using mark.davison.finance.web.features.Account.Create;
+global using mark.davison.finance.web.features.Category;
 global using mark.davison.finance.web.features.Lookup;
+global using mark.davison.finance.web.features.Transaction;
+global using mark.davison.finance.web.features.Transaction.Update;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
 global using MudBlazor;

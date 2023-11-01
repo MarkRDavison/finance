@@ -111,8 +111,10 @@ public class Startup
             MapProxyCQRSGet(endpoints, "/api/category-list-query");
             MapProxyCQRSGet(endpoints, "/api/tag-list-query");
             MapProxyCQRSGet(endpoints, "/api/transaction-by-account-query");
+            MapProxyCQRSGet(endpoints, "/api/transaction-by-id-query");
 
             MapProxyCQRSPost(endpoints, "/api/upsert-account");
+            MapProxyCQRSPost(endpoints, "/api/create-transaction");
         });
     }
 

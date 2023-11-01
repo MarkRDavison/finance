@@ -1,7 +1,4 @@
-﻿using mark.davison.finance.web.components.CommonCandidates.Form;
-using mark.davison.finance.web.components.Pages.Accounts.EditAccount.Modal;
-
-namespace mark.davison.finance.web.components.Pages.Accounts;
+﻿namespace mark.davison.finance.web.components.Pages.Accounts;
 
 public partial class AccountsList
 {
@@ -9,7 +6,7 @@ public partial class AccountsList
     private IStateInstance<LookupState> _lookupState { get; set; } = default!;
     private IEnumerable<AccountListItemViewModel> _items => _accountListState.Instance.Accounts.Where(_ => Type == null || _.AccountTypeId == Type).Select(AccountListStateToViewModel);
 
-    private string _title => Type == null ? "Accounts" : (_lookupState.Instance.AccountTypes.First(_ => _.Id == Type).Type + " accounts");
+    private string _title => Type == null ? "Accounts" : (_lookupState.Instance.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type + " accounts");
 
     private static AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
     {
