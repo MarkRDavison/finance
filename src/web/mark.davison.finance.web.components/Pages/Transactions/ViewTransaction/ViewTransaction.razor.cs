@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.web.components.Pages.Transactions.ViewTransaction;
+﻿using mark.davison.finance.accounting.constants;
+
+namespace mark.davison.finance.web.components.Pages.Transactions.ViewTransaction;
 
 public partial class ViewTransaction
 {
@@ -36,6 +38,128 @@ public partial class ViewTransaction
         );
     }
 
+    // TODO: To helper
+    private TransactionDto GetSourceTransaction(Guid transactionTypeId, List<TransactionDto> transactions)
+    {
+        if (transactionTypeId == TransactionConstants.Transfer)
+        {
+            return transactions.First(_ => _.Source);
+        }
+        else if (
+            transactionTypeId == TransactionConstants.Deposit ||
+            transactionTypeId == TransactionConstants.Withdrawal
+        )
+        {
+            var sourceTransactionAccountTypes = AllowableSourceDestinationAccounts.GetSourceAccountTypes(transactionTypeId);
+
+            return transactions.First(_ =>
+            {
+                // TODO: Helper on account list state to go from id -> accountType???
+                // TODO: Loading this page directly crashes here, state not loaded???
+                var account = _accountListState.Instance.Accounts.First(__ => __.Id == _.AccountId);
+
+                return sourceTransactionAccountTypes.Contains(account.AccountTypeId);
+            });
+        }
+
+        return transactions.First(_ => _.Source);
+    }
+
+    // TODO: To helper
+    private TransactionDto GetDestinationTransaction(Guid transactionTypeId, Guid sourceAccountId, Guid sourceAccountTypeId, List<TransactionDto> transactions)
+    {
+        if (transactionTypeId == TransactionConstants.Transfer)
+        {
+            return transactions.First(_ => !_.Source);
+        }
+        else if (
+            transactionTypeId == TransactionConstants.Deposit ||
+            transactionTypeId == TransactionConstants.Withdrawal
+        )
+        {
+            var destTransactionAccountTypes = AllowableSourceDestinationAccounts.GetDestinationAccountTypesForSource(transactionTypeId, sourceAccountTypeId);
+
+            return transactions.First(_ =>
+            {
+                if (_.AccountId == sourceAccountId)
+                {
+                    return false;
+                }
+
+                // TODO: Helper on account list state to go from id -> accountType???
+                var account = _accountListState.Instance.Accounts.First(__ => __.Id == _.AccountId);
+
+                return destTransactionAccountTypes.Contains(account.AccountTypeId);
+            });
+        }
+
+        return transactions.First(_ => !_.Source);
+    }
+
+    // TODO: Re-use/helperise, ViewAccount.razor.cs
+    private string GetAmountText(Guid transactionTypeId, long amount, CurrencyDto currency)
+    {
+
+        if (transactionTypeId == TransactionConstants.Transfer)
+        {
+            amount = Math.Abs(amount);
+        }
+        else if (transactionTypeId == TransactionConstants.Deposit)
+        {
+            amount = Math.Abs(amount);
+        }
+
+        bool negative = amount < 0;
+
+        amount = Math.Abs(amount);
+
+        return $"{(negative ? "-" : string.Empty)}{currency.Symbol}{CurrencyRules.FromPersisted(amount).ToString($"N{currency.DecimalPlaces}")}";
+    }
+
+    private string GetAmountColour(Guid transactionTypeId, long amount)
+    {
+        if (transactionTypeId == TransactionConstants.Transfer)
+        {
+            return "color: #47b2f5; "; // blue
+        }
+
+        if (transactionTypeId == TransactionConstants.Deposit)
+        {
+            if (amount < 0)
+            {
+
+                return "color: #00ad5d; "; // green
+            }
+            else
+            {
+                return "color: #e47365; "; // red
+            }
+        }
+
+        if (transactionTypeId == TransactionConstants.Withdrawal)
+        {
+            if (amount < 0)
+            {
+
+                return "color: #e47365; "; // red
+            }
+            else
+            {
+                return "color: #00ad5d; "; // green
+            }
+        }
+
+        if (amount < 0)
+        {
+
+            return "color: #e47365; "; // red
+        }
+        else
+        {
+            return "color: #00ad5d; "; // green
+        }
+    }
+
     private IEnumerable<ViewTransactionItem> ToCardItems()
     {
         return _transactionState.Instance.Transactions
@@ -54,14 +178,24 @@ public partial class ViewTransaction
                 //
                 // Need to make a utility for getting the styles on the numbers, css/c#???
                 //
+                var transactions = _.ToList();
 
-                var source = _.First(__ => __.Source);
-                var dest = _.First(__ => !__.Source);
+                var transactionTypeId = transactions.Select(__ => __.TransactionTypeId).First();
+
+                var source = GetSourceTransaction(transactionTypeId, transactions);
 
                 var sourceAccount = _accountListState.Instance.Accounts.FirstOrDefault(__ => __.Id == source.AccountId);
+
+                if (sourceAccount == null)
+                {
+                    return (ViewTransactionItem?)null;
+                }
+
+                var dest = GetDestinationTransaction(transactionTypeId, source.AccountId, sourceAccount.AccountTypeId, transactions);
+
                 var destAccount = _accountListState.Instance.Accounts.FirstOrDefault(__ => __.Id == dest.AccountId);
 
-                if (sourceAccount == null || destAccount == null)
+                if (destAccount == null)
                 {
                     return (ViewTransactionItem?)null;
                 }
@@ -88,15 +222,14 @@ public partial class ViewTransaction
                         Text = destAccount.Name,
                         Href = RouteHelpers.Account(destAccount.Id)
                     },
-                    Amount = $"{currency.Symbol}{CurrencyRules.FromPersisted(source.Amount).ToString($"N{currency.DecimalPlaces}")}",
+                    Amount = GetAmountText(transactionTypeId, source.Amount, currency),
                     ForeignAmount = "",
                     Category = category == null ? null : new LinkInfo
                     {
                         Text = category.Name,
                         Href = RouteHelpers.Category(category.Id)
                     },
-                    // Transfer == blue
-                    AmountStyle = source.Amount < 0 ? "color: #e47365; " : "color: #00ad5d; "
+                    AmountStyle = GetAmountColour(transactionTypeId, source.Amount)
                 };
             })
             .Where(_ => _ != null)

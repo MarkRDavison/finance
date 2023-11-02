@@ -2,7 +2,7 @@
 @inherits ComponentWithState
 @inject IStateHelper _stateHelper
 
-<MudPaper>
+<MudPaper Class="pa-4">
     <MudStack Row="true" Class="pa-10">
         <MudText Typo="Typo.h4">@_currentAccount?.Name</MudText>
         <MudTooltip Text="Add">
@@ -91,67 +91,3 @@
         </Columns>
     </MudDataGrid>
 </MudPaper>
-
-@* <div class="container">
-    <h1 style="display: inline-block;">@_currentAccount?.Name</h1>
-    <Button 
-        CssClass="float-end" 
-        Label="Edit"
-        Variant="ButtonVariant.Outlined"
-        Type="ButtonType.Primary"
-        OnClick="@OpenEditAccountModal" />
-    <div class="container">
-        <table class="z-table" style="width: 100%;">
-            <thead>
-                <tr>
-                    <th style="text-align: right;">Description</th>
-                    <th style="text-align: right;">Amount</th>
-                    <th style="text-align: right;">Date</th>
-                    <th style="text-align: right;">Source account</th>
-                    <th style="text-align: right;">Destination account </th>
-                    <th style="text-align: right;">Category</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Generate(Id))
-                {
-                    @if (item.IsSplit)
-                    {
-                        <tr>
-                            <td style="text-align: right;">@item.SplitDescription</td>
-                            <td style="text-align: right;"></td>
-                            <td style="text-align: right;"></td>
-                            <td style="text-align: right;"></td>
-                            <td style="text-align: right;"></td>
-                            <td style="text-align: right;"></td>
-                        </tr>
-                    }
-                    @foreach (var splitItem in item.Transactions)
-                    {
-                        var sourceAccount = _accountListState.Instance.Accounts.First(_ => _.Id == splitItem.SourceTransaction.AccountId);
-                        var destinationAccount = _accountListState.Instance.Accounts.First(_ => _.Id == splitItem.DestinationTransaction.AccountId);
-
-                        var amount = (sourceAccount.Id == Id ? splitItem.SourceTransaction.Amount : splitItem.DestinationTransaction.Amount);
-
-                        var currency = _lookupState.Instance.Currencies.First(_ => _.Id == sourceAccount.CurrencyId);
-
-                        var decimalAmount = CurrencyRules.FromPersisted(amount);
-                        var formattedAmount = $"{(decimalAmount < 0 ? "-" : string.Empty)}{currency?.Symbol}{Math.Abs(decimalAmount).ToString($"N{currency!.DecimalPlaces}")}";
-
-                        var category = _categoryListState.Instance.Categories.FirstOrDefault(_ => _.Id == splitItem.SourceTransaction.CategoryId);
-
-                        <tr>
-                            <td style="text-align: right;">@splitItem.SourceTransaction.Description</td>
-                            <td style="text-align: right;">@formattedAmount</td>
-                            <td style="text-align: right;">@splitItem.SourceTransaction.Date.ToShortDateString()</td>
-                            <td style="text-align: right;">@sourceAccount.Name</td>
-                            <td style="text-align: right;">@destinationAccount.Name</td>
-                            <td style="text-align: right;">@category?.Name</td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-<EditAccountModal @bind-IsOpen="EditAccountModalOpen" ViewModel="@_editViewModel" Title="Edit account" /> *@

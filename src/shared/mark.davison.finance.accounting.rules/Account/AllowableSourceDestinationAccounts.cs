@@ -36,6 +36,15 @@ public static class AllowableSourceDestinationAccounts
 
         return _allowableSourceDestinations[transactionTypeId].Values.SelectMany(_ => _.AsEnumerable()).ToHashSet();
     }
+    public static HashSet<Guid> GetDestinationAccountTypesForSource(Guid transactionTypeId, Guid sourceAccountTypeId)
+    {
+        if (!_allowableSourceDestinations.ContainsKey(transactionTypeId))
+        {
+            return new HashSet<Guid>();
+        }
+
+        return _allowableSourceDestinations[transactionTypeId][sourceAccountTypeId];
+    }
 
     static AllowableSourceDestinationAccounts()
     {

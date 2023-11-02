@@ -32,10 +32,12 @@ public partial class ViewAccount
 
         if (MudDataGrid != null)
         {
-            await MudDataGrid.SetSortAsync(
-                nameof(ViewAccountGridRow.Date),
-                SortDirection.Descending,
-                _ => _.Date);
+            // TODO: Sorting with multi line entries
+            // TODO: This is slow and jumps after initial render, sort data before binding?
+            //await MudDataGrid.SetSortAsync(
+            //    nameof(ViewAccountGridRow.Date),
+            //    SortDirection.Descending,
+            //    _ => _.Date);
         }
     }
 
@@ -79,7 +81,9 @@ public partial class ViewAccount
     {
         List<ViewAccountGridRow> items = new();
 
-        foreach (var tGroup in _transactionState.Instance.Transactions.GroupBy(_ => _.TransactionGroupId))
+        foreach (var tGroup in _transactionState.Instance.Transactions
+            .GroupBy(_ => _.TransactionGroupId)
+            .OrderByDescending(_ => _.First().Date)) // TODO: Sorting with multi line entries
         {
             var splitDescription = tGroup.First().SplitTransactionDescription ?? string.Empty;
 
@@ -105,8 +109,10 @@ public partial class ViewAccount
                     IsSplit = true,
                     Description = new()
                     {
-                        Text = "SOME RANDOM SPLIT: " + splitDescription
-                    }
+                        Href = RouteHelpers.Transaction(tGroup.Key),
+                        Text = splitDescription
+                    },
+                    Amount = transactionsByJournal.Sum(_ => _.First(_ => _.Source).Amount) // TODO: BETTER
                 });
             }
 
@@ -154,7 +160,7 @@ public partial class ViewAccount
                         Text = thisAccountTransaction.Description,
                         Href = RouteHelpers.Transaction(tGroup.Key)
                     },
-                    Amount = CurrencyRules.FromPersisted(thisAccountTransaction.Amount),
+                    Amount = CurrencyRules.FromPersisted(thisAccountTransaction.Amount), // TODO: Re-use from ViewTransaction.razor.cs GetAmountText? maybe helper classes etc
                     Date = thisAccountTransaction.Date,
                     TransactionGroupId = tGroup.Key,
                     TransactionType = transactionType.Type,
@@ -172,7 +178,11 @@ public partial class ViewAccount
     {
         string style = "";
 
-        if (_.Amount != null)
+        if (_.TransactionType == "Transfer") // TODO: Id???
+        {
+            style += "color: #47b2f5; ";
+        }
+        else if (_.Amount != null)
         {
             if (_.Amount < 0.0M)
             {
