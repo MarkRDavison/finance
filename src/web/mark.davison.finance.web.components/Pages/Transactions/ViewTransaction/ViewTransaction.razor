@@ -10,7 +10,6 @@
         </MudTooltip>
     </MudStack>
     <MudGrid>
-        @*I think this means each of these are 6 (50%) until you hit sm (small/med tablet) and then they become 12 (100%)*@
         <MudItem sm="12" md="6">
             <MudCard Outlined="true">
                 <MudCardHeader>
@@ -22,20 +21,26 @@
                                 Type
                             </MudItem>
                             <MudItem xs="6">
-                                THE_TYPE
+                                @_transactionType
                             </MudItem>
-                            <MudItem xs="6">
-                                Description
-                            </MudItem>
-                            <MudItem xs="6">
-                                THE_DESCRIPTION
-                            </MudItem>
-                            <MudItem xs="6">
-                                Date
-                            </MudItem>
-                            <MudItem xs="6">
-                                THE_DATE
-                            </MudItem>
+                            @if (!string.IsNullOrEmpty(_transactionDescription))
+                            {
+                                <MudItem xs="6">
+                                    Description
+                                </MudItem>
+                                <MudItem xs="6">
+                                    @_transactionDescription
+                                </MudItem>
+                            }
+                            @if (_transactionDate != null)
+                            {
+                                <MudItem xs="6">
+                                    Date
+                                </MudItem>
+                                <MudItem xs="6">
+                                    @_transactionDate.Value.ToString("MMMM d, yyyy")
+                                </MudItem>
+                            }
                         </MudGrid>
                     </CardHeaderContent>
                     <CardHeaderActions>
@@ -55,13 +60,29 @@
                                 Source accounts
                             </MudItem>
                             <MudItem xs="6">
-                                THE_ACCOUNTS
+                                @{
+                                    bool first = true;
+                                }
+                                @*TODO: Extract to helper component*@
+                                @foreach (var linkInfo in _sourceAccounts)
+                                {
+                                    if (first)
+                                    {
+                                        first = false;
+                                    }
+                                    else
+                                    {
+                                        var comma = ", ";
+                                        <span>@comma</span>
+                                    }
+                                    <span><MudLink Href="@linkInfo.Href">@linkInfo.Text</MudLink></span>
+                                }
                             </MudItem>
                             <MudItem xs="6">
                                 Total amount
                             </MudItem>
                             <MudItem xs="6">
-                                THE_AMOUNT
+                                <span style="@_totalAmountStyle">@_totalAmount</span>
                             </MudItem>
                         </MudGrid>
                     </CardHeaderContent>
@@ -85,9 +106,9 @@
                             <MudGrid>
                                 <MudItem xs="12">
                                     <MudLink Href="@item.SourceAccount.Href">@item.SourceAccount.Text</MudLink>
-                                     ->
+                                    →
                                         <span style="@item.AmountStyle">@item.Amount</span>
-                                     ->
+                                    →
                                     <MudLink Href="@item.DestinationAccount.Href">@item.DestinationAccount.Text</MudLink>
                                 </MudItem>
                                 @if (item.Category != null)

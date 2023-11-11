@@ -8,8 +8,10 @@ public partial class AccountsList
 
     private string _title => Type == null ? "Accounts" : (_lookupState.Instance.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type + " accounts");
 
-    private static AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
+    private AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
     {
+        var currency = _lookupState.Instance.Currencies.First(_ => _.Id == dto.CurrencyId);
+
         return new AccountListItemViewModel
         {
             Id = dto.Id,
@@ -20,8 +22,10 @@ public partial class AccountsList
             },
             AccountNumber = dto.AccountNumber,
             AccountType = dto.AccountType,
-            CurrentBalance = dto.CurrentBalance,
-            BalanceDifference = dto.BalanceDifference,
+            CurrentBalance = CurrencyRules.FromPersistedToFormatted(dto.CurrentBalance, currency.Symbol, currency.DecimalPlaces),
+            CurrentBalanceAmount = dto.CurrentBalance,
+            BalanceDifference = CurrencyRules.FromPersistedToFormatted(dto.BalanceDifference, currency.Symbol, currency.DecimalPlaces),
+            BalanceDifferenceAmount = dto.BalanceDifference,
             Active = dto.Active,
             LastModified = dto.LastModified
         };
@@ -55,4 +59,21 @@ public partial class AccountsList
 
     [Parameter]
     public Guid? Type { get; set; }
+
+    private Func<AccountListItemViewModel, string> AmountCellStyleFunc(Func<AccountListItemViewModel, long> amountSelector) => _ =>
+    {
+        string style = "";
+
+        if (amountSelector(_) < 0.0M)
+        {
+            // TODO: Common utility
+            style += "color: #e47365; ";
+        }
+        else
+        {
+            style += "color: #00ad5d; ";
+        }
+
+        return style;
+    };
 }

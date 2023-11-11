@@ -1,6 +1,4 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.queries.Scenarios.TransactionByAccountQuery;
+﻿namespace mark.davison.finance.bff.queries.Scenarios.TransactionByAccountQuery;
 
 public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {

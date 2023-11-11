@@ -17,4 +17,7 @@ public class AppSettings
     public string DB_DATABASE { get; set; } = "finance-dev";
     public string DB_USERNAME { get; set; } = string.Empty;
     public string DB_PASSWORD { get; set; } = string.Empty;
+    public string REDIS_HOST { get; set; } = "redis.markdavison.kiwi";
+    public int REDIS_PORT { get; set; } = 6379;
+    public string REDIS_PASSWORD { get; set; } = string.Empty;
 }

@@ -12,4 +12,12 @@ public static class CurrencyRules
     {
         return ((decimal)value / (decimal)Math.Pow(10, FinanceDecimalPlaces));
     }
+
+    public static string FromPersistedToFormatted(long value, string symbol, int decimalPlaces)
+    {
+        var display = FromPersisted(value);
+        bool negative = display < 0.0M;
+
+        return $"{(negative ? "-" : "")}{symbol}{Math.Abs(display).ToString($"N{decimalPlaces}")}";
+    }
 }

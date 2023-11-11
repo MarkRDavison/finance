@@ -15,8 +15,10 @@ public class AccountListItemViewModel
     public LinkDefinition? Name { get; set; }
     public string AccountType { get; set; } = string.Empty;
     public string AccountNumber { get; set; } = string.Empty;
-    public long CurrentBalance { get; set; }
+    public string CurrentBalance { get; set; } = string.Empty;
+    public long CurrentBalanceAmount { get; set; }
     public bool Active { get; set; }
     public DateTime LastModified { get; set; }
-    public long BalanceDifference { get; set; }
+    public string BalanceDifference { get; set; } = string.Empty;
+    public long BalanceDifferenceAmount { get; set; }
 }

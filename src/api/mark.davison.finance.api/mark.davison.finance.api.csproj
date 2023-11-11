@@ -10,8 +10,11 @@
     <PackageReference Include="markdavison.common.server" Version="7.4.6" />
     <PackageReference Include="markdavison.common.source.generators" Version="7.4.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.12" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="7.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="7.0.12" />
+    <PackageReference Include="StackExchange.Redis" Version="2.6.122" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
@@ -19,6 +22,7 @@
     <ProjectReference Include="..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj" />
     <ProjectReference Include="..\mark.davison.finance.persistence\mark.davison.finance.persistence.csproj" />

@@ -1,9 +1,12 @@
 ﻿using mark.davison.common.server.Endpoints;
 using mark.davison.common.Services;
 using mark.davison.common.source.generators.CQRS;
+using mark.davison.finance.api.services.Ignition;
 using mark.davison.finance.bff.commands;
 using mark.davison.finance.bff.queries;
 using mark.davison.finance.models.dtos;
+using Microsoft.AspNetCore.DataProtection;
+using StackExchange.Redis;
 
 namespace mark.davison.finance.api;
 
@@ -120,6 +123,29 @@ public class Startup
         services.AddCommandCQRS();
         services.UseCQRSServer();
         services.UseFinancePersistence();
+        services.UseUserApplicationContext();
+        if (string.IsNullOrEmpty(AppSettings.REDIS_PASSWORD) ||
+            string.IsNullOrEmpty(AppSettings.REDIS_HOST))
+        {
+            services
+                .AddDistributedMemoryCache();
+        }
+        else
+        {
+            var config = new ConfigurationOptions
+            {
+                EndPoints = { AppSettings.REDIS_HOST + ":" + AppSettings.REDIS_PORT },
+                Password = AppSettings.REDIS_PASSWORD
+            };
+            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(config);
+            services.AddStackExchangeRedisCache(_ =>
+            {
+                _.InstanceName = "finance_" + (AppSettings.PRODUCTION_MODE ? "prod_" : "dev_");
+                _.Configuration = redis.Configuration;
+            });
+            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
+            services.AddSingleton(redis);
+        }
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

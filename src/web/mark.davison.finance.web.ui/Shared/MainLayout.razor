@@ -8,10 +8,11 @@
     <MudAppBar>
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
         <MudSpacer />
+        <AppContext />
         <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
     </MudAppBar>
     <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
-        <MyNavMenu />
+        <MyNavMenu /> @*TODO: Rename*@
     </MudDrawer>
     <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
         <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />

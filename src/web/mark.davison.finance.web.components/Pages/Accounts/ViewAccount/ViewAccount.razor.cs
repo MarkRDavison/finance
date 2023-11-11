@@ -55,34 +55,13 @@ public partial class ViewAccount
         );
     }
 
-    //private void OpenEditAccountModal()
-    //{
-    //    if (_currentAccount != null)
-    //    {
-    //        _editViewModel = new EditAccountViewModel(Dispatcher)
-    //        {
-    //            EditAccountFormViewModel = new EditAccountFormViewModel
-    //            {
-    //                Id = _currentAccount.Id,
-    //                AccountNumber = _currentAccount.AccountNumber,
-    //                AccountTypeId = _currentAccount.AccountTypeId,
-    //                CurrencyId = _currentAccount.CurrencyId,
-    //                Name = _currentAccount.Name,
-    //                VirtualBalance = CurrencyRules.FromPersisted(_currentAccount.VirtualBalance.GetValueOrDefault()),
-    //                OpeningBalance = CurrencyRules.FromPersisted(_currentAccount.OpeningBalance.GetValueOrDefault()),
-    //                OpeningBalanceDate = _currentAccount.OpeningBalanceDate ?? default
-    //            }
-    //        };
-    //        EditAccountModalOpen = true;
-    //    }
-    //}
-
     private IEnumerable<ViewAccountGridRow> GenerateRows(Guid accountId)
     {
         List<ViewAccountGridRow> items = new();
 
         foreach (var tGroup in _transactionState.Instance.Transactions
             .GroupBy(_ => _.TransactionGroupId)
+            .Where(_ => _appContext.RangeStart <= _.First().Date || _appContext.RangeEnd <= _.First().Date)
             .OrderByDescending(_ => _.First().Date)) // TODO: Sorting with multi line entries
         {
             var splitDescription = tGroup.First().SplitTransactionDescription ?? string.Empty;
@@ -112,12 +91,17 @@ public partial class ViewAccount
                         Href = RouteHelpers.Transaction(tGroup.Key),
                         Text = splitDescription
                     },
-                    Amount = transactionsByJournal.Sum(_ => _.First(_ => _.Source).Amount) // TODO: BETTER
+                    Amount = CurrencyRules.FromPersisted(transactionsByJournal
+                        // Dont sum splits for other accounts for the total
+                        .Where(_ => _.Any(__ => __.AccountId == Id))
+                        .Sum(_ => _.First(_ => _.Source).Amount)) // TODO: BETTER
                 });
             }
 
             foreach (var tbjs in transactionsByJournal)
             {
+                // TODO: When navigating here directly, if there are splits this account is
+                // not directly involved in, they are not loaded
                 if (tbjs.Count() != 2)
                 {
                     throw new InvalidDataException("Not 2 transactions under a journal");
@@ -198,40 +182,11 @@ public partial class ViewAccount
         return style;
     };
 
-    private IEnumerable<AccountTransactionItemViewModel> Generate(Guid accountId)
+    private string RowClassFunc(ViewAccountGridRow row, int index)
     {
-        List<AccountTransactionItemViewModel> items = new();
-
-        foreach (var tGroup in _transactionState.Instance.Transactions.GroupBy(_ => _.TransactionGroupId))
-        {
-            AccountTransactionItemViewModel item = new();
-            if (tGroup.Count() % 2 != 0)
-            {
-                throw new InvalidDataException();
-            }
-            item.SplitDescription = tGroup.FirstOrDefault()?.SplitTransactionDescription;
-            item.IsSplit = !string.IsNullOrEmpty(item.SplitDescription);
-            item.TransactionGroupId = tGroup.FirstOrDefault()?.TransactionGroupId ?? Guid.Empty;
-
-            foreach (var transactionGroup in tGroup.GroupBy(_ => _.TransactionJournalId))
-            {
-                var splitItem = new AccountTransactionItemTransactionViewModel { };
-
-                splitItem.SourceTransaction = transactionGroup.First(_ => _.Amount < 0);
-                splitItem.DestinationTransaction = transactionGroup.First(_ => _.Amount > 0);
-
-                if (splitItem.SourceTransaction.AccountId == accountId ||
-                    splitItem.DestinationTransaction.AccountId == accountId)
-                {
-                    item.Transactions.Add(splitItem);
-                }
-
-            }
-
-            items.Add(item);
-        }
-
-        return items;
+        // This is the style that sets the borders
+        // mud-table-cell > border-bottom: 1px solid etc...
+        return " border-style: none;"; // border style based on whether it is a split, the last of a day etc
     }
 
 }

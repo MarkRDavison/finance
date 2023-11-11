@@ -2,6 +2,8 @@ https://mudblazor.com/components/grid#grid-builder
 https://mudblazor.com/features/breakpoints#breakpoints
 https://mudblazor.com/features/display#visibility
 
+quick create new deposit -> immediate quick create new transfer, then look at source account dropdown, invalid items
+
 Make sure breakpoints work well.
  - The sidebar needs to collapse when we hit the first one, i.e. on view transaction page half width goes to full, sidebar should collapse then
 

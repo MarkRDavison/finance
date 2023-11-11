@@ -1,23 +1,22 @@
-﻿using mark.davison.finance.accounting.rules.Account;
-using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
 [TestClass]
 public class AccountListQueryHandlerTests
 {
     private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
+    private readonly Mock<IUserApplicationContext> _userApplicationContext;
     private readonly AccountListQueryHandler _handler;
 
     public AccountListQueryHandlerTests()
     {
         _repository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
+        _userApplicationContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new AccountListQueryHandler(_repository.Object);
+        _handler = new AccountListQueryHandler(_repository.Object, _userApplicationContext.Object);
 
         _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
 

@@ -11,6 +11,13 @@ public partial class ViewTransaction
 
     private IEnumerable<ViewTransactionItem> _items => ToCardItems();
 
+    private DateOnly? _transactionDate;
+    private string? _transactionDescription;
+    private string? _transactionType;
+    private string? _totalAmount;
+    private string? _totalAmountStyle;
+    private List<LinkInfo> _sourceAccounts = new();
+
     [Parameter]
     public required Guid Id { get; set; }
 
@@ -97,7 +104,7 @@ public partial class ViewTransaction
     }
 
     // TODO: Re-use/helperise, ViewAccount.razor.cs
-    private string GetAmountText(Guid transactionTypeId, long amount, CurrencyDto currency)
+    private string GetAmountText(Guid transactionTypeId, long amount, CurrencyDto? currency)
     {
 
         if (transactionTypeId == TransactionConstants.Transfer)
@@ -113,7 +120,7 @@ public partial class ViewTransaction
 
         amount = Math.Abs(amount);
 
-        return $"{(negative ? "-" : string.Empty)}{currency.Symbol}{CurrencyRules.FromPersisted(amount).ToString($"N{currency.DecimalPlaces}")}";
+        return $"{(negative ? "-" : string.Empty)}{currency?.Symbol}{CurrencyRules.FromPersisted(amount).ToString($"N{currency?.DecimalPlaces ?? 2}")}";
     }
 
     private string GetAmountColour(Guid transactionTypeId, long amount)
@@ -162,7 +169,11 @@ public partial class ViewTransaction
 
     private IEnumerable<ViewTransactionItem> ToCardItems()
     {
-        return _transactionState.Instance.Transactions
+        CurrencyDto? currency = null;
+        Guid transactionTypeId = Guid.Empty;
+        _sourceAccounts.Clear();
+
+        var items = _transactionState.Instance.Transactions
             .Where(_ => _.TransactionGroupId == Id)
             .GroupBy(_ => _.TransactionJournalId)
             .Select(_ =>
@@ -180,7 +191,7 @@ public partial class ViewTransaction
                 //
                 var transactions = _.ToList();
 
-                var transactionTypeId = transactions.Select(__ => __.TransactionTypeId).First();
+                transactionTypeId = transactions.Select(__ => __.TransactionTypeId).First();
 
                 var source = GetSourceTransaction(transactionTypeId, transactions);
 
@@ -200,7 +211,7 @@ public partial class ViewTransaction
                     return (ViewTransactionItem?)null;
                 }
 
-                var currency = _lookupState.Instance.Currencies.FirstOrDefault(__ => __.Id == sourceAccount.CurrencyId);
+                currency = _lookupState.Instance.Currencies.FirstOrDefault(__ => __.Id == sourceAccount.CurrencyId);
 
                 if (currency == null)
                 {
@@ -208,6 +219,12 @@ public partial class ViewTransaction
                 }
 
                 var category = _categoryListState.Instance.Categories.FirstOrDefault(__ => __.Id == source.CategoryId);
+
+                var transactionType = _lookupState.Instance.TransactionTypes.First(__ => __.Id == transactionTypeId);
+
+                _transactionType = transactionType.Type;
+                _transactionDescription = _.First().SplitTransactionDescription;
+                _transactionDate = _.First().Date;
 
                 return new ViewTransactionItem
                 {
@@ -223,6 +240,7 @@ public partial class ViewTransaction
                         Href = RouteHelpers.Account(destAccount.Id)
                     },
                     Amount = GetAmountText(transactionTypeId, source.Amount, currency),
+                    AmountValue = source.Amount,
                     ForeignAmount = "",
                     Category = category == null ? null : new LinkInfo
                     {
@@ -234,5 +252,12 @@ public partial class ViewTransaction
             })
             .Where(_ => _ != null)
             .Cast<ViewTransactionItem>();
+
+        var totalAmount = items.Sum(_ => _.AmountValue);
+        _totalAmount = GetAmountText(transactionTypeId, totalAmount, currency);
+        _totalAmountStyle = GetAmountColour(transactionTypeId, totalAmount);
+        _sourceAccounts.AddRange(items.Select(_ => _.SourceAccount).DistinctBy(_ => _.Href));
+
+        return items;
     }
 }
