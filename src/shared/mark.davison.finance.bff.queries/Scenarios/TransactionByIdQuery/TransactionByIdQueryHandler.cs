@@ -27,7 +27,7 @@ public class TransactionByIdQueryHandler : IQueryHandler<TransactionByIdQueryReq
             {
                 response.Transactions.AddRange(tj.Transactions.Select(
                     _ => _.ToDto(
-                        _.TransactionJournal!,
+                        tj,
                         tj.TransactionGroup!)));
             }
         }

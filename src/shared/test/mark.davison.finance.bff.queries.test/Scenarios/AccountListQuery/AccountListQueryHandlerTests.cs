@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
+﻿using mark.davison.finance.api.services;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
 [TestClass]
 public class AccountListQueryHandlerTests
@@ -26,6 +28,10 @@ public class AccountListQueryHandlerTests
                 It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<TransactionJournal>());
+
+        _userApplicationContext
+            .Setup(_ => _.LoadRequiredContext<FinanceUserApplicationContext>())
+            .ReturnsAsync(new FinanceUserApplicationContext { });
     }
 
 
@@ -45,10 +51,20 @@ public class AccountListQueryHandlerTests
             .ReturnsAsync(accounts)
             .Verifiable();
 
+        _repository
+            .Setup(_ => _.GetEntitiesAsync<Transaction, DatedTransactionAmount>(
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
+                string.Empty,
+                It.IsAny<Expression<Func<Transaction, DatedTransactionAmount>>>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<DatedTransactionAmount>())
+            .Verifiable();// TODO: More tests around current balance and balance difference
+
         var request = new AccountListQueryRequest
         {
             ShowActive = true
         };
+
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
         Assert.AreEqual(accounts.Count, response.Accounts.Count);

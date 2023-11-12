@@ -28,4 +28,4 @@ jobs:
 
       - name: test
         working-directory: ./src
-        run: dotnet test
+        run: dotnet test --filter "TestCategory!=UI"

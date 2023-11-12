@@ -2,6 +2,11 @@
 
 namespace mark.davison.finance.bff.queries.Scenarios.AccountListQuery;
 
+public class DatedTransactionAmount
+{
+    public required long Amount { get; init; }
+    public required DateOnly Date { get; init; }
+}
 public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, AccountListQueryResponse>
 {
     private readonly IRepository _repository;
@@ -59,7 +64,7 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
                 var amounts = await _repository.GetEntitiesAsync(
                     (Transaction _) => _.AccountId == account.Id,
                     string.Empty,
-                    _ => new { _.Amount, _.TransactionJournal!.Date },
+                    _ => new DatedTransactionAmount { Amount = _.Amount, Date = _.TransactionJournal!.Date },
                     cancellationToken);
 
                 var currentBalance = amounts
