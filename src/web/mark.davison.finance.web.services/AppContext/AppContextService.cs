@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.web.services.AppContext;
+﻿using mark.davison.finance.accounting.rules;
+
+namespace mark.davison.finance.web.services.AppContext;
 
 public class AppContextService : IAppContextService
 {

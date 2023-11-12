@@ -10,6 +10,7 @@ public interface IStateHelper
     Task FetchAccountInformation(Guid accountId);
 
     Task FetchAccountTypeDashboardSummaryData(params Guid[] accountTypeIds);
+    Task FetchTransactionInformation(Guid transactionGroupId);
 
     TimeSpan DefaultRefetchTimeSpan { get; }
 }

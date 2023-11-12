@@ -2,41 +2,54 @@
 
 public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
 
-    public TransactionByAccountQueryHandler(IHttpRepository httpRepository)
+    public TransactionByAccountQueryHandler(IRepository repository)
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
     }
 
     public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TransactionByAccountQueryResponse();
 
-        var transactions = await _httpRepository.GetEntitiesAsync<Transaction>(
-            $"transaction/account/{query.AccountId}",
-            new QueryParameters(),
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellationToken);
+        await using (_repository.BeginTransaction())
+        {
+            var transactionJournals = await _repository.GetEntitiesAsync<TransactionJournal>(
+                _ => _.Transactions.Any(__ => __.AccountId == query.AccountId),
+                new Expression<Func<TransactionJournal, object>>[] {
+                    _ => _.Transactions,
+                    _ => _.TransactionGroup!
+                },
+                cancellationToken);
 
-        response.Transactions.AddRange(transactions
-            .Select(_ => new TransactionDto
+            // TODO: Return transaction journal??? Need source/destination account etc
+
+            foreach (var tj in transactionJournals)
             {
-                Id = _.Id,
-                UserId = _.UserId,
-                AccountId = _.AccountId,
-                TransactionJournalId = _.TransactionJournalId,
-                TransactionGroupId = _.TransactionJournal?.TransactionGroupId ?? Guid.Empty,
-                CurrencyId = _.CurrencyId,
-                ForeignCurrencyId = _.ForeignCurrencyId,
-                CategoryId = _.TransactionJournal?.CategoryId,
-                SplitTransactionDescription = _.TransactionJournal?.TransactionGroup?.Title ?? string.Empty,
-                Description = _.Description,
-                Date = _.TransactionJournal?.Date ?? default,
-                Amount = _.Amount,
-                ForeignAmount = _.ForeignAmount,
-                Reconciled = _.Reconciled
-            }));
+                var tg = tj.TransactionGroup;
+
+                response.Transactions.AddRange(tj.Transactions.Select(_ => new TransactionDto
+                {
+                    Id = _.Id,
+                    UserId = _.UserId,
+                    AccountId = _.AccountId,
+                    TransactionJournalId = _.TransactionJournalId,
+                    TransactionGroupId = tj.TransactionGroupId,
+                    CurrencyId = _.CurrencyId,
+                    ForeignCurrencyId = _.ForeignCurrencyId,
+                    CategoryId = _.TransactionJournal?.CategoryId,
+                    SplitTransactionDescription = tg?.Title ?? string.Empty,
+                    Description = _.Description,
+                    Date = _.TransactionJournal?.Date ?? default,
+                    Amount = _.Amount,
+                    ForeignAmount = _.ForeignAmount,
+                    Reconciled = _.Reconciled,
+                    Source = _.IsSource,
+                    TransactionTypeId = tj.TransactionTypeId
+                }));
+            }
+        }
 
         return response;
     }

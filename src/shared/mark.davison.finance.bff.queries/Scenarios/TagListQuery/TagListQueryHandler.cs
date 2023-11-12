@@ -2,23 +2,19 @@
 
 public class TagListQueryHandler : IQueryHandler<TagListQueryRequest, TagListQueryResponse>
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
 
-    public TagListQueryHandler(IHttpRepository httpRepository)
+    public TagListQueryHandler(IRepository repository)
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
     }
 
     public async Task<TagListQueryResponse> Handle(TagListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TagListQueryResponse();
 
-        var tags = await _httpRepository.GetEntitiesAsync<Tag>(
-            new QueryParameters
-            {
-                { nameof(Tag.UserId), currentUserContext.CurrentUser.Id.ToString() }
-            },
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
+        var tags = await _repository.GetEntitiesAsync<Tag>(
+            _ => _.UserId == currentUserContext.CurrentUser.Id,
             cancellationToken);
 
         response.Tags.AddRange(tags.Select(_ => new TagDto

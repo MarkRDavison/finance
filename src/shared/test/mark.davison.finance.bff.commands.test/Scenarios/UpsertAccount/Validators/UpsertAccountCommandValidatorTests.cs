@@ -5,14 +5,14 @@ public class UpsertAccountCommandValidatorTests
 {
     private readonly UpsertAccountCommandValidator _upsertAccountCommandValidator;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly List<AccountType> _accountTypes;
     private readonly List<Currency> _currencies;
     private readonly User _user;
 
     public UpsertAccountCommandValidatorTests()
     {
-        _httpRepository = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
 
         _accountTypes = new()
@@ -33,30 +33,28 @@ public class UpsertAccountCommandValidatorTests
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(_user);
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
 
-        _upsertAccountCommandValidator = new UpsertAccountCommandValidator(_httpRepository.Object);
+        _upsertAccountCommandValidator = new UpsertAccountCommandValidator(_repository.Object);
 
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
 
-        _httpRepository
-                    .Setup(_ => _
-                        .GetEntityAsync<AccountType>(
-                            It.IsAny<Guid>(),
-                            It.IsAny<HeaderParameters>(),
-                            It.IsAny<CancellationToken>()))
-                    .ReturnsAsync(_accountTypes[0]);
-
-        _httpRepository
+        _repository
             .Setup(_ => _
-                .GetEntityAsync<Currency>(
+                .EntityExistsAsync<AccountType>(
                     It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(_currencies[0]);
+            .ReturnsAsync(true);
 
-        _httpRepository
+        _repository
+            .Setup(_ => _
+                .EntityExistsAsync<Currency>(
+                    It.IsAny<Guid>(),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(true);
+
+        _repository
             .Setup(_ => _
                 .GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account>());
     }
@@ -64,13 +62,12 @@ public class UpsertAccountCommandValidatorTests
     [TestMethod]
     public async Task Validate_WhereAccountIdIsNotValid_ReturnsError()
     {
-        _httpRepository
+        _repository
             .Setup(_ => _
-                .GetEntityAsync<AccountType>(
+                .EntityExistsAsync<AccountType>(
                     It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((AccountType?)null);
+            .ReturnsAsync(false);
 
         var request = new UpsertAccountCommandRequest
         {
@@ -91,13 +88,12 @@ public class UpsertAccountCommandValidatorTests
     public async Task Validate_WhereCurrencyIdIsNotValid_ReturnsError()
     {
 
-        _httpRepository
+        _repository
             .Setup(_ => _
-                .GetEntityAsync<Currency>(
+                .EntityExistsAsync<Currency>(
                     It.IsAny<Guid>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Currency?)null);
+            .ReturnsAsync(false);
 
         var request = new UpsertAccountCommandRequest { UpsertAccountDto = new UpsertAccountDto { AccountTypeId = Guid.NewGuid() } };
         var response = await _upsertAccountCommandValidator.Validate(
@@ -129,11 +125,10 @@ public class UpsertAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        _httpRepository
+        _repository
             .Setup(_ => _
                 .GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account> {
                 new Account
@@ -169,11 +164,10 @@ public class UpsertAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        _httpRepository
+        _repository
             .Setup(_ => _
                 .GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account> {
                 new Account
@@ -207,11 +201,10 @@ public class UpsertAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        _httpRepository
+        _repository
             .Setup(_ => _
                 .GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account> {
                 new Account
@@ -245,11 +238,10 @@ public class UpsertAccountCommandValidatorTests
     {
         const string AccountNumber = "DUPLICATE_NUMBER";
 
-        _httpRepository
+        _repository
             .Setup(_ => _
                 .GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account> {
                 new Account

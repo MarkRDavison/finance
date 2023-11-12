@@ -1,0 +1,23 @@
+﻿@inject IClientNavigationManager _navigation;
+
+<MudNavMenu Class="pa-4">
+    <MudText Typo="Typo.h6">Create new stuff</MudText>
+
+    @foreach (var item in Items)
+    {
+        <MudNavLink OnClick="@(e => OnLinkClick(item.Href))" Icon="@item.Icon" Class="@(item.FlipX ? "flip-icon-x" : "")">@item.Text</MudNavLink>
+    }
+
+    @*
+        New asset account
+        New expense account
+        New revenue account
+        New liability account
+        New budget
+        New category
+        New piggy bank
+        New bill
+        New rule
+        New recurring transaction
+    *@
+</MudNavMenu>

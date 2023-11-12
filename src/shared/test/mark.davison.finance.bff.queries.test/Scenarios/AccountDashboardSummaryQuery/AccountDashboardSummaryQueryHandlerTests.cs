@@ -1,32 +1,34 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
 
 [TestClass]
 public class AccountDashboardSummaryQueryHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly AccountDashboardSummaryQueryHandler _handler;
 
     public AccountDashboardSummaryQueryHandlerTests()
     {
-        _httpRepository = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new(_httpRepository.Object);
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
 
-        _httpRepository
+        _handler = new(_repository.Object);
+
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account>());
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Transaction>());
     }
@@ -39,18 +41,16 @@ public class AccountDashboardSummaryQueryHandlerTests
             AccountTypeId = AccountConstants.Asset
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Account>())
             .Verifiable();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Transaction>())
             .Verifiable();
@@ -59,19 +59,17 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         Assert.IsTrue(response.Success);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Transaction>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Transaction, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -93,17 +91,13 @@ public class AccountDashboardSummaryQueryHandlerTests
             AccountTypeId = AccountConstants.Asset
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((Expression<Func<Account, bool>> p, CancellationToken c) =>
             {
-                var expression = q.ExtractExpression<Account>();
-                Assert.IsNotNull(expression);
-
-                var results = accounts.Where(expression.Compile()).ToList();
+                var results = accounts.Where(p.Compile()).ToList();
 
                 Assert.AreEqual(1, results.Count);
 
@@ -115,11 +109,10 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         Assert.IsTrue(response.Success);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Account>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Account, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -150,23 +143,18 @@ public class AccountDashboardSummaryQueryHandlerTests
         };
 
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(accounts);
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((Expression<Func<Transaction, bool>> p, CancellationToken c) =>
             {
-                var expression = q.ExtractExpression<Transaction>();
-                Assert.IsNotNull(expression);
-
-                var results = transactions.Where(expression.Compile()).ToList();
+                var results = transactions.Where(p.Compile()).ToList();
 
                 Assert.AreEqual(5, results.Count);
 
@@ -178,11 +166,10 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         Assert.IsTrue(response.Success);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Transaction>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -215,17 +202,15 @@ public class AccountDashboardSummaryQueryHandlerTests
             RangeEnd = new DateOnly(2022, 1, 31)
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Account, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(accounts);
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Transaction, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(transactions);
 

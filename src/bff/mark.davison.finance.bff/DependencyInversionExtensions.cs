@@ -27,14 +27,6 @@ public static class DependencyInversionExtensions
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.UseCQRS(
-            typeof(BffRootType),
-            typeof(CommandsRootType),
-            typeof(QueriesRootType),
-            typeof(DtosRootType));
-
-        services.AddCommandCQRS();
-
         return services;
     }
 

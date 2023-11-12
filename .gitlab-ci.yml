@@ -63,8 +63,9 @@ build:
   artifacts:
     when: always
     reports:
-      cobertura:
-       - ./**/coverage.cobertura.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: ./**/coverage.cobertura.xml
       junit: 
        - ./**/*test-result.xml
        

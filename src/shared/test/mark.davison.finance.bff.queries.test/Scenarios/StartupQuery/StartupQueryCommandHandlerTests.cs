@@ -3,18 +3,20 @@
 [TestClass]
 public class StartupQueryCommandHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepositoryMock;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly StartupQueryCommandHandler _handler;
 
     public StartupQueryCommandHandlerTests()
     {
-        _httpRepositoryMock = new Mock<IHttpRepository>(MockBehavior.Strict);
-        _currentUserContext = new Mock<ICurrentUserContext>(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
+        _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new StartupQueryCommandHandler(_httpRepositoryMock.Object);
+        _handler = new StartupQueryCommandHandler(_repository.Object);
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
     }
 
     [TestMethod]
@@ -38,19 +40,13 @@ public class StartupQueryCommandHandlerTests
             new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Deposit) },
         };
 
-        _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<AccountType>(
-            It.IsAny<QueryParameters>(),
-            It.IsAny<HeaderParameters>(),
+        _repository.Setup(_ => _.GetEntitiesAsync<AccountType>(
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(accountTypes);
-        _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<Currency>(
-            It.IsAny<QueryParameters>(),
-            It.IsAny<HeaderParameters>(),
+        _repository.Setup(_ => _.GetEntitiesAsync<Currency>(
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(currencies);
-        _httpRepositoryMock.Setup(_ => _.GetEntitiesAsync<TransactionType>(
-            It.IsAny<QueryParameters>(),
-            It.IsAny<HeaderParameters>(),
+        _repository.Setup(_ => _.GetEntitiesAsync<TransactionType>(
             It.IsAny<CancellationToken>()))
             .ReturnsAsync(transactionTypes);
 

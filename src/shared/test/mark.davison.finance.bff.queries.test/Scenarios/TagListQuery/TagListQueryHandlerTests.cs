@@ -1,20 +1,22 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.TagListQuery;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.TagListQuery;
 
 [TestClass]
 public class TagListQueryHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly TagListQueryHandler _handler;
 
     public TagListQueryHandlerTests()
     {
-        _httpRepository = new Mock<IHttpRepository>(MockBehavior.Strict);
-        _currentUserContext = new Mock<ICurrentUserContext>(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
+        _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new TagListQueryHandler(_httpRepository.Object);
+        _handler = new TagListQueryHandler(_repository.Object);
     }
 
     [TestMethod]
@@ -25,19 +27,11 @@ public class TagListQueryHandlerTests
             new Tag{ }
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(q.ContainsKey(nameof(Tag.UserId)));
-                Assert.AreEqual(
-                    _currentUserContext.Object.CurrentUser.Id.ToString(),
-                    q[nameof(Tag.UserId)]);
-                return tags;
-            })
+            .ReturnsAsync(tags)
             .Verifiable();
 
         var request = new TagListQueryRequest();
@@ -45,11 +39,10 @@ public class TagListQueryHandlerTests
 
         Assert.AreEqual(tags.Count, response.Tags.Count);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Tag>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Tag, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }

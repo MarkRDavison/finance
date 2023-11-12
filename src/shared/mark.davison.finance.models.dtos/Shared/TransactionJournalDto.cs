@@ -2,4 +2,5 @@
 
 public class TransactionJournalDto
 {
+    public Guid Id { get; set; }
 }

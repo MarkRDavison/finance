@@ -1,70 +1,67 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.TransactionByAccountQuery;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.TransactionByAccountQuery;
 
 [TestClass]
 public class TransactionByAccountQueryHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepositoryMock;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly TransactionByAccountQueryHandler _handler;
 
     public TransactionByAccountQueryHandlerTests()
     {
-        _httpRepositoryMock = new Mock<IHttpRepository>(MockBehavior.Strict);
-        _currentUserContext = new Mock<ICurrentUserContext>(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
+        _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new TransactionByAccountQueryHandler(_httpRepositoryMock.Object);
+        _handler = new TransactionByAccountQueryHandler(_repository.Object);
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
     }
 
     [TestMethod]
-    public async Task Handle_InvokesHttpRepository()
+    public async Task Handle_InvokesRepository()
     {
         Guid accountId = Guid.NewGuid();
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<string>(),
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((string path, QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(path.Contains(accountId.ToString()));
-                return new List<Transaction>();
-            })
+            .ReturnsAsync(new List<TransactionJournal>())
             .Verifiable();
 
         await _handler.Handle(new TransactionByAccountQueryRequest { AccountId = accountId }, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepositoryMock
+        _repository
             .Verify(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<string>(),
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 
     [TestMethod]
-    public async Task Handle_ReturnsHttpRepositoryReturnedTransactions()
+    public async Task Handle_ReturnsRepositoryReturnedTransactions()
     {
-        var transactions = new List<Transaction> {
-                new Transaction {  },
-                new Transaction {  }
+        var transactionJournals = new List<TransactionJournal> {
+                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  },
+                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  }
         };
-        _httpRepositoryMock
+        _repository
             .Setup(_ => _.
-                GetEntitiesAsync<Transaction>(
-                    It.IsAny<string>(),
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                GetEntitiesAsync<TransactionJournal>(
+                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
+                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transactions);
+            .ReturnsAsync(transactionJournals);
 
         var response = await _handler.Handle(new TransactionByAccountQueryRequest { }, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(transactions.Count, response.Transactions.Count);
+        Assert.AreEqual(transactionJournals.SelectMany(_ => _.Transactions).Count(), response.Transactions.Count);
     }
 }

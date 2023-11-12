@@ -1,21 +1,42 @@
 ﻿@inherits LayoutComponentBase
 
-<PageTitle>Zeno Finance</PageTitle>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-<div class="z-app-container">
-    <Appbar Items="@AppbarItems" />
-    <AppBody>
-    @Body
-    </AppBody>
-</div>
+<MudLayout>
+    <MudAppBar>
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <AppContext />
+        <MudIconButton Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
+        <MyNavMenu /> @*TODO: Rename*@
+    </MudDrawer>
+    <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
+        <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
+    </MudDrawer>
+    <MudMainContent>
+        <MudContainer>
+            <AppBody>
+                @Body
+            </AppBody>
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
 
 @code {
-    private List<AppbarItem> AppbarItems { get; } = new()
+    bool _drawerOpen = true;
+    bool _quickAddOpen = false;
+    
+    void DrawerToggle()
     {
-        // TODO: Internationalisation
-        new AppbarItem("Dashboard", Routes.Root),
-        new AppbarItem("Accounts", Routes.Accounts),
-        new AppbarItem("Categories", Routes.Categories),
-        new AppbarItem("Tags", Routes.Tags)
-    };
+        _drawerOpen = !_drawerOpen;
+    }
+    void QuickAddToggle()
+    {
+        _quickAddOpen = !_quickAddOpen;
+    }
 }
+

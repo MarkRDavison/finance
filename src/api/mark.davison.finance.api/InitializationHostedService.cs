@@ -18,7 +18,14 @@ public class InitializationHostedService : GenericApplicationHealthStateHostedSe
 
     protected override async Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
-        await _financeDataSeeder.EnsureDataSeeded(cancellationToken);
+        try
+        {
+            await _financeDataSeeder.EnsureDataSeeded(cancellationToken);
+        }
+        catch (Exception)
+        {
+            throw;
+        }
         await base.AdditionalStartAsync(cancellationToken);
     }
 

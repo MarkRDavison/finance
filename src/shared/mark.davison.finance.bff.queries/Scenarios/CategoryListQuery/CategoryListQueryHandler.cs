@@ -2,30 +2,29 @@
 
 public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, CategoryListQueryResponse>
 {
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
 
-    public CategoryListQueryHandler(IHttpRepository httpRepository)
+    public CategoryListQueryHandler(IRepository httpRepository)
     {
-        _httpRepository = httpRepository;
+        _repository = httpRepository;
     }
 
     public async Task<CategoryListQueryResponse> Handle(CategoryListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CategoryListQueryResponse();
 
-        var categories = await _httpRepository.GetEntitiesAsync<Category>(
-            new QueryParameters
-            {
-                { nameof(Category.UserId), currentUserContext.CurrentUser.Id.ToString() }
-            },
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
-            cancellationToken);
-
-        response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
+        await using (_repository.BeginTransaction())
         {
-            Id = _.Id,
-            Name = _.Name
-        }));
+            var categories = await _repository.GetEntitiesAsync<Category>(
+                _ => _.UserId == currentUserContext.CurrentUser.Id,
+                cancellationToken);
+
+            response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
+            {
+                Id = _.Id,
+                Name = _.Name
+            }));
+        }
 
         return response;
     }

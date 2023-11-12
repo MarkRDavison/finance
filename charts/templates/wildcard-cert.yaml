@@ -1,0 +1,11 @@
+apiVersion: clustersecret.io/v1
+kind: ClusterSecret
+metadata:
+  name: wildcard-markdavison.kiwi
+matchNamespace:
+  - '.*'
+data:
+  valueFrom:
+    secretKeyRef:
+      name: wildcard-markdavison.kiwi
+      namespace: default

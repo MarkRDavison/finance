@@ -4,4 +4,5 @@
 public class TransactionByAccountQueryRequest : IQuery<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {
     public Guid AccountId { get; set; }
+    // TODO: Add range begin/end and update handler to use them
 }

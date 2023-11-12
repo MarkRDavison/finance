@@ -7,8 +7,6 @@ public class CreateCategoryTests : CQRSIntegrationTestBase
     public async Task SavingNewCategory_Passes()
     {
         var handler = GetRequiredService<ICommandHandler<CreateCategoryCommandRequest, CreateCategoryCommandResponse>>();
-        var repo = GetRequiredService<IRepository>();
-        var users = await repo.GetEntitiesAsync<User>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
         var request = new CreateCategoryCommandRequest { Id = Guid.NewGuid(), Name = "Category B" };

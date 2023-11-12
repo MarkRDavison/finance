@@ -1,20 +1,24 @@
-﻿namespace mark.davison.finance.bff.queries.test.Scenarios.CategoryListQuery;
+﻿using System.Linq.Expressions;
+
+namespace mark.davison.finance.bff.queries.test.Scenarios.CategoryListQuery;
 
 [TestClass]
 public class CategoryListQueryHandlerTests
 {
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly CategoryListQueryHandler _handler;
 
     public CategoryListQueryHandlerTests()
     {
-        _httpRepository = new Mock<IHttpRepository>(MockBehavior.Strict);
-        _currentUserContext = new Mock<ICurrentUserContext>(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
+        _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new CategoryListQueryHandler(_httpRepository.Object);
+        _handler = new CategoryListQueryHandler(_repository.Object);
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
     }
 
     [TestMethod]
@@ -25,19 +29,11 @@ public class CategoryListQueryHandlerTests
             new Category{ }
         };
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Category>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Category, bool>>>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((QueryParameters q, HeaderParameters h, CancellationToken c) =>
-            {
-                Assert.IsTrue(q.ContainsKey(nameof(Category.UserId)));
-                Assert.AreEqual(
-                    _currentUserContext.Object.CurrentUser.Id.ToString(),
-                    q[nameof(Category.UserId)]);
-                return categories;
-            })
+            .ReturnsAsync(categories)
             .Verifiable();
 
         var request = new CategoryListQueryRequest();
@@ -45,11 +41,10 @@ public class CategoryListQueryHandlerTests
 
         Assert.AreEqual(categories.Count, response.Categories.Count);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.GetEntitiesAsync<Category>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Category, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }

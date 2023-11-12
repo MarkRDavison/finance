@@ -12,6 +12,7 @@ public class TransactionQueryByAccountActionHandler : IActionHandler<Transaction
         _repository = repository;
         _stateStore = stateStore;
     }
+
     public async Task Handle(TransactionQueryByAccountAction action, CancellationToken cancellationToken)
     {
         var updated = _stateStore.GetState<TransactionState>().Instance.Transactions.ToDictionary(_ => _.Id, _ => _);
@@ -21,6 +22,7 @@ public class TransactionQueryByAccountActionHandler : IActionHandler<Transaction
             AccountId = action.AccountId
         }, cancellationToken);
 
+        // TODO: Consolidate with TransactionQueryByIdActionHandler??
         foreach (var item in response.Transactions)
         {
             updated[item.Id] = item;

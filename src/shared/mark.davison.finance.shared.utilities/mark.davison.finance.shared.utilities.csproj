@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\api\mark.davison.finance.persistence\mark.davison.finance.persistence.csproj" />
+    <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
+  </ItemGroup>
+
+</Project>

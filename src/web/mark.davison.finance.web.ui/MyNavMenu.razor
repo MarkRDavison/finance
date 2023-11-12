@@ -1,0 +1,29 @@
+﻿@using mark.davison.finance.accounting.constants;
+<MudNavMenu>
+    <MudNavLink Href="/" Match="NavLinkMatch.All">
+        Zeno Finance
+    </MudNavLink>
+    <MudNavGroup Title="FINANCIAL CONTROL" Expanded="true">
+        <MudNavLink Href="/budgets" Match="NavLinkMatch.Prefix">Budgets</MudNavLink>
+        <MudNavLink Href="/bills" Match="NavLinkMatch.Prefix">Bills</MudNavLink>
+        <MudNavLink Href="/piggybanks" Match="NavLinkMatch.Prefix">Piggy Banks</MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="ACCOUNTING" Expanded="true">
+        <MudNavGroup Title="Transactions" Expanded="true">
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Withdrawal)" Match="NavLinkMatch.Prefix">Expenses</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Deposit)" Match="NavLinkMatch.Prefix">Revenue / income</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Transfer)" Match="NavLinkMatch.Prefix">Transfers</MudNavLink>
+        </MudNavGroup>        
+        <MudNavLink Href="/automation" Match="NavLinkMatch.Prefix">Automation</MudNavLink>
+    </MudNavGroup>
+    <MudNavGroup Title="OTHERS" Expanded="true">
+        <MudNavGroup Title="Accounts" Expanded="true">
+            <MudNavLink Href="@RouteHelpers.Accounts(AccountConstants.Asset)" Match="NavLinkMatch.Prefix">Asset accounts</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Accounts(AccountConstants.Expense)" Match="NavLinkMatch.Prefix">Expense accounts</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Accounts(AccountConstants.Revenue)" Match="NavLinkMatch.Prefix">Revenue accounts</MudNavLink>
+        </MudNavGroup>
+    </MudNavGroup>
+    <MudNavLink Href="/classification" Match="NavLinkMatch.Prefix">Classification</MudNavLink>
+    <MudNavLink Href="/reports" Match="NavLinkMatch.Prefix">Reports</MudNavLink>
+    <MudNavLink Href="/options" Match="NavLinkMatch.Prefix">Options</MudNavLink>
+</MudNavMenu>

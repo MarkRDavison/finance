@@ -4,49 +4,47 @@
 public class CreateTransactionCommandProcessorTests
 {
     private readonly Mock<ICurrentUserContext> _currentUserContext;
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly CreateTransactionCommandProcessor _processor;
     private readonly User _user;
 
     public CreateTransactionCommandProcessorTests()
     {
         _currentUserContext = new(MockBehavior.Strict);
-        _httpRepository = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
 
-        _processor = new();
+        _processor = new(_repository.Object);
 
         _user = new() { Id = Guid.NewGuid() };
 
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(_user);
 
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntityAsync(
                 It.IsAny<TransactionGroup>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, HeaderParameters h, CancellationToken c) => e);
+            .ReturnsAsync((TransactionGroup e, CancellationToken c) => e);
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) => e);
+            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) => e);
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<Transaction>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, HeaderParameters h, CancellationToken c) => e);
+            .ReturnsAsync((List<Transaction> e, CancellationToken c) => e);
     }
 
     [TestMethod]
     public async Task Process_CreatesTransactionGroup()
     {
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Description = "Split description",
             Transactions =
@@ -55,14 +53,13 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
                 It.IsAny<TransactionGroup>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((TransactionGroup e, CancellationToken c) =>
             {
                 Assert.AreNotEqual(Guid.Empty, e.Id);
                 Assert.AreEqual(request.Description, e.Title);
@@ -71,13 +68,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync<TransactionGroup>(
                     It.IsAny<TransactionGroup>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -85,7 +81,7 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactionGroup_WithoutDescription_IfOnlyOneTransaction()
     {
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Description = "Split description",
             Transactions =
@@ -93,14 +89,13 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
                 It.IsAny<TransactionGroup>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((TransactionGroup e, CancellationToken c) =>
             {
                 Assert.IsTrue(string.IsNullOrEmpty(e.Title));
 
@@ -108,13 +103,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntityAsync<TransactionGroup>(
                     It.IsAny<TransactionGroup>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -122,33 +116,31 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactionJournal()
     {
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
             {
                 return e;
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -164,7 +156,7 @@ public class CreateTransactionCommandProcessorTests
             ForeignCurrencyId = Guid.NewGuid(),
             Date = DateOnly.FromDateTime(DateTime.Today)
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             TransactionTypeId = TransactionConstants.Deposit,
             Transactions =
@@ -173,14 +165,13 @@ public class CreateTransactionCommandProcessorTests
                 createTransactionDto
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
             {
                 for (int i = 0; i < e.Count; ++i)
                 {
@@ -199,13 +190,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -213,30 +203,28 @@ public class CreateTransactionCommandProcessorTests
     [TestMethod]
     public async Task Process_CreatesTransactions()
     {
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<Transaction>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, HeaderParameters h, CancellationToken c) => e)
+            .ReturnsAsync((List<Transaction> e, CancellationToken c) => e)
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<Transaction>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -254,7 +242,7 @@ public class CreateTransactionCommandProcessorTests
             Amount = 100,
             ForeignAmount = 125
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -262,14 +250,13 @@ public class CreateTransactionCommandProcessorTests
                 transaction
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<Transaction>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<Transaction> e, CancellationToken c) =>
             {
 
                 for (int i = 0; i < request.Transactions.Count; ++i)
@@ -304,13 +291,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<Transaction>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -329,30 +315,28 @@ public class CreateTransactionCommandProcessorTests
             ForeignAmount = 125,
             Tags = new() { "Tag1", "Tag2" }
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
                 transaction
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new List<Tag>())
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(_ =>
                 _.GetEntitiesAsync<Tag>(
-                    It.IsAny<QueryParameters>(),
-                    It.IsAny<HeaderParameters>(),
+                    It.IsAny<Expression<Func<Tag, bool>>>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -375,28 +359,26 @@ public class CreateTransactionCommandProcessorTests
             ForeignAmount = 125,
             Tags = tags.Select(_ => _.Name).ToList()
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
                 transaction
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(tags);
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
             {
                 Assert.AreEqual(1, e.Count);
                 Assert.IsNotNull(e[0].Tags);
@@ -405,13 +387,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }
@@ -434,28 +415,26 @@ public class CreateTransactionCommandProcessorTests
             ForeignAmount = 125,
             Tags = new() { tagName }
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
                 transaction
             }
         };
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
-        _httpRepository
+        _repository
             .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<QueryParameters>(),
-                It.IsAny<HeaderParameters>(),
+                It.IsAny<Expression<Func<Tag, bool>>>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(tags);
 
-        _httpRepository
+        _repository
             .Setup(_ => _.UpsertEntitiesAsync(
                 It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<HeaderParameters>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, HeaderParameters h, CancellationToken c) =>
+            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
             {
                 Assert.AreEqual(1, e.Count);
                 Assert.IsNotNull(e[0].Tags);
@@ -467,13 +446,12 @@ public class CreateTransactionCommandProcessorTests
             })
             .Verifiable();
 
-        await _processor.Process(request, response, _currentUserContext.Object, _httpRepository.Object, CancellationToken.None);
+        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
                 _ => _.UpsertEntitiesAsync(
                     It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<HeaderParameters>(),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
     }

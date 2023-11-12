@@ -28,10 +28,7 @@ public class CreateCategoryListCommandHandlerTests
                 .Post<CreateCategoryCommandResponse, CreateCategoryCommandRequest>(
                     It.IsAny<CreateCategoryCommandRequest>(),
                     It.IsAny<CancellationToken>()))
-            .ReturnsAsync((CreateCategoryCommandRequest req, CancellationToken cancellationToken) => new CreateCategoryCommandResponse()
-            {
-                Success = true
-            })
+            .ReturnsAsync(new CreateCategoryCommandResponse())
             .Verifiable();
 
         var response = await _handler.Handle(new CreateCategoryListCommand(), CancellationToken.None);

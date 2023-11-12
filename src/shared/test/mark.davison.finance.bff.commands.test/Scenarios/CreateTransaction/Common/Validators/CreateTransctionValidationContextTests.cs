@@ -3,27 +3,31 @@
 [TestClass]
 public class CreateTransctionValidationContextTests
 {
-    private readonly Mock<IHttpRepository> _httpRepository;
+    private readonly Mock<IRepository> _repository;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly CreateTransctionValidationContext _context;
 
     public CreateTransctionValidationContextTests()
     {
-        _httpRepository = new(MockBehavior.Strict);
+        _repository = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
-        _context = new(_httpRepository.Object, _currentUserContext.Object);
+        _context = new(_repository.Object, _currentUserContext.Object);
 
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User());
+
+        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
+
     }
 
     [TestMethod]
-    public async Task GetAccountById_FetchesFromHttpRepository()
+    public async Task GetAccountById_FetchesFromRepository()
     {
         var accountId = Guid.NewGuid();
 
-        _httpRepository
-            .Setup(_ => _.GetEntityAsync<Account>(accountId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()))
+        _repository.Setup(_ => _.GetEntityAsync<Account>(
+                accountId,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Account
             {
                 Id = accountId
@@ -31,15 +35,14 @@ public class CreateTransctionValidationContextTests
             .Verifiable();
 
         var first = await _context.GetAccountById(accountId, CancellationToken.None);
-        var second = await _context.GetAccountById(accountId, CancellationToken.None);
 
         Assert.IsNotNull(first);
-        Assert.IsNotNull(second);
-        Assert.AreEqual(first.Id, second.Id);
 
-        _httpRepository
+        _repository
             .Verify(
-                _ => _.GetEntityAsync<Account>(accountId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()),
+                _ => _.GetEntityAsync<Account>(
+                    accountId,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 
@@ -48,26 +51,34 @@ public class CreateTransctionValidationContextTests
     {
         var accountId = Guid.NewGuid();
 
-        _httpRepository
-            .Setup(_ => _.GetEntityAsync<Account>(accountId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Account())
+
+        _repository.Setup(_ => _.GetEntityAsync<Account>(
+                accountId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Account
+            {
+                Id = accountId
+            })
             .Verifiable();
 
         await _context.GetAccountById(accountId, CancellationToken.None);
 
-        _httpRepository
+        _repository
             .Verify(
-                _ => _.GetEntityAsync<Account>(accountId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()),
+                _ => _.GetEntityAsync<Account>(
+                    accountId,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 
     [TestMethod]
-    public async Task GetCategoryById_FetchesFromHttpRepository()
+    public async Task GetCategoryById_FetchesFromRepository()
     {
         var categoryId = Guid.NewGuid();
 
-        _httpRepository
-            .Setup(_ => _.GetEntityAsync<Category>(categoryId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()))
+        _repository.Setup(_ => _.GetEntityAsync<Category>(
+                categoryId,
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(new Category
             {
                 Id = categoryId
@@ -75,15 +86,14 @@ public class CreateTransctionValidationContextTests
             .Verifiable();
 
         var first = await _context.GetCategoryById(categoryId, CancellationToken.None);
-        var second = await _context.GetCategoryById(categoryId, CancellationToken.None);
 
         Assert.IsNotNull(first);
-        Assert.IsNotNull(second);
-        Assert.AreEqual(first.Id, second.Id);
 
-        _httpRepository
+        _repository
             .Verify(
-                _ => _.GetEntityAsync<Category>(categoryId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()),
+                _ => _.GetEntityAsync<Category>(
+                    categoryId,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 
@@ -92,16 +102,23 @@ public class CreateTransctionValidationContextTests
     {
         var categoryId = Guid.NewGuid();
 
-        _httpRepository
-            .Setup(_ => _.GetEntityAsync<Category>(categoryId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Category())
+        _repository.Setup(_ => _.GetEntityAsync<Category>(
+                categoryId,
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new Category
+            {
+                Id = categoryId
+            })
             .Verifiable();
 
         await _context.GetCategoryById(categoryId, CancellationToken.None);
 
-        _httpRepository
+
+        _repository
             .Verify(
-                _ => _.GetEntityAsync<Category>(categoryId, It.IsAny<HeaderParameters>(), It.IsAny<CancellationToken>()),
+                _ => _.GetEntityAsync<Category>(
+                    categoryId,
+                    It.IsAny<CancellationToken>()),
                 Times.Once);
     }
 }

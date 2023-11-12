@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff;
+﻿using mark.davison.common.CQRS;
+
+namespace mark.davison.finance.bff;
 
 public class Startup
 {
@@ -15,11 +17,7 @@ public class Startup
         if (AppSettings == null) { throw new InvalidOperationException(); }
 
         services
-            .AddControllers()
-            .ConfigureApplicationPartManager(manager =>
-            {
-                manager.ApplicationParts.Add(new AssemblyPart(typeof(AuthController).Assembly));
-            });
+            .AddControllers();
         services.ConfigureHealthCheckServices();
 
         services.AddCors(options =>
@@ -35,7 +33,7 @@ public class Startup
         services.AddAuthentication(ZenoAuthenticationConstants.ZenoAuthenticationScheme);
         services.AddAuthorization();
         services.AddTransient<ICustomZenoAuthenticationActions, FinanceCustomZenoAuthenticationActions>();
-
+        services.AddHttpClient("PROXY");
         services.UseFinanceBff(AppSettings);
 
         services
@@ -103,15 +101,96 @@ public class Startup
         {
             endpoints
                 .MapHealthChecks();
+
             endpoints
-                .MapControllers();
-            endpoints
-                .ConfigureCQRSEndpoints(
-                    typeof(BffRootType),
-                    typeof(CommandsRootType),
-                    typeof(QueriesRootType),
-                    typeof(DtosRootType));
+                .UseAuthenticationEndpoints();
+
+            // TODO: Source generator that creates these proxy routes or find a proxy package
+            MapProxyCQRSGet(endpoints, "/api/startup-query");
+            MapProxyCQRSGet(endpoints, "/api/account-list-query");
+            MapProxyCQRSGet(endpoints, "/api/category-list-query");
+            MapProxyCQRSGet(endpoints, "/api/tag-list-query");
+            MapProxyCQRSGet(endpoints, "/api/transaction-by-account-query");
+            MapProxyCQRSGet(endpoints, "/api/transaction-by-id-query");
+
+            MapProxyCQRSPost(endpoints, "/api/upsert-account");
+            MapProxyCQRSPost(endpoints, "/api/create-transaction");
         });
+    }
+
+    static void MapProxyCQRSPost(IEndpointRouteBuilder endpoints, string path)
+    {
+        endpoints.MapPost(
+            path,
+            async (HttpContext context, IOptions<AppSettings> options, IHttpClientFactory httpClientFactory, ICurrentUserContext currentUserContext, CancellationToken cancellationToken) =>
+            {
+                if (string.IsNullOrEmpty(currentUserContext.Token))
+                {
+                    return Results.Unauthorized();
+                }
+                var client = httpClientFactory.CreateClient("PROXY");
+
+                var headers = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
+
+                var request = new HttpRequestMessage(HttpMethod.Post, $"{options.Value.API_ORIGIN.TrimEnd('/')}{path}");
+
+                foreach (var k in headers)
+                {
+                    request.Headers.Add(k.Key, k.Value);
+                }
+
+                request.Content = new StreamContent(context.Request.Body);
+
+                var response = await client.SendAsync(request, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return Results.Text(content);
+                }
+
+                return Results.BadRequest(new Response
+                {
+                    Errors = new() { $"Error: {response.StatusCode}" }
+                });
+            });
+    }
+
+    static void MapProxyCQRSGet(IEndpointRouteBuilder endpoints, string path)
+    {
+        endpoints.MapGet(
+            path,
+            async (HttpContext context, IOptions<AppSettings> options, IHttpClientFactory httpClientFactory, ICurrentUserContext currentUserContext, CancellationToken cancellationToken) =>
+            {
+                if (string.IsNullOrEmpty(currentUserContext.Token))
+                {
+                    return Results.Unauthorized();
+                }
+
+                var client = httpClientFactory.CreateClient("PROXY");
+
+                var headers = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
+
+                var request = new HttpRequestMessage(HttpMethod.Get, $"{options.Value.API_ORIGIN.TrimEnd('/')}{path}{context.Request.QueryString}");
+
+                foreach (var k in headers)
+                {
+                    request.Headers.Add(k.Key, k.Value);
+                }
+
+                var response = await client.SendAsync(request, cancellationToken);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return Results.Text(content);
+                }
+
+                return Results.BadRequest(new Response
+                {
+                    Errors = new() { $"Error: {response.StatusCode}" }
+                });
+            });
     }
 
     public IConfiguration Configuration { get; }

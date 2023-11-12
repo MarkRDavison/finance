@@ -53,7 +53,7 @@ bff: {
     public: {
       FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi',
       FINANCE__REDIS_PORT: '6379',
-      FINANCE__WEB_ORIGIN: 'https://finance-web.markdavison.kiwi',
+      FINANCE__WEB_ORIGIN: 'https://finance.markdavison.kiwi',
       FINANCE__BFF_ORIGIN: 'https://finance-bff.markdavison.kiwi',
       FINANCE__API_ORIGIN: 'https://finance-api.markdavison.kiwi',
       FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
@@ -74,7 +74,7 @@ web: {
   tag: latest,
   port: 80,
   ingress: {
-    host: finance-web.markdavison.kiwi
+    host: finance.markdavison.kiwi
   },
   env: {
     secret: [

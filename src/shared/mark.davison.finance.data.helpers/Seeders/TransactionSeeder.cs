@@ -11,10 +11,10 @@ public class TransactionSeeder
         _serviceProvider = serviceProvider;
     }
 
-    public Task<CreateTransactionCommandResponse> CreateTransaction(CreateTransactionCommandRequest request)
+    public Task<CreateTransactionResponse> CreateTransaction(CreateTransactionRequest request)
     {
         using var scope = _serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>>();
+        var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>>();
         var currentUserContext = scope.ServiceProvider.GetRequiredService<ICurrentUserContext>();
 
         return handler.Handle(request, currentUserContext, CancellationToken.None);

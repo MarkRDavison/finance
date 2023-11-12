@@ -3,7 +3,7 @@
 public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 {
 
-    private readonly IHttpRepository _httpRepository;
+    private readonly IRepository _repository;
 
     public const string VALIDATION_ACCOUNT_TYPE_ID = "INVALID_ACCOUNT_TYPE_ID";
     public const string VALIDATION_CURRENCY_ID = "INVALID_CURRENCY_ID";
@@ -12,9 +12,9 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
     public const string VALIDATION_DUPLICATE_ACC_NUM = "DUPLICATE_ACC_NUM";
     public const string VALIDATION_MISSING_OPENING_BAL_DATE = "MISSING_OPENING_BAL_DATE";
 
-    public UpsertAccountCommandValidator(IHttpRepository httpRepository)
+    public UpsertAccountCommandValidator(IRepository repository)
     {
-        _httpRepository = httpRepository;
+        _repository = repository;
     }
 
     public async Task<UpsertAccountCommandResponse> Validate(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
@@ -24,51 +24,50 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
             Success = true
         };
 
-        var authHeaders = HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser);
-
-        var accountType = await _httpRepository.GetEntityAsync<AccountType>(
-            request.UpsertAccountDto.AccountTypeId,
-            authHeaders,
-            cancellationToken);
-
-        if (accountType == null)
+        await using (_repository.BeginTransaction())
         {
-            response.Success = false;
-            response.Error.Add(VALIDATION_ACCOUNT_TYPE_ID);
-            return response;
-        }
+            var accountTypeExists = await _repository.EntityExistsAsync<AccountType>(
+                request.UpsertAccountDto.AccountTypeId,
+                cancellationToken);
 
-        var currency = await _httpRepository.GetEntityAsync<Currency>(
-            request.UpsertAccountDto.CurrencyId,
-            authHeaders,
-            cancellationToken);
+            if (!accountTypeExists)
+            {
+                response.Success = false;
+                response.Error.Add(VALIDATION_ACCOUNT_TYPE_ID);
+                return response;
+            }
 
-        if (currency == null)
-        {
-            response.Success = false;
-            response.Error.Add(VALIDATION_CURRENCY_ID);
-            return response;
-        }
+            var currencyExists = await _repository.EntityExistsAsync<Currency>(
+                request.UpsertAccountDto.CurrencyId,
+                cancellationToken);
 
-        if (string.IsNullOrEmpty(request.UpsertAccountDto.Name))
-        {
-            response.Success = false;
-            response.Error.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
-            return response;
-        }
+            if (!currencyExists)
+            {
+                response.Success = false;
+                response.Error.Add(VALIDATION_CURRENCY_ID);
+                return response;
+            }
 
-        if (!await ValidateDuplicateAccount(request, currentUserContext, cancellationToken))
-        {
-            response.Success = false;
-            response.Error.Add(VALIDATION_DUPLICATE_ACC_NUM);
-            return response;
-        }
+            if (string.IsNullOrEmpty(request.UpsertAccountDto.Name))
+            {
+                response.Success = false;
+                response.Error.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
+                return response;
+            }
 
-        if (request.UpsertAccountDto.OpeningBalance != null && request.UpsertAccountDto.OpeningBalanceDate == null)
-        {
-            response.Success = false;
-            response.Error.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
-            return response;
+            if (!await ValidateDuplicateAccount(request, currentUserContext, cancellationToken))
+            {
+                response.Success = false;
+                response.Error.Add(VALIDATION_DUPLICATE_ACC_NUM);
+                return response;
+            }
+
+            if (request.UpsertAccountDto.OpeningBalance != null && request.UpsertAccountDto.OpeningBalanceDate == null)
+            {
+                response.Success = false;
+                response.Error.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
+                return response;
+            }
         }
 
         return response;
@@ -91,19 +90,14 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
             opposingGuid = AccountConstants.Expense;
         }
 
-        var query = new QueryParameters
-        {
-            { nameof(Account.UserId), currentUserContext.CurrentUser.Id.ToString() },
-            { nameof(Account.AccountNumber), request.UpsertAccountDto.AccountNumber }
-        };
-
-        var duplicateAccounts = await _httpRepository.GetEntitiesAsync<Account>(
-            query,
-            HeaderParameters.Auth(currentUserContext.Token, currentUserContext.CurrentUser),
+        var duplicateAccounts = await _repository.GetEntitiesAsync<Account>(
+            _ => _.UserId == currentUserContext.CurrentUser.Id,
             cancellationToken);
 
         foreach (var duplicateAccount in duplicateAccounts
-            .Where(_ => _.Id != request.UpsertAccountDto.Id))
+            .Where(_ =>
+                _.Id != request.UpsertAccountDto.Id &&
+                _.AccountNumber == request.UpsertAccountDto.AccountNumber))
         {
             if (opposingGuid == Guid.Empty)
             {

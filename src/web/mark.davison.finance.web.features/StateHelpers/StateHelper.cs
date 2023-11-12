@@ -35,23 +35,26 @@ public class StateHelper : IStateHelper
 
     private readonly ICQRSDispatcher _dispatcher;
     private readonly IStateStore _stateStore;
+    private readonly IDateService _dateService;
 
     internal bool _force;
 
     public StateHelper(
         ICQRSDispatcher dispatcher,
-        IStateStore stateStore
+        IStateStore stateStore,
+        IDateService dateService
     )
     {
         _dispatcher = dispatcher;
         _stateStore = stateStore;
+        _dateService = dateService;
     }
 
     public IDisposable Force() => new StateHelperDisposable(this);
 
     private bool RequiresRefetch(DateTime stateLastModified, TimeSpan interval)
     {
-        return _force || DateTime.Now - stateLastModified > interval;
+        return _force || _dateService.Now - stateLastModified > interval;
     }
 
     public async Task FetchAccountList(bool showActive)
@@ -71,6 +74,7 @@ public class StateHelper : IStateHelper
             await _dispatcher.Dispatch(new FetchCategoryListAction(), CancellationToken.None);
         }
     }
+
     public async Task FetchTagList()
     {
         var state = _stateStore.GetState<TagListState>();
@@ -95,6 +99,11 @@ public class StateHelper : IStateHelper
                     new QueryAccountSummaryActionRequest { AccountTypeId = _ },
                     CancellationToken.None)));
         }
+    }
+
+    public async Task FetchTransactionInformation(Guid transactionGroupId)
+    {
+        await _dispatcher.Dispatch(new TransactionQueryByIdAction() { TransactionGroupId = transactionGroupId }, CancellationToken.None);
     }
 
     public TimeSpan DefaultRefetchTimeSpan => TimeSpan.FromMinutes(1);

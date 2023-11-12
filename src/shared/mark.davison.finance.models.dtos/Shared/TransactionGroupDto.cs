@@ -2,4 +2,5 @@
 
 public class TransactionGroupDto
 {
+    public Guid Id { get; set; }
 }

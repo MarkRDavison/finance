@@ -15,12 +15,12 @@ public class CreateTransferTransactionValidatorStrategyTests
     [TestMethod]
     public async Task ValidateTransactionGroup_DoesNothing()
     {
-        var request = new CreateTransactionCommandRequest();
-        var response = new CreateTransactionCommandResponse();
+        var request = new CreateTransactionRequest();
+        var response = new CreateTransactionResponse();
 
         await _strategy.ValidateTransactionGroup(request, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any());
+        Assert.IsFalse(response.Errors.Any());
     }
 
     [DataTestMethod]
@@ -43,7 +43,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             DestinationAccountId = destinationAccount.Id,
             SourceAccountId = sourceAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -51,7 +51,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -63,8 +63,8 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -92,7 +92,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             DestinationAccountId = destinationAccount.Id,
             SourceAccountId = sourceAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -100,7 +100,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -112,8 +112,8 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -141,7 +141,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             DestinationAccountId = destinationAccount.Id,
             SourceAccountId = sourceAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -149,7 +149,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -161,7 +161,7 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
+        Assert.IsTrue(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE)));
 
         _createTransctionValidationContext
             .Verify(
@@ -189,7 +189,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             SourceAccountId = sourceAccount.Id,
             DestinationAccountId = destinationAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -197,7 +197,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -209,8 +209,8 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -238,7 +238,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             SourceAccountId = sourceAccount.Id,
             DestinationAccountId = destinationAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -246,7 +246,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -258,8 +258,8 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
-        Assert.IsFalse(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_ACCOUNT_PAIR)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
+        Assert.IsFalse(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_ACCOUNT_PAIR)));
 
         _createTransctionValidationContext
             .Verify(
@@ -287,7 +287,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             SourceAccountId = sourceAccount.Id,
             DestinationAccountId = destinationAccount.Id
         };
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             Transactions =
             {
@@ -295,7 +295,7 @@ public class CreateTransferTransactionValidatorStrategyTests
             }
         };
 
-        var response = new CreateTransactionCommandResponse();
+        var response = new CreateTransactionResponse();
 
         _createTransctionValidationContext
             .Setup(_ => _.GetAccountById(transaction.SourceAccountId, It.IsAny<CancellationToken>()))
@@ -307,7 +307,7 @@ public class CreateTransferTransactionValidatorStrategyTests
 
         await _strategy.ValidateTranasction(transaction, response, _createTransctionValidationContext.Object);
 
-        Assert.IsTrue(response.Error.Any(_ => _.Equals(CreateTransactionValidatorStrategy.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
+        Assert.IsTrue(response.Errors.Any(_ => _.Equals(CreateTransactionCommandValidator.VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE)));
 
         _createTransctionValidationContext
             .Verify(

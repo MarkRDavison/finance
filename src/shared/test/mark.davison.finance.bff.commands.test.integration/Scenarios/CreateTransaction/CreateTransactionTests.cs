@@ -11,10 +11,10 @@ public class CreateTransactionTests : CQRSIntegrationTestBase
     [TestMethod]
     public async Task SimpleDepositWorks()
     {
-        var handler = GetRequiredService<ICommandHandler<CreateTransactionCommandRequest, CreateTransactionCommandResponse>>();
+        var handler = GetRequiredService<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>>();
         var currentUserContext = GetRequiredService<ICurrentUserContext>();
 
-        var request = new CreateTransactionCommandRequest
+        var request = new CreateTransactionRequest
         {
             TransactionTypeId = TransactionConstants.Deposit,
             Transactions =
