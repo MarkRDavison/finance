@@ -17,9 +17,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitlab-ci.yml = ..\.gitlab-ci.yml
 		api.Dockerfile = api.Dockerfile
 		bff.Dockerfile = bff.Dockerfile
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		entry.sh = entry.sh
 		nginx.conf = nginx.conf
 		nuget.config = nuget.config
+		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 		Todo.md = Todo.md
 		web.Dockerfile = web.Dockerfile
 	EndProjectSection
@@ -90,7 +92,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.components.test", "web\test\mark.davison.finance.web.components.test\mark.davison.finance.web.components.test.csproj", "{DBF0087E-5BA8-4EAB-B534-41A56B368025}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mark.davison.finance.api.services", "api\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj", "{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.api.services", "api\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj", "{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
