@@ -104,17 +104,18 @@ jobs:
         with:
           submodules: true
           
-      - name: install python
-        uses: actions/setup-python@v4
+      - name: Replace values
+        uses: fjogeleit/yaml-update-action@main
         with:
-          python-version: '3.10' 
-
-      - name: update values        
-        run: |
-          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}
-          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}
-          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}- 
-          git status
+          commitChange: false
+          createPR: false
+          valueFile: ./charts/values.yaml
+          changes: |
+            {
+              "api.tag": "${{ github.event.release.tag_name }}",
+              "bff.tag": "${{ github.event.release.tag_name }}",
+              "web.tag": "${{ github.event.release.tag_name }}"
+            }
 
       # Commit all changed files back to the repository
       - name: Commit changes
