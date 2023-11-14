@@ -29,7 +29,10 @@ jobs:
           file: ./src/api.Dockerfile
           context: ./src
           push: true
-          tags: ghcr.io/markrdavison/markdavison-finance-api:latest
+          tags: |
+            ghcr.io/markrdavison/markdavison-finance-api:latest
+            ghcr.io/markrdavison/markdavison-finance-api:${{ github.event.release.tag_name }}
+            
 
   build-and-push-image-bff:
     runs-on: ubuntu-latest
@@ -55,7 +58,9 @@ jobs:
           file: ./src/bff.Dockerfile
           context: ./src
           push: true
-          tags: ghcr.io/markrdavison/markdavison-finance-bff:latest
+          tags: |
+            ghcr.io/markrdavison/markdavison-finance-bff:latest
+            ghcr.io/markrdavison/markdavison-finance-bff:${{ github.event.release.tag_name }}
 
   build-and-push-image-web:
     runs-on: ubuntu-latest
@@ -81,4 +86,6 @@ jobs:
           file: ./src/web.Dockerfile
           context: ./src
           push: true
-          tags: ghcr.io/markrdavison/markdavison-finance-web:latest
+          tags: |
+            ghcr.io/markrdavison/markdavison-finance-web:latest
+            ghcr.io/markrdavison/markdavison-finance-web:${{ github.event.release.tag_name }}
