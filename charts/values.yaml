@@ -1,88 +1,68 @@
-tls: {
-  secretName: wildcard-markdavison-kiwi,
+tls:
+  secretName: wildcard-markdavison-kiwi
   enabled: true
-}
-
-api: {
-  app: zeno-finance-api,
-  replicas: 1,
-  name: zeno-finance-api,
-  image: ghcr.io/markrdavison/markdavison-finance-api,
-  tag: latest,
-  port: 50000,
-  ingress: {
+api:
+  app: zeno-finance-api
+  replicas: 1
+  name: zeno-finance-api
+  image: ghcr.io/markrdavison/markdavison-finance-api
+  tag: v0.1.2
+  port: 50000
+  ingress:
     host: finance-api.markdavison.kiwi
-  },
-  env: {
-    secret: [
-      'CLIENT_SECRET',
-      'DB_USERNAME',
-      'DB_PASSWORD'
-    ],
-    public: {
-      FINANCE__DATABASE_TYPE: 'postgres',
-      FINANCE__DB_DATABASE: 'zenofinance',
-      FINANCE__DB_PORT: 5432,
-      FINANCE__DB_HOST: 'postgres.markdavison.kiwi',
-      FINANCE__URL: 'http://0.0.0.0:50000',
-      FINANCE__CLIENT_ID: 'zeno-finance',
-      FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
-      FINANCE__SCOPE: 'openid profile email offline_access zeno zeno-finance',
-      FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi',
+  env:
+    secret:
+      - CLIENT_SECRET
+      - DB_USERNAME
+      - DB_PASSWORD
+    public:
+      FINANCE__DATABASE_TYPE: postgres
+      FINANCE__DB_DATABASE: zenofinance
+      FINANCE__DB_PORT: 5432
+      FINANCE__DB_HOST: postgres.markdavison.kiwi
+      FINANCE__URL: http://0.0.0.0:50000
+      FINANCE__CLIENT_ID: zeno-finance
+      FINANCE__SESSION_NAME: zeno-finance-prod-session
+      FINANCE__SCOPE: openid profile email offline_access zeno zeno-finance
+      FINANCE__AUTHORITY: https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi
       FINANCE__PRODUCTION_MODE: true
-    }
-  }
-}
-
-bff: {
-  app: zeno-finance-bff,
-  replicas: 1,
-  name: zeno-finance-bff,
-  image: ghcr.io/markrdavison/markdavison-finance-bff,
-  tag: latest,
-  port: 40000,
-  ingress: {
+bff:
+  app: zeno-finance-bff
+  replicas: 1
+  name: zeno-finance-bff
+  image: ghcr.io/markrdavison/markdavison-finance-bff
+  tag: v0.1.2
+  port: 40000
+  ingress:
     host: finance-bff.markdavison.kiwi
-  },
-  env: {
-    secret: [
-      'REDIS_PASSWORD',
-      'CLIENT_SECRET',
-      'SESSION_SECRET'
-    ],
-    public: {
-      FINANCE__AUTHORITY: 'https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi',
-      FINANCE__REDIS_PORT: '6379',
-      FINANCE__WEB_ORIGIN: 'https://finance.markdavison.kiwi',
-      FINANCE__BFF_ORIGIN: 'https://finance-bff.markdavison.kiwi',
-      FINANCE__API_ORIGIN: 'https://finance-api.markdavison.kiwi',
-      FINANCE__SESSION_NAME: 'zeno-finance-prod-session',
-      FINANCE__REDIS_HOST: 'redis.markdavison.kiwi',
-      FINANCE__CLIENT_ID: 'zeno-finance',
-      FINANCE__URL: 'http://0.0.0.0:40000',
-      FINANCE__SCOPE: 'openid profile email offline_access zeno zeno-finance',
+  env:
+    secret:
+      - REDIS_PASSWORD
+      - CLIENT_SECRET
+      - SESSION_SECRET
+    public:
+      FINANCE__AUTHORITY: https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi
+      FINANCE__REDIS_PORT: '6379'
+      FINANCE__WEB_ORIGIN: https://finance.markdavison.kiwi
+      FINANCE__BFF_ORIGIN: https://finance-bff.markdavison.kiwi
+      FINANCE__API_ORIGIN: https://finance-api.markdavison.kiwi
+      FINANCE__SESSION_NAME: zeno-finance-prod-session
+      FINANCE__REDIS_HOST: redis.markdavison.kiwi
+      FINANCE__CLIENT_ID: zeno-finance
+      FINANCE__URL: http://0.0.0.0:40000
+      FINANCE__SCOPE: openid profile email offline_access zeno zeno-finance
       FINANCE__PRODUCTION_MODE: true
-    }
-  }
-}
-
-web: {
-  app: zeno-finance-web,
-  replicas: 1,
-  name: zeno-finance-web,
-  image: ghcr.io/markrdavison/markdavison-finance-web,
-  tag: latest,
-  port: 80,
-  ingress: {
+web:
+  app: zeno-finance-web
+  replicas: 1
+  name: zeno-finance-web
+  image: ghcr.io/markrdavison/markdavison-finance-web
+  tag: v0.1.2
+  port: 80
+  ingress:
     host: finance.markdavison.kiwi
-  },
-  env: {
-    secret: [
-      
-    ],
-    public: {
-      WEB_PORT: '80',
-      FINANCE_BFF_BASE_URI: 'https://finance-bff.markdavison.kiwi'
-    }
-  }
-}
+  env:
+    secret: []
+    public:
+      WEB_PORT: '80'
+      FINANCE_BFF_BASE_URI: https://finance-bff.markdavison.kiwi
