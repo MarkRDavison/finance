@@ -54,17 +54,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.MRD_GITHUB_PAT }}
-
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
-        with:
-          images: ghcr.io/markrdavison/markdavison-finance-bff
-
+          
       - name: Build and push Docker image
         uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
         with:
           file: ./src/bff.Dockerfile
           context: ./src
           push: true
-          tags: latest
+          tags: ghcr.io/${{ github.repository_owner }}/markdavison-finance-bff:latest
