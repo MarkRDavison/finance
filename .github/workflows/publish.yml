@@ -102,8 +102,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4    
         with:
-          submodules: true
-          ref: ${{ github.head_ref }}
+          ref: main
           
       - name: Replace values
         uses: fjogeleit/yaml-update-action@main
@@ -122,4 +121,5 @@ jobs:
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
+          branch: main
           commit_message: Updating git ops [skip ci]
