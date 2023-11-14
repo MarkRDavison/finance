@@ -89,3 +89,33 @@ jobs:
           tags: |
             ghcr.io/markrdavison/markdavison-finance-web:latest
             ghcr.io/markrdavison/markdavison-finance-web:${{ github.event.release.tag_name }}
+
+  update-gitops:
+    needs: [build-and-push-image-api, build-and-push-image-bff, build-and-push-image-web]
+    
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4    
+        with:
+          submodules: true
+          
+      - name: update values
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+        run: |
+          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}
+          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}
+          python ./cicd/Helm/replaceYamlValue.py --file ./charts/values.tml --name api.tag --value ${{ github.event.release.tag_name }}- 
+          git status
+
+      # Commit all changed files back to the repository
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: Updating git ops [skip ci]

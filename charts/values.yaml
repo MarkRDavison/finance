@@ -7,7 +7,7 @@ api: {
   app: zeno-finance-api,
   replicas: 1,
   name: zeno-finance-api,
-  image: zeno15/zeno-finance-api,
+  image: ghcr.io/markrdavison/markdavison-finance-api,
   tag: latest,
   port: 50000,
   ingress: {
@@ -38,7 +38,7 @@ bff: {
   app: zeno-finance-bff,
   replicas: 1,
   name: zeno-finance-bff,
-  image: zeno15/zeno-finance-bff,
+  image: ghcr.io/markrdavison/markdavison-finance-bff,
   tag: latest,
   port: 40000,
   ingress: {
@@ -70,7 +70,7 @@ web: {
   app: zeno-finance-web,
   replicas: 1,
   name: zeno-finance-web,
-  image: zeno15/zeno-finance-web,
+  image: ghcr.io/markrdavison/markdavison-finance-web,
   tag: latest,
   port: 80,
   ingress: {
