@@ -29,7 +29,7 @@ jobs:
           file: ./src/api.Dockerfile
           context: ./src
           push: true
-          tags: ghcr.io/${{ github.repository_owner | lower }}/markdavison-finance-api:latest
+          tags: ghcr.io/markrdavison/markdavison-finance-api:latest
 
   build-and-push-image-bff:
     runs-on: ubuntu-latest
@@ -55,4 +55,4 @@ jobs:
           file: ./src/bff.Dockerfile
           context: ./src
           push: true
-          tags: ghcr.io/${{ github.repository_owner | lower }}/markdavison-finance-bff:latest
+          tags: ghcr.io/markrdavison/markdavison-finance-bff:latest
