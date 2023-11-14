@@ -34,5 +34,5 @@ jobs:
         with:
           file: ./src/api.Dockerfile
           context: ./src
-          push: false
+          push: true
           tags: latest
