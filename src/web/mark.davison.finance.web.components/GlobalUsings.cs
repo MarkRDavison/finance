@@ -24,6 +24,7 @@ global using mark.davison.finance.web.features.Transaction;
 global using mark.davison.finance.web.features.Transaction.Update;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.JSInterop;
 global using MudBlazor;
 global using MudBlazor.Services;
 global using System.Reflection;
