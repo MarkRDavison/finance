@@ -19,7 +19,7 @@ api:
       - DB_PASSWORD
     public:
       FINANCE__DATABASE_TYPE: postgres
-      FINANCE__DB_DATABASE: zenofinance
+      FINANCE__DB_DATABASE: prod-finance
       FINANCE__DB_PORT: 5432
       FINANCE__DB_HOST: postgres.markdavison.kiwi
       FINANCE__URL: http://0.0.0.0:50000
