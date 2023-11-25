@@ -2,14 +2,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ .Values.api.app}}-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.global.ingress.certIssuer }}
+    external-dns.alpha.kubernetes.io/target: {{ .Values.global.ingress.hostname }}
   labels:
     app: {{ .Values.api.app }}
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-      - {{ .Values.web.ingress.host }}
-      secretName: wildcard-markdavison.kiwi
+      - {{ .Values.api.ingress.host }}
+      secretName: {{ .Values.api.app}}-tls
   rules:
   - host: {{ .Values.api.ingress.host }}
     http:
