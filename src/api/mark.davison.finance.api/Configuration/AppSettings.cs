@@ -4,7 +4,7 @@ public class AppSettings
 {
     public static string SECTION = "FINANCE";
 
-    public string AUTHORITY { get; set; } = "https://auth.markdavison.kiwi/auth/realms/markdavison.kiwi";
+    public string AUTHORITY { get; set; } = "https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi";
     public string CLIENT_ID { get; set; } = "zeno-finance";
     public string CLIENT_SECRET { get; set; } = string.Empty;
     public string SESSION_NAME { get; set; } = "finance-session-name";
