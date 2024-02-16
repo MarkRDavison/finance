@@ -66,10 +66,7 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
 
                 return response;
             });
-        services.AddHttpClient(ZenoAuthenticationConstants.AuthClientName).ConfigureHttpMessageHandlerBuilder(_ =>
-        {
-            _.PrimaryHandler = MessageHandlerMock.Object;
-        });
+        services.AddHttpClient(ZenoAuthenticationConstants.AuthClientName).ConfigurePrimaryHttpMessageHandler(_ => MessageHandlerMock.Object);
         services.Configure<AppSettings>(a =>
         {
             if (ConfigureSettings() != null)

@@ -18,7 +18,8 @@ public class Startup
 
         services
             .AddControllers();
-        services.ConfigureHealthCheckServices();
+        services
+            .ConfigureHealthCheckServices();
 
         services.AddCors(options =>
         {
