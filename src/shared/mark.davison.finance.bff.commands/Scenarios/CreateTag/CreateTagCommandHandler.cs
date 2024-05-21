@@ -28,6 +28,8 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, 
         {
             Id = command.Id,
             Name = command.Name,
+            MinDate = command.MinDate,
+            MaxDate = command.MaxDate,
             UserId = currentUserContext.CurrentUser.Id
         };
 
@@ -37,8 +39,17 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, 
 
         if (tag == null)
         {
-            response.Error.Add("DB_UPSERT_ERROR"); // TODO: Standard db errors
+            response.Errors.Add("DB_UPSERT_ERROR"); // TODO: Standard db errors
+            return response;
         }
+
+        response.Value = new TagDto // TODO: Helper
+        {
+            Id = tag.Id,
+            Name = tag.Name,
+            MinDate = tag.MinDate,
+            MaxDate = tag.MaxDate
+        };
 
         return response;
     }

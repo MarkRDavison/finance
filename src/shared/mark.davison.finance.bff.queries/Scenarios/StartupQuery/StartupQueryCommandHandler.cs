@@ -1,5 +1,6 @@
 ﻿namespace mark.davison.finance.bff.queries.Scenarios.StartupQuery;
 
+// TODO: Fix name
 public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
 {
     private readonly IFinanceDbContext _dbContext;
@@ -47,11 +48,12 @@ public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, Sta
             })
             .ToListAsync(cancellationToken);
 
-        response.AccountTypes.AddRange(accountTypes);
-
-        response.TransactionTypes.AddRange(transactionTypes);
-
-        response.Currencies.AddRange(currencies);
+        response.Value = new()
+        {
+            AccountTypes = accountTypes,
+            TransactionTypes = transactionTypes,
+            Currencies = currencies
+        };
 
         return response;
     }

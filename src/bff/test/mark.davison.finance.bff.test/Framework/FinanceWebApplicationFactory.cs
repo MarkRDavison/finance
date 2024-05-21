@@ -20,7 +20,6 @@ public class FinanceWebApplicationFactory : WebApplicationFactory<Startup>
 
     protected virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddHttpClient(ZenoAuthenticationConstants.AuthClientName).ConfigurePrimaryHttpMessageHandler(_ => MessageHandlerMock.Object);
         services.Configure<AppSettings>(a =>
         {
             if (ConfigureSettings() != null)

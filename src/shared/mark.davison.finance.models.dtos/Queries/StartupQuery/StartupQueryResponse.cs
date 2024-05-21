@@ -1,9 +1,6 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.StartupQuery;
 
-public class StartupQueryResponse
+public class StartupQueryResponse : Response<StartupData>
 {
-    public List<AccountTypeDto> AccountTypes { get; set; } = new();
-    public List<CurrencyDto> Currencies { get; set; } = new();
-    public List<TransactionTypeDto> TransactionTypes { get; set; } = new();
 }
 

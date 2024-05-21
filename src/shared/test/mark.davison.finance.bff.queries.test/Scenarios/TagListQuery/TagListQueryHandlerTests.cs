@@ -35,6 +35,7 @@ public class TagListQueryHandlerTests
         var request = new TagListQueryRequest();
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Tags.Should().HaveCount(tags.Count);
+        response.SuccessWithValue.Should().BeTrue();
+        response.Value.Should().HaveCount(tags.Count);
     }
 }

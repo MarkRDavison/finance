@@ -17,10 +17,7 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 
     public async Task<UpsertAccountCommandResponse> Validate(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new UpsertAccountCommandResponse
-        {
-            Success = true
-        };
+        var response = new UpsertAccountCommandResponse();
 
         var accountTypeExists = (await _dbContext.GetByIdAsync<AccountType>(
             request.UpsertAccountDto.AccountTypeId,
@@ -28,8 +25,7 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 
         if (!accountTypeExists)
         {
-            response.Success = false;
-            response.Error.Add(VALIDATION_ACCOUNT_TYPE_ID);
+            response.Errors.Add(VALIDATION_ACCOUNT_TYPE_ID);
             return response;
         }
 
@@ -39,29 +35,25 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 
         if (!currencyExists)
         {
-            response.Success = false;
-            response.Error.Add(VALIDATION_CURRENCY_ID);
+            response.Errors.Add(VALIDATION_CURRENCY_ID);
             return response;
         }
 
         if (string.IsNullOrEmpty(request.UpsertAccountDto.Name))
         {
-            response.Success = false;
-            response.Error.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
+            response.Errors.Add(string.Format(VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name)));
             return response;
         }
 
         if (!await ValidateDuplicateAccount(request, currentUserContext, cancellationToken))
         {
-            response.Success = false;
-            response.Error.Add(VALIDATION_DUPLICATE_ACC_NUM);
+            response.Errors.Add(VALIDATION_DUPLICATE_ACC_NUM);
             return response;
         }
 
         if (request.UpsertAccountDto.OpeningBalance != null && request.UpsertAccountDto.OpeningBalanceDate == null)
         {
-            response.Success = false;
-            response.Error.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
+            response.Errors.Add(VALIDATION_MISSING_OPENING_BAL_DATE);
             return response;
         }
 

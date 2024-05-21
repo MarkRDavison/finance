@@ -11,7 +11,10 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
 
     public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new TransactionByAccountQueryResponse();
+        var response = new TransactionByAccountQueryResponse
+        {
+            Value = []
+        };
 
         var transactionJournals = await _dbContext
             .Set<TransactionJournal>()
@@ -27,7 +30,7 @@ public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccou
         {
             var tg = tj.TransactionGroup;
 
-            response.Transactions.AddRange(tj.Transactions.Select(_ => new TransactionDto
+            response.Value.AddRange(tj.Transactions.Select(_ => new TransactionDto
             {
                 Id = _.Id,
                 UserId = _.UserId,

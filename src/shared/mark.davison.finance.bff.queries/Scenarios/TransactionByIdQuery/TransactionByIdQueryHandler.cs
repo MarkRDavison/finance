@@ -21,9 +21,11 @@ public class TransactionByIdQueryHandler : IQueryHandler<TransactionByIdQueryReq
             .Where(_ => _.TransactionGroupId == query.TransactionGroupId)
             .ToListAsync(cancellationToken);
 
+        response.Value = new();
+
         foreach (var tj in transactionJournals)
         {
-            response.Transactions
+            response.Value
                 .AddRange(tj.Transactions
                     .Select(
                         _ => _.ToDto(tj, tj.TransactionGroup!)));

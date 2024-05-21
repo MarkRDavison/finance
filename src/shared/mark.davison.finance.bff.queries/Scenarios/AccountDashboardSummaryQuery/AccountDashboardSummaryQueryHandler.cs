@@ -75,10 +75,11 @@ public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboar
 
         return new AccountDashboardSummaryQueryResponse
         {
-            Success = true,
-            AccountNames = accounts
-                .ToDictionary(_ => _.Id, _ => _.Name),
-            TransactionData = resultTransactionData
+            Value = new()
+            {
+                AccountNames = accounts.ToDictionary(_ => _.Id, _ => _.Name),
+                TransactionData = resultTransactionData
+            }
         };
     }
 }

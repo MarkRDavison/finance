@@ -29,7 +29,7 @@ public class CreateTagCommandValidatorTests
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeTrue();
-        response.Error.Should().BeEmpty();
+        response.Errors.Should().BeEmpty();
     }
 
     [TestMethod]
@@ -52,7 +52,7 @@ public class CreateTagCommandValidatorTests
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch(CreateTagCommandValidator.VALIDATION_DUPLICATE_TAG_NAME);
+        response.Errors.Should().ContainMatch(CreateTagCommandValidator.VALIDATION_DUPLICATE_TAG_NAME);
     }
 
     [TestMethod]
@@ -75,6 +75,6 @@ public class CreateTagCommandValidatorTests
         var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeTrue();
-        response.Error.Should().BeEmpty();
+        response.Errors.Should().BeEmpty();
     }
 }

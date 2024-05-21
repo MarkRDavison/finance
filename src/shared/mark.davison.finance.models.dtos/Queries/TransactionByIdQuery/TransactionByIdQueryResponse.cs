@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.TransactionByIdQuery;
 
-public class TransactionByIdQueryResponse : Response
+public class TransactionByIdQueryResponse : Response<List<TransactionDto>>
 {
-    public List<TransactionDto> Transactions { get; set; } = new();
+
 }

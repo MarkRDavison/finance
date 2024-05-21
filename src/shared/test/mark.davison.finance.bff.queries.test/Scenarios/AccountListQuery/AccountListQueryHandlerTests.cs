@@ -47,7 +47,8 @@ public class AccountListQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Accounts.Should().HaveCount(accounts.Count);
+        response.SuccessWithValue.Should().BeTrue();
+        response.Value.Should().HaveCount(accounts.Count);
     }
 
     [TestMethod]
@@ -65,7 +66,8 @@ public class AccountListQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Accounts.Should().BeEmpty();
+        response.SuccessWithValue.Should().BeTrue();
+        response.Value.Should().BeEmpty();
     }
 
     // TODO: Test to validate the opening balances

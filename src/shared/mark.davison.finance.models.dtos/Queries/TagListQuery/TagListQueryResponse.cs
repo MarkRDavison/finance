@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.TagListQuery;
 
-public class TagListQueryResponse
+public class TagListQueryResponse : Response<List<TagDto>>
 {
-    public List<TagDto> Tags { get; set; } = new();
+
 }

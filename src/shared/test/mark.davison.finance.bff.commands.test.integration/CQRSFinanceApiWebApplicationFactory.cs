@@ -16,10 +16,6 @@ public class CQRSFinanceApiWebApplicationFactory : FinanceApiWebApplicationFacto
             config.SigningKeys.Add(MockJwtTokens.SecurityKey);
             options.Configuration = config;
         });
-        services.UseFinanceBff(new()
-        {
-            API_ORIGIN = "http://localhost/"
-        }, CreateClient);
         services.UseDataSeeders();
         services.AddScoped<ICurrentUserContext, CurrentUserContext>(_ => // TODO: FIND AND EXTRACT THIS TO COMMON
         {

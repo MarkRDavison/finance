@@ -1,7 +1,7 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.CategoryListQuery;
 
-public class CategoryListQueryResponse
+public class CategoryListQueryResponse : Response<List<CategoryListItemDto>>
 {
-    public List<CategoryListItemDto> Categories { get; set; } = new();
+
 }
 

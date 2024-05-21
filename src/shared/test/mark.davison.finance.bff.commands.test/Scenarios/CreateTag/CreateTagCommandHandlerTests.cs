@@ -29,10 +29,7 @@ public class CreateTagCommandHandlerTests
             Id = Guid.NewGuid(),
             Name = "TAG_NAME"
         };
-        var validatorResponse = new CreateTagCommandResponse
-        {
-            Success = false
-        };
+        var validatorResponse = new CreateTagCommandResponse();
 
         _createTagCommandValidatorMock
             .Setup(_ => _.Validate(
@@ -55,10 +52,7 @@ public class CreateTagCommandHandlerTests
             Id = Guid.NewGuid(),
             Name = "TAG_NAME"
         };
-        var validatorResponse = new CreateTagCommandResponse
-        {
-            Success = true
-        };
+        var validatorResponse = new CreateTagCommandResponse();
 
         _createTagCommandValidatorMock
             .Setup(_ => _.Validate(

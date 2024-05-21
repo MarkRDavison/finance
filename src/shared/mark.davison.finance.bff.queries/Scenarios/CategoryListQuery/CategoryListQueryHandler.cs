@@ -24,7 +24,7 @@ public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, 
             })
             .ToListAsync(cancellationToken);
 
-        response.Categories.AddRange(categories);
+        response.Value = categories;
 
         return response;
     }

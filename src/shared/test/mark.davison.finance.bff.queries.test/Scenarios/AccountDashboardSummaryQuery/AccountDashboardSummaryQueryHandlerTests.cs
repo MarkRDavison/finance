@@ -42,9 +42,9 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Success.Should().BeTrue();
+        response.SuccessWithValue.Should().BeTrue();
 
-        response.AccountNames.Should().HaveCount(1);
+        response.Value!.AccountNames.Should().HaveCount(1);
     }
 
     [TestMethod]
@@ -80,11 +80,11 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Success.Should().BeTrue();
+        response.SuccessWithValue.Should().BeTrue();
 
-        response.TransactionData.Should().HaveCount(5);
+        response.Value!.TransactionData.Should().HaveCount(5);
 
-        foreach (var (_, transactionData) in response.TransactionData)
+        foreach (var (_, transactionData) in response.Value.TransactionData)
         {
             transactionData.Should().HaveCount(1);
         }
@@ -124,15 +124,15 @@ public class AccountDashboardSummaryQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Success.Should().BeTrue();
+        response.SuccessWithValue.Should().BeTrue();
 
-        Assert.AreEqual(accounts.Count, response.AccountNames.Count);
-        Assert.AreEqual(accounts.Count, response.TransactionData.Count);
+        Assert.AreEqual(accounts.Count, response.Value!.AccountNames.Count);
+        Assert.AreEqual(accounts.Count, response.Value.TransactionData.Count);
 
         var daysInMonth = request.RangeEnd.Day - request.RangeStart.Day + 1;
 
-        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[0].Id].Count);
-        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[1].Id].Count);
-        Assert.AreEqual(daysInMonth, response.TransactionData[accounts[2].Id].Count);
+        Assert.AreEqual(daysInMonth, response.Value.TransactionData[accounts[0].Id].Count);
+        Assert.AreEqual(daysInMonth, response.Value.TransactionData[accounts[1].Id].Count);
+        Assert.AreEqual(daysInMonth, response.Value.TransactionData[accounts[2].Id].Count);
     }
 }

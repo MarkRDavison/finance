@@ -1,7 +1,6 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.AccountListQuery;
 
-public class AccountListQueryResponse
+public class AccountListQueryResponse : Response<List<AccountListItemDto>>
 {
-    public List<AccountListItemDto> Accounts { get; set; } = new();
-}
 
+}

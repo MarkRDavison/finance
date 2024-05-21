@@ -52,6 +52,7 @@ public class TransactionByAccountQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Transactions.Should().HaveCount(transactionJournals.SelectMany(_ => _.Transactions).Count());
+        response.SuccessWithValue.Should().BeTrue();
+        response.Value.Should().HaveCount(transactionJournals.SelectMany(_ => _.Transactions).Count());
     }
 }

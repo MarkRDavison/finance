@@ -25,10 +25,7 @@ public class UpsertAccountCommandHandlerTests
                 It.IsAny<UpsertAccountCommandRequest>(),
                 _currentUserContextMock.Object,
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new UpsertAccountCommandResponse
-            {
-                Success = true
-            });
+            .ReturnsAsync(new UpsertAccountCommandResponse());
     }
 
     [TestMethod]
@@ -37,7 +34,7 @@ public class UpsertAccountCommandHandlerTests
         var request = new UpsertAccountCommandRequest { };
         var validatorResponse = new UpsertAccountCommandResponse
         {
-            Success = false
+            Errors = ["ERROR"]
         };
 
         _upsertAccountCommandValidatorMock

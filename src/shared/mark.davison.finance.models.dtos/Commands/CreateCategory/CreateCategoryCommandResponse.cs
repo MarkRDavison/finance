@@ -1,5 +1,7 @@
-﻿namespace mark.davison.finance.models.dtos.Commands.CreateCategory;
+﻿using mark.davison.finance.models.dtos.Queries.CategoryListQuery;
 
-public class CreateCategoryCommandResponse : Response
+namespace mark.davison.finance.models.dtos.Commands.CreateCategory;
+
+public class CreateCategoryCommandResponse : Response<CategoryListItemDto>
 {
 }

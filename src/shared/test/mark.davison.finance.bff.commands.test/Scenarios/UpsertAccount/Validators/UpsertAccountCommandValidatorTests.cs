@@ -62,7 +62,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_ACCOUNT_TYPE_ID}*");
+        response.Errors.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_ACCOUNT_TYPE_ID}*");
     }
 
     [TestMethod]
@@ -82,7 +82,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_CURRENCY_ID}*");
+        response.Errors.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_CURRENCY_ID}*");
     }
 
     [TestMethod]
@@ -102,7 +102,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{string.Format(UpsertAccountCommandValidator.VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name))}*");
+        response.Errors.Should().ContainMatch($"*{string.Format(UpsertAccountCommandValidator.VALIDATION_MISSING_REQ_FIELD, nameof(Account.Name))}*");
     }
 
     [TestMethod]
@@ -138,7 +138,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM}*");
+        response.Errors.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM}*");
     }
 
     [TestMethod]
@@ -246,7 +246,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM}*");
+        response.Errors.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_DUPLICATE_ACC_NUM}*");
     }
 
     [TestMethod]
@@ -293,7 +293,7 @@ public class UpsertAccountCommandValidatorTests
             CancellationToken.None);
 
         response.Success.Should().BeFalse();
-        response.Error.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_MISSING_OPENING_BAL_DATE}*");
+        response.Errors.Should().ContainMatch($"*{UpsertAccountCommandValidator.VALIDATION_MISSING_OPENING_BAL_DATE}*");
     }
 }
 

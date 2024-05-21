@@ -11,7 +11,10 @@ public class TagListQueryHandler : IQueryHandler<TagListQueryRequest, TagListQue
 
     public async Task<TagListQueryResponse> Handle(TagListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new TagListQueryResponse();
+        var response = new TagListQueryResponse
+        {
+            Value = []
+        };
 
         var tags = await _dbContext
             .Set<Tag>()
@@ -25,7 +28,7 @@ public class TagListQueryHandler : IQueryHandler<TagListQueryRequest, TagListQue
             })
             .ToListAsync(cancellationToken);
 
-        response.Tags.AddRange(tags);
+        response.Value.AddRange(tags);
 
         return response;
     }

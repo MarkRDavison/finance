@@ -50,13 +50,16 @@ public class StartupQueryCommandHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.AccountTypes.Should().HaveCount(accountTypes.Count);
-        response.Currencies.Should().HaveCount(currencies.Count(_ => _.Id != Currency.INT));
-        response.TransactionTypes.Should().HaveCount(transactionTypes.Count);
+        response.Success.Should().BeTrue();
+        response.Value.Should().NotBeNull();
+
+        response.Value!.AccountTypes.Should().HaveCount(accountTypes.Count);
+        response.Value.Currencies.Should().HaveCount(currencies.Count(_ => _.Id != Currency.INT));
+        response.Value.TransactionTypes.Should().HaveCount(transactionTypes.Count);
 
         foreach (var at in accountTypes)
         {
-            response.AccountTypes
+            response.Value.AccountTypes
                 .Where(_ =>
                     _.Id == at.Id &&
                     _.Type == at.Type)
@@ -67,14 +70,14 @@ public class StartupQueryCommandHandlerTests
         {
             if (c.Id == Currency.INT)
             {
-                response.Currencies
+                response.Value.Currencies
                     .Where(_ => _.Id == c.Id)
                     .Should()
                     .HaveCount(0);
             }
             else
             {
-                response.Currencies
+                response.Value.Currencies
                     .Where(_ =>
                         _.Id == c.Id &&
                         _.Code == c.Code &&
@@ -87,7 +90,7 @@ public class StartupQueryCommandHandlerTests
         }
         foreach (var tt in transactionTypes)
         {
-            response.TransactionTypes
+            response.Value.TransactionTypes
                 .Where(_ =>
                     _.Id == tt.Id &&
                     _.Type == tt.Type)

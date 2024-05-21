@@ -23,7 +23,10 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
 
     public async Task<AccountListQueryResponse> Handle(AccountListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        var response = new AccountListQueryResponse();
+        var response = new AccountListQueryResponse
+        {
+            Value = []
+        };
 
         var accounts = await _dbContext
             .Set<Account>()
@@ -73,7 +76,7 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
                 .Where(_ => context.RangeStart <= _.Date && _.Date <= context.RangeEnd)
                 .Sum(_ => _.Amount);
 
-            response.Accounts.Add(new AccountListItemDto
+            response.Value.Add(new AccountListItemDto
             {
                 Id = account.Id,
                 Name = account.Name,

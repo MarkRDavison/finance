@@ -35,7 +35,8 @@ public class CategoryListQueryHandlerTests
         var request = new CategoryListQueryRequest();
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Categories.Should().HaveCount(categories.Count);
+        response.SuccessWithValue.Should().BeTrue();
+        response.Value.Should().HaveCount(categories.Count);
     }
 }
 

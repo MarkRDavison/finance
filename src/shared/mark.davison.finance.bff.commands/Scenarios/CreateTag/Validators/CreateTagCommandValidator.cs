@@ -23,10 +23,9 @@ public class CreateTagCommandValidator : ICreateTagCommandValidator
 
         if (duplicate)
         {
-            response.Error.Add(VALIDATION_DUPLICATE_TAG_NAME);
+            response.Errors.Add(VALIDATION_DUPLICATE_TAG_NAME);
         }
 
-        response.Success = !response.Error.Any();
         return response;
     }
 }
