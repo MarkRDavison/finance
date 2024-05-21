@@ -2,28 +2,30 @@
 
 public class TagListQueryHandler : IQueryHandler<TagListQueryRequest, TagListQueryResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
 
-    public TagListQueryHandler(IRepository repository)
+    public TagListQueryHandler(IFinanceDbContext dbContext)
     {
-        _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<TagListQueryResponse> Handle(TagListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TagListQueryResponse();
 
-        var tags = await _repository.GetEntitiesAsync<Tag>(
-            _ => _.UserId == currentUserContext.CurrentUser.Id,
-            cancellationToken);
+        var tags = await _dbContext
+            .Set<Tag>()
+            .AsNoTracking()
+            .Select(_ => new TagDto
+            {
+                Id = _.Id,
+                Name = _.Name,
+                MaxDate = _.MaxDate,
+                MinDate = _.MinDate,
+            })
+            .ToListAsync(cancellationToken);
 
-        response.Tags.AddRange(tags.Select(_ => new TagDto
-        {
-            Id = _.Id,
-            Name = _.Name,
-            MaxDate = _.MaxDate,
-            MinDate = _.MinDate,
-        }));
+        response.Tags.AddRange(tags);
 
         return response;
     }

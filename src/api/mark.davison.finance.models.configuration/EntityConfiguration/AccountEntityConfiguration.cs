@@ -20,6 +20,11 @@ public partial class AccountEntityConfiguration : FinanceEntityConfiguration<Acc
 
         builder
             .Property(_ => _.Order);
+
+        builder.HasData(
+            new Account { Id = AccountConstants.OpeningBalance, UserId = Guid.Empty, AccountTypeId = AccountTypeConstants.InitialBalance, CurrencyId = Currency.INT, Name = "Opening balance" },
+            new Account { Id = AccountConstants.Reconciliation, UserId = Guid.Empty, AccountTypeId = AccountTypeConstants.Reconciliation, CurrencyId = Currency.INT, Name = "Reconcilation" }
+        );
     }
 }
 

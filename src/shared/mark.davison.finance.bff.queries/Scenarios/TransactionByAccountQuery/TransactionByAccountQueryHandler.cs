@@ -2,53 +2,50 @@
 
 public class TransactionByAccountQueryHandler : IQueryHandler<TransactionByAccountQueryRequest, TransactionByAccountQueryResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
 
-    public TransactionByAccountQueryHandler(IRepository repository)
+    public TransactionByAccountQueryHandler(IFinanceDbContext dbContext)
     {
-        _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<TransactionByAccountQueryResponse> Handle(TransactionByAccountQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TransactionByAccountQueryResponse();
 
-        await using (_repository.BeginTransaction())
+        var transactionJournals = await _dbContext
+            .Set<TransactionJournal>()
+            .AsNoTracking()
+            .Include(_ => _.Transactions)
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.Transactions.Any(t => t.AccountId == query.AccountId))
+            .ToListAsync(cancellationToken);
+
+        // TODO: Return transaction journal??? Need source/destination account etc
+
+        foreach (var tj in transactionJournals)
         {
-            var transactionJournals = await _repository.GetEntitiesAsync<TransactionJournal>(
-                _ => _.Transactions.Any(__ => __.AccountId == query.AccountId),
-                new Expression<Func<TransactionJournal, object>>[] {
-                    _ => _.Transactions,
-                    _ => _.TransactionGroup!
-                },
-                cancellationToken);
+            var tg = tj.TransactionGroup;
 
-            // TODO: Return transaction journal??? Need source/destination account etc
-
-            foreach (var tj in transactionJournals)
+            response.Transactions.AddRange(tj.Transactions.Select(_ => new TransactionDto
             {
-                var tg = tj.TransactionGroup;
-
-                response.Transactions.AddRange(tj.Transactions.Select(_ => new TransactionDto
-                {
-                    Id = _.Id,
-                    UserId = _.UserId,
-                    AccountId = _.AccountId,
-                    TransactionJournalId = _.TransactionJournalId,
-                    TransactionGroupId = tj.TransactionGroupId,
-                    CurrencyId = _.CurrencyId,
-                    ForeignCurrencyId = _.ForeignCurrencyId,
-                    CategoryId = _.TransactionJournal?.CategoryId,
-                    SplitTransactionDescription = tg?.Title ?? string.Empty,
-                    Description = _.Description,
-                    Date = _.TransactionJournal?.Date ?? default,
-                    Amount = _.Amount,
-                    ForeignAmount = _.ForeignAmount,
-                    Reconciled = _.Reconciled,
-                    Source = _.IsSource,
-                    TransactionTypeId = tj.TransactionTypeId
-                }));
-            }
+                Id = _.Id,
+                UserId = _.UserId,
+                AccountId = _.AccountId,
+                TransactionJournalId = _.TransactionJournalId,
+                TransactionGroupId = tj.TransactionGroupId,
+                CurrencyId = _.CurrencyId,
+                ForeignCurrencyId = _.ForeignCurrencyId,
+                CategoryId = _.TransactionJournal?.CategoryId,
+                SplitTransactionDescription = tg?.Title ?? string.Empty,
+                Description = _.Description,
+                Date = _.TransactionJournal?.Date ?? default,
+                Amount = _.Amount,
+                ForeignAmount = _.ForeignAmount,
+                Reconciled = _.Reconciled,
+                Source = _.IsSource,
+                TransactionTypeId = tj.TransactionTypeId
+            }));
         }
 
         return response;

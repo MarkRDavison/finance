@@ -1,67 +1,57 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.TransactionByAccountQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.TransactionByAccountQuery;
 
 [TestClass]
 public class TransactionByAccountQueryHandlerTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly TransactionByAccountQueryHandler _handler;
+    private readonly CancellationToken _token;
 
     public TransactionByAccountQueryHandlerTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+
         _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new TransactionByAccountQueryHandler(_repository.Object);
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
+        _handler = new TransactionByAccountQueryHandler((IFinanceDbContext)_dbContext);
     }
 
     [TestMethod]
-    public async Task Handle_InvokesRepository()
+    public async Task Handle_ReturnsTransactions()
     {
-        Guid accountId = Guid.NewGuid();
-        _repository
-            .Setup(_ => _.
-                GetEntitiesAsync<TransactionJournal>(
-                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<TransactionJournal>())
-            .Verifiable();
-
-        await _handler.Handle(new TransactionByAccountQueryRequest { AccountId = accountId }, _currentUserContext.Object, CancellationToken.None);
-
-        _repository
-            .Verify(_ => _.
-                GetEntitiesAsync<TransactionJournal>(
-                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
-
-    [TestMethod]
-    public async Task Handle_ReturnsRepositoryReturnedTransactions()
-    {
-        var transactionJournals = new List<TransactionJournal> {
-                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  },
-                new TransactionJournal { Transactions = new() { new Transaction(), new Transaction() }  }
+        var request = new TransactionByAccountQueryRequest
+        {
+            AccountId = Guid.NewGuid()
         };
-        _repository
-            .Setup(_ => _.
-                GetEntitiesAsync<TransactionJournal>(
-                    It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                    It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                    It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transactionJournals);
+        var transactionJournals = new List<TransactionJournal>
+        {
+            new TransactionJournal {
+                Id = Guid.NewGuid(),
+                Transactions = new() {
+                    new Transaction() { Id = Guid.NewGuid(), AccountId = request.AccountId },
+                    new Transaction() { Id = Guid.NewGuid(), AccountId = request.AccountId }
+                },
+                TransactionGroup = new() { Id = Guid.NewGuid() }
+            },
+            new TransactionJournal {
+                Id = Guid.NewGuid(),
+                Transactions = new() {
+                    new Transaction() { Id = Guid.NewGuid(), AccountId = request.AccountId },
+                    new Transaction() { Id = Guid.NewGuid(), AccountId = request.AccountId }
+                },
+                TransactionGroup = new() { Id = Guid.NewGuid() }
+            }
+        };
 
-        var response = await _handler.Handle(new TransactionByAccountQueryRequest { }, _currentUserContext.Object, CancellationToken.None);
+        await _dbContext.UpsertEntitiesAsync(transactionJournals, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
-        Assert.AreEqual(transactionJournals.SelectMany(_ => _.Transactions).Count(), response.Transactions.Count);
+        var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
+
+        response.Transactions.Should().HaveCount(transactionJournals.SelectMany(_ => _.Transactions).Count());
     }
 }

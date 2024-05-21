@@ -1,4 +1,7 @@
-﻿@using mark.davison.finance.web.components.CommonCandidates.Utilities;
+﻿@using mark.davison.finance.web.components.CommonCandidates.Components.DateRange
+@using mark.davison.finance.web.components.CommonCandidates.Utilities;
 @inject IAppContextService _appContext;
 
-<span>@_appContext.RangeStart.ToOrdinalMonthDay() - @_appContext.RangeEnd.ToOrdinalMonthDay()</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Mark Davison</span>
+<div onclick="@(() => Console.WriteLine("TODO: Select date range"))">
+    <DateRange @bind-Start="_appContext.RangeStart" @bind-End="_appContext.RangeEnd" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Mark Davison</span>
+</div>

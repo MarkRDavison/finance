@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api.test.Framework;
+﻿using mark.davison.finance.persistence.Context;
+
+namespace mark.davison.finance.api.test.Framework;
 
 public class ApiIntegrationTestBase : IntegrationTestBase<FinanceApiWebApplicationFactory, AppSettings>
 {
@@ -11,7 +13,7 @@ public class ApiIntegrationTestBase : IntegrationTestBase<FinanceApiWebApplicati
             currentUserContext.Token = MockJwtTokens.GenerateJwtToken(new[]
             {
                 new Claim("sub", CurrentUser.Sub.ToString()),
-                new Claim("aud", appSettings.Value.CLIENT_ID)
+                new Claim("aud", appSettings.Value.AUTH.CLIENT_ID)
             });
         };
     }
@@ -19,12 +21,14 @@ public class ApiIntegrationTestBase : IntegrationTestBase<FinanceApiWebApplicati
     protected override async Task SeedData(IServiceProvider serviceProvider)
     {
         await base.SeedData(serviceProvider);
+
         using var scope = Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
-        }
+
+        var dbContext = scope.ServiceProvider.GetRequiredService<IFinanceDbContext>();
+
+        await dbContext.UpsertEntityAsync(CurrentUser, CancellationToken.None);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
         await SeedTestData();
     }
 

@@ -1,6 +1,6 @@
-﻿namespace mark.davison.finance.bff;
+﻿namespace mark.davison.finance.bff.Ignition;
 
-public static class DependencyInversionExtensions
+public static class DependencyInjectionExtensions
 {
 
     public static IServiceCollection UseFinanceBff(this IServiceCollection services, AppSettings appSettings)
@@ -13,15 +13,15 @@ public static class DependencyInversionExtensions
         services.AddScoped<ICurrentUserContext, CurrentUserContext>();
         services.AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc));
 
-        services.AddSingleton<IHttpRepository>(_ =>
-        {
-            var options = SerializationHelpers.CreateStandardSerializationOptions();
-            if (client == null)
-            {
-                return new FinanceHttpRepository(appSettings.API_ORIGIN, options);
-            }
-            return new FinanceHttpRepository(appSettings.API_ORIGIN, client(), options);
-        });
+        //services.AddSingleton<IHttpRepository>(_ =>
+        //{
+        //    var options = SerializationHelpers.CreateStandardSerializationOptions();
+        //    if (client == null)
+        //    {
+        //        return new FinanceHttpRepository(appSettings.API_ORIGIN, options);
+        //    }
+        //    return new FinanceHttpRepository(appSettings.API_ORIGIN, client(), options);
+        //});
 
         services
             .AddHttpClient()

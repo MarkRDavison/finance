@@ -2,29 +2,29 @@
 
 public class CategoryListQueryHandler : IQueryHandler<CategoryListQueryRequest, CategoryListQueryResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
 
-    public CategoryListQueryHandler(IRepository httpRepository)
+    public CategoryListQueryHandler(IFinanceDbContext dbContext)
     {
-        _repository = httpRepository;
+        _dbContext = dbContext;
     }
 
     public async Task<CategoryListQueryResponse> Handle(CategoryListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new CategoryListQueryResponse();
 
-        await using (_repository.BeginTransaction())
-        {
-            var categories = await _repository.GetEntitiesAsync<Category>(
-                _ => _.UserId == currentUserContext.CurrentUser.Id,
-                cancellationToken);
-
-            response.Categories.AddRange(categories.Select(_ => new CategoryListItemDto
+        var categories = await _dbContext
+            .Set<Category>()
+            .AsNoTracking()
+            .Where(_ => _.UserId == currentUserContext.CurrentUser.Id)
+            .Select(_ => new CategoryListItemDto
             {
                 Id = _.Id,
                 Name = _.Name
-            }));
-        }
+            })
+            .ToListAsync(cancellationToken);
+
+        response.Categories.AddRange(categories);
 
         return response;
     }

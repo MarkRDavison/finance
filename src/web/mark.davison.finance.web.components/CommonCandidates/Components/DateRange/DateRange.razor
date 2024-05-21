@@ -1,0 +1,13 @@
+﻿@using mark.davison.finance.web.components.CommonCandidates.Utilities
+
+<MudMenu ActivationEvent="@MouseEvent.LeftClick" o>
+    <ActivatorContent>
+        <div>@Start.ToOrdinalMonthDay() - @End.ToOrdinalMonthDay()</div>
+    </ActivatorContent>
+    <ChildContent>
+        <div class="d-flex flex-row">
+            <MudDatePicker PickerVariant="PickerVariant.Static" MinDate="@MinDateTime" Date="@_startDateTime" DateChanged="@StartDateChanged" />
+            <MudDatePicker PickerVariant="PickerVariant.Static" MaxDate="@MaxDateTime" Date="@_endDateTime" DateChanged="@EndDateChanged" />
+        </div>
+    </ChildContent>
+</MudMenu>

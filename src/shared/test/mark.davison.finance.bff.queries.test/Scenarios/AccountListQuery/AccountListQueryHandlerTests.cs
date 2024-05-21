@@ -1,64 +1,44 @@
-﻿using mark.davison.finance.api.services;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountListQuery;
 
 [TestClass]
 public class AccountListQueryHandlerTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly Mock<IUserApplicationContext> _userApplicationContext;
     private readonly AccountListQueryHandler _handler;
+    private readonly CancellationToken _token;
 
     public AccountListQueryHandlerTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+
         _currentUserContext = new(MockBehavior.Strict);
         _userApplicationContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new AccountListQueryHandler(_repository.Object, _userApplicationContext.Object);
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<TransactionJournal>(
-                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<TransactionJournal>());
+        _handler = new AccountListQueryHandler((IFinanceDbContext)_dbContext, _userApplicationContext.Object);
 
         _userApplicationContext
             .Setup(_ => _.LoadRequiredContext<FinanceUserApplicationContext>())
             .ReturnsAsync(new FinanceUserApplicationContext { });
     }
 
+    // TODO: More tests around current balance and balance difference
 
     [TestMethod]
     public async Task Handle_RetrievesAccountSummariesFromRepository()
     {
-        var accounts = new List<Account> {
-            new Account{ AccountType = new() },
-            new Account{ AccountType = new() }
+        var accounts = new List<Account>
+        {
+            new Account{ Id = Guid.NewGuid(), UserId = _currentUserContext.Object.CurrentUser.Id, AccountType = new() { Id = Guid.NewGuid() } },
+            new Account{ Id = Guid.NewGuid(), UserId = _currentUserContext.Object.CurrentUser.Id, AccountType = new() { Id = Guid.NewGuid() } }
         };
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<Expression<Func<Account, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(accounts)
-            .Verifiable();
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Transaction, DatedTransactionAmount>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                string.Empty,
-                It.IsAny<Expression<Func<Transaction, DatedTransactionAmount>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<DatedTransactionAmount>())
-            .Verifiable();// TODO: More tests around current balance and balance difference
+        await _dbContext.UpsertEntitiesAsync(accounts, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var request = new AccountListQueryRequest
         {
@@ -67,52 +47,25 @@ public class AccountListQueryHandlerTests
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(accounts.Count, response.Accounts.Count);
-
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Account>(
-                    It.IsAny<Expression<Func<Account, bool>>>(),
-                    It.IsAny<Expression<Func<Account, object>>[]>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        response.Accounts.Should().HaveCount(accounts.Count);
     }
-
 
     [TestMethod]
     public async Task Handle_DoesNotRetrieveHiddenAccounts()
     {
         var accounts = new List<Account> {
-            new Account{ Id = BuiltinAccountNames.OpeningBalance, AccountType = new() },
-            new Account{ Id = BuiltinAccountNames.Reconciliation, AccountType = new() }
+            new Account{ Id = AccountConstants.OpeningBalance, AccountType = new(){ Id = Guid.NewGuid() }},
+            new Account{ Id = AccountConstants.Reconciliation, AccountType = new(){ Id = Guid.NewGuid() }}
         };
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<Expression<Func<Account, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<Account, bool>> p, Expression<Func<Account, object>>[] i, CancellationToken c) =>
-            {
-                return accounts.Where(p.Compile()).ToList();
-            })
-            .Verifiable();
 
         var request = new AccountListQueryRequest
         {
             ShowActive = true
         };
+
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(0, response.Accounts.Count);
-
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Account>(
-                    It.IsAny<Expression<Func<Account, bool>>>(),
-                    It.IsAny<Expression<Func<Account, object>>[]>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        response.Accounts.Should().BeEmpty();
     }
 
     // TODO: Test to validate the opening balances

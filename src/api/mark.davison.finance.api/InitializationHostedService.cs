@@ -2,30 +2,37 @@
 
 public class InitializationHostedService : GenericApplicationHealthStateHostedService
 {
-    private readonly IFinanceDataSeeder _financeDataSeeder;
+    private readonly IDbContextFactory<FinanceDbContext> _dbContextFactory;
+    private readonly IOptions<AppSettings> _appSettings;
 
     public InitializationHostedService(
         IHostApplicationLifetime hostApplicationLifetime,
         IApplicationHealthState applicationHealthState,
-        IFinanceDataSeeder financeDataSeeder
+        IDbContextFactory<FinanceDbContext> dbContextFactory,
+        IOptions<AppSettings> appSettings
     ) : base(
         hostApplicationLifetime,
         applicationHealthState
     )
     {
-        _financeDataSeeder = financeDataSeeder;
+        _dbContextFactory = dbContextFactory;
+        _appSettings = appSettings;
     }
 
     protected override async Task AdditionalStartAsync(CancellationToken cancellationToken)
     {
-        try
+        var dbContext = await _dbContextFactory.CreateDbContextAsync(cancellationToken);
+
+        if (_appSettings.Value.PRODUCTION_MODE)
         {
-            await _financeDataSeeder.EnsureDataSeeded(cancellationToken);
+            await dbContext.Database.MigrateAsync();
         }
-        catch (Exception)
+        else
         {
-            throw;
+            await dbContext.Database.EnsureDeletedAsync(cancellationToken);
+            await dbContext.Database.EnsureCreatedAsync(cancellationToken);
         }
+
         await base.AdditionalStartAsync(cancellationToken);
     }
 

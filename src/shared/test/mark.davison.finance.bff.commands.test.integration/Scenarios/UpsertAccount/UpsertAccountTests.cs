@@ -18,22 +18,23 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
                 Name = "No opening balance",
                 CurrencyId = Currency.NZD,
                 Id = Guid.NewGuid(),
-                AccountTypeId = AccountConstants.Asset
+                AccountTypeId = AccountTypeConstants.Asset
             }
         };
         var response = await handler.Handle(request, currentUserContext, CancellationToken.None);
 
         Assert.IsTrue(response.Success);
 
-        var repository = GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-            Assert.IsNotNull(account);
+        var dbContext = GetRequiredService<IFinanceDbContext>();
 
-            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id));
-            Assert.IsNull(transactionJournal);
-        }
+        var account = await dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, CancellationToken.None);
+        Assert.IsNotNull(account); // TODO: AnyAsync
+
+        var transactionJournal = await dbContext
+            .Set<TransactionJournal>()
+            .Where(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id))
+            .FirstOrDefaultAsync(CancellationToken.None);
+        Assert.IsNull(transactionJournal);
     }
 
     [TestMethod]
@@ -50,7 +51,7 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
                 Name = "Opening balance",
                 CurrencyId = Currency.NZD,
                 Id = Guid.NewGuid(),
-                AccountTypeId = AccountConstants.Asset,
+                AccountTypeId = AccountTypeConstants.Asset,
                 OpeningBalance = CurrencyRules.ToPersisted(100.0M),
                 OpeningBalanceDate = DateOnly.FromDateTime(DateTime.UtcNow)
             }
@@ -60,21 +61,17 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        var repository = GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-            Assert.IsNotNull(account);
+        var dbContext = GetRequiredService<IFinanceDbContext>();
 
-            var includes = new Expression<Func<TransactionJournal, object>>[] {
-                _ => _.TransactionGroup!
-            };
-            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-                includes,
-                CancellationToken.None);
-            Assert.IsNotNull(transactionJournal);
-        }
+        var account = await dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, CancellationToken.None);
+        Assert.IsNotNull(account); // TODO: AnyAsync
+
+        var transactionJournal = await dbContext
+            .Set<TransactionJournal>()
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id))
+            .FirstOrDefaultAsync(CancellationToken.None);
+        Assert.IsNotNull(transactionJournal);
     }
 
     [TestMethod]
@@ -91,7 +88,7 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
                 Name = "No initial opening balance",
                 CurrencyId = Currency.NZD,
                 Id = Guid.NewGuid(),
-                AccountTypeId = AccountConstants.Asset
+                AccountTypeId = AccountTypeConstants.Asset
             }
         };
 
@@ -117,19 +114,17 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        var repository = GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            var includes = new Expression<Func<TransactionJournal, object>>[] {
-                _ => _.TransactionGroup!
-            };
-            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-                includes,
-                CancellationToken.None);
+        var dbContext = GetRequiredService<IFinanceDbContext>();
 
-            Assert.IsNotNull(transactionJournal);
-        }
+        var account = await dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, CancellationToken.None);
+        Assert.IsNotNull(account); // TODO: AnyAsync
+
+        var transactionJournal = await dbContext
+            .Set<TransactionJournal>()
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id))
+            .FirstOrDefaultAsync(CancellationToken.None);
+        Assert.IsNotNull(transactionJournal);
     }
 
     [TestMethod]
@@ -146,7 +141,7 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
                 Name = "Opening balance",
                 CurrencyId = Currency.NZD,
                 Id = Guid.NewGuid(),
-                AccountTypeId = AccountConstants.Asset,
+                AccountTypeId = AccountTypeConstants.Asset,
                 OpeningBalance = CurrencyRules.ToPersisted(100.0M),
                 OpeningBalanceDate = DateOnly.FromDateTime(DateTime.UtcNow)
             }
@@ -161,18 +156,17 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
             _ => _.TransactionGroup!
         };
 
-        var repository = GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            var account = await repository.GetEntityAsync<Account>(request.UpsertAccountDto.Id);
-            Assert.IsNotNull(account);
+        var dbContext = GetRequiredService<IFinanceDbContext>();
 
-            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-                _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-                includes,
-                CancellationToken.None);
-            Assert.IsNotNull(transactionJournal);
-        }
+        var account = await dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, CancellationToken.None);
+        Assert.IsNotNull(account); // TODO: AnyAsync
+
+        var transactionJournal = await dbContext
+            .Set<TransactionJournal>()
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id))
+            .FirstOrDefaultAsync(CancellationToken.None);
+        Assert.IsNotNull(transactionJournal);
 
         request = new UpsertAccountCommandRequest
         {
@@ -190,16 +184,15 @@ public class UpsertAccountTests : CQRSIntegrationTestBase
 
         Assert.IsTrue(response.Success);
 
-        repository = GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            var transactionJournal = await repository.GetEntityAsync<TransactionJournal>(
-            _ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id),
-            includes,
-            CancellationToken.None);
+        account = await dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, CancellationToken.None);
+        Assert.IsNotNull(account); // TODO: AnyAsync
 
-            Assert.IsNull(transactionJournal);
-        }
+        transactionJournal = await dbContext
+            .Set<TransactionJournal>()
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.Transactions.Any(_ => _.AccountId == request.UpsertAccountDto.Id))
+            .FirstOrDefaultAsync(CancellationToken.None);
+        Assert.IsNull(transactionJournal);
     }
 
 }

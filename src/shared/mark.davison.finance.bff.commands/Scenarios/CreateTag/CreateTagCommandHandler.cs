@@ -2,15 +2,15 @@
 
 public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, CreateTagCommandResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
     private readonly ICreateTagCommandValidator _createTagCommandValidator;
 
     public CreateTagCommandHandler(
-        IRepository repository,
+        IFinanceDbContext dbContext,
         ICreateTagCommandValidator createTagCommandValidator
     )
     {
-        _repository = repository;
+        _dbContext = dbContext;
         _createTagCommandValidator = createTagCommandValidator;
     }
 
@@ -31,9 +31,9 @@ public class CreateTagCommandHandler : ICommandHandler<CreateTagCommandRequest, 
             UserId = currentUserContext.CurrentUser.Id
         };
 
-        var tag = await _repository.UpsertEntityAsync(
-            category,
-            cancellationToken);
+        var tag = await _dbContext.UpsertEntityAsync(category, cancellationToken);
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
 
         if (tag == null)
         {

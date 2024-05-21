@@ -1,77 +1,23 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.AccountDashboardSummaryQuery;
 
 [TestClass]
 public class AccountDashboardSummaryQueryHandlerTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly AccountDashboardSummaryQueryHandler _handler;
+    private readonly CancellationToken _token;
 
     public AccountDashboardSummaryQueryHandlerTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+
         _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
-
-        _handler = new(_repository.Object);
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Account>());
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Transaction>());
-    }
-
-    [TestMethod]
-    public async Task Handle_InvokesRepository()
-    {
-        var request = new AccountDashboardSummaryQueryRequest
-        {
-            AccountTypeId = AccountConstants.Asset
-        };
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Account>())
-            .Verifiable();
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Transaction>())
-            .Verifiable();
-
-        var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
-
-        Assert.IsTrue(response.Success);
-
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Transaction>(
-                    It.IsAny<Expression<Func<Transaction, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        _handler = new((IFinanceDbContext)_dbContext);
     }
 
     [TestMethod]
@@ -79,42 +25,26 @@ public class AccountDashboardSummaryQueryHandlerTests
     {
         var accounts = new List<Account>
         {
-            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
-            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
-            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
-            new Account { AccountTypeId = AccountConstants.Asset, UserId = Guid.NewGuid() },
-            new Account { AccountTypeId = AccountConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id }
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = Guid.NewGuid() },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id }
         };
+
+        await _dbContext.UpsertEntitiesAsync(accounts, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var request = new AccountDashboardSummaryQueryRequest
         {
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountTypeConstants.Asset
         };
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<Account, bool>> p, CancellationToken c) =>
-            {
-                var results = accounts.Where(p.Compile()).ToList();
-
-                Assert.AreEqual(1, results.Count);
-
-                return new List<Account>();
-            })
-            .Verifiable();
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.IsTrue(response.Success);
+        response.Success.Should().BeTrue();
 
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Account>(
-                    It.IsAny<Expression<Func<Account, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        response.AccountNames.Should().HaveCount(1);
     }
 
     [TestMethod]
@@ -122,56 +52,42 @@ public class AccountDashboardSummaryQueryHandlerTests
     {
         var accounts = new List<Account>
         {
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() }
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id }
         };
+
         var transactions = new List<Transaction>
         {
-            new Transaction {  AccountId = accounts[0].Id, TransactionJournal = new() { TransactionTypeId = TransactionConstants.OpeningBalance } },
-            new Transaction {  AccountId = accounts[1].Id, TransactionJournal = new() { TransactionTypeId = TransactionConstants.Deposit } },
-            new Transaction {  AccountId = accounts[2].Id, TransactionJournal = new() { TransactionTypeId = TransactionConstants.LiabilityCredit } },
-            new Transaction {  AccountId = accounts[3].Id, TransactionJournal = new() { TransactionTypeId = TransactionConstants.Transfer } },
-            new Transaction {  AccountId = accounts[4].Id, TransactionJournal = new() { TransactionTypeId = TransactionConstants.Invalid } },
+            new Transaction {  Id = Guid.NewGuid(), AccountId = accounts[0].Id, TransactionJournal = new() { Id = Guid.NewGuid(), TransactionTypeId = TransactionConstants.OpeningBalance } },
+            new Transaction {  Id = Guid.NewGuid(), AccountId = accounts[1].Id, TransactionJournal = new() { Id = Guid.NewGuid(), TransactionTypeId = TransactionConstants.Deposit } },
+            new Transaction {  Id = Guid.NewGuid(), AccountId = accounts[2].Id, TransactionJournal = new() { Id = Guid.NewGuid(), TransactionTypeId = TransactionConstants.LiabilityCredit } },
+            new Transaction {  Id = Guid.NewGuid(), AccountId = accounts[3].Id, TransactionJournal = new() { Id = Guid.NewGuid(), TransactionTypeId = TransactionConstants.Transfer } },
+            new Transaction {  Id = Guid.NewGuid(), AccountId = accounts[4].Id, TransactionJournal = new() { Id = Guid.NewGuid(), TransactionTypeId = TransactionConstants.Invalid } },
         };
+
+        await _dbContext.UpsertEntitiesAsync(transactions, _token);
+        await _dbContext.UpsertEntitiesAsync(accounts, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var request = new AccountDashboardSummaryQueryRequest
         {
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountTypeConstants.Asset
         };
 
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(accounts);
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Expression<Func<Transaction, bool>> p, CancellationToken c) =>
-            {
-                var results = transactions.Where(p.Compile()).ToList();
-
-                Assert.AreEqual(5, results.Count);
-
-                return new List<Transaction>();
-            })
-            .Verifiable();
-
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.IsTrue(response.Success);
+        response.Success.Should().BeTrue();
 
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        response.TransactionData.Should().HaveCount(5);
+
+        foreach (var (_, transactionData) in response.TransactionData)
+        {
+            transactionData.Should().HaveCount(1);
+        }
     }
 
     [TestMethod]
@@ -179,44 +95,36 @@ public class AccountDashboardSummaryQueryHandlerTests
     {
         var accounts = new List<Account>
         {
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() },
-            new Account { Id = Guid.NewGuid() },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
+            new Account { Id = Guid.NewGuid(), AccountTypeId = AccountTypeConstants.Asset, UserId = _currentUserContext.Object.CurrentUser.Id },
         };
         var transactions = new List<Transaction>
         {
-            new Transaction { AccountId = accounts[0].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 1) } },
-            new Transaction { AccountId = accounts[0].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 2) } },
-            new Transaction { AccountId = accounts[0].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 3) } },
-            new Transaction { AccountId = accounts[0].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 4) } },
-            new Transaction { AccountId = accounts[1].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 1) } },
-            new Transaction { AccountId = accounts[1].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 2) } },
-            new Transaction { AccountId = accounts[2].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 1) } },
-            new Transaction { AccountId = accounts[2].Id, TransactionJournal = new() { Date = new DateOnly(2022, 1, 2) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[0].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 1) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[0].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 2) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[0].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 3) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[0].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 4) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[1].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 1) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[1].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 2) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[2].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 1) } },
+            new Transaction { Id = Guid.NewGuid(), AccountId = accounts[2].Id, TransactionJournal = new() { Id = Guid.NewGuid(), Date = new DateOnly(2022, 1, 2) } },
         };
+
+        await _dbContext.UpsertEntitiesAsync(transactions, _token);
+        await _dbContext.UpsertEntitiesAsync(accounts, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var request = new AccountDashboardSummaryQueryRequest
         {
-            AccountTypeId = AccountConstants.Asset,
+            AccountTypeId = AccountTypeConstants.Asset,
             RangeStart = new DateOnly(2022, 1, 1),
             RangeEnd = new DateOnly(2022, 1, 31)
         };
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Account>(
-                It.IsAny<Expression<Func<Account, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(accounts);
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transactions);
-
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.IsTrue(response.Success);
+        response.Success.Should().BeTrue();
 
         Assert.AreEqual(accounts.Count, response.AccountNames.Count);
         Assert.AreEqual(accounts.Count, response.TransactionData.Count);

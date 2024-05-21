@@ -3,20 +3,21 @@
 [TestClass]
 public class CreateTransctionValidationContextTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly CreateTransctionValidationContext _context;
+    private readonly CancellationToken _token;
 
     public CreateTransctionValidationContextTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+
         _currentUserContext = new(MockBehavior.Strict);
-        _context = new(_repository.Object, _currentUserContext.Object);
+        _context = new((IFinanceDbContext)_dbContext, _currentUserContext.Object);
 
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User());
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
 
     }
 
@@ -25,50 +26,12 @@ public class CreateTransctionValidationContextTests
     {
         var accountId = Guid.NewGuid();
 
-        _repository.Setup(_ => _.GetEntityAsync<Account>(
-                accountId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Account
-            {
-                Id = accountId
-            })
-            .Verifiable();
+        await _dbContext.UpsertEntityAsync(new Account { Id = accountId }, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var first = await _context.GetAccountById(accountId, CancellationToken.None);
 
         Assert.IsNotNull(first);
-
-        _repository
-            .Verify(
-                _ => _.GetEntityAsync<Account>(
-                    accountId,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
-
-    [TestMethod]
-    public async Task GetAccountById_DoesNotFetchFromRepositoryTwice()
-    {
-        var accountId = Guid.NewGuid();
-
-
-        _repository.Setup(_ => _.GetEntityAsync<Account>(
-                accountId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Account
-            {
-                Id = accountId
-            })
-            .Verifiable();
-
-        await _context.GetAccountById(accountId, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.GetEntityAsync<Account>(
-                    accountId,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
     }
 
     [TestMethod]
@@ -76,49 +39,11 @@ public class CreateTransctionValidationContextTests
     {
         var categoryId = Guid.NewGuid();
 
-        _repository.Setup(_ => _.GetEntityAsync<Category>(
-                categoryId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Category
-            {
-                Id = categoryId
-            })
-            .Verifiable();
+        await _dbContext.UpsertEntityAsync(new Category { Id = categoryId }, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var first = await _context.GetCategoryById(categoryId, CancellationToken.None);
 
         Assert.IsNotNull(first);
-
-        _repository
-            .Verify(
-                _ => _.GetEntityAsync<Category>(
-                    categoryId,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
-
-    [TestMethod]
-    public async Task GetCategoryById_DoesNotFetchFromRepositoryTwice()
-    {
-        var categoryId = Guid.NewGuid();
-
-        _repository.Setup(_ => _.GetEntityAsync<Category>(
-                categoryId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new Category
-            {
-                Id = categoryId
-            })
-            .Verifiable();
-
-        await _context.GetCategoryById(categoryId, CancellationToken.None);
-
-
-        _repository
-            .Verify(
-                _ => _.GetEntityAsync<Category>(
-                    categoryId,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
     }
 }

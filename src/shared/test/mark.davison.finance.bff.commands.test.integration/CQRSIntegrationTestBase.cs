@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.bff.commands.test.integration;
+﻿using mark.davison.finance.persistence.Context;
+
+namespace mark.davison.finance.bff.commands.test.integration;
 
 public abstract class CQRSIntegrationTestBase : IntegrationTestBase<CQRSFinanceApiWebApplicationFactory, AppSettings>
 {
@@ -11,11 +13,11 @@ public abstract class CQRSIntegrationTestBase : IntegrationTestBase<CQRSFinanceA
         {
             var appSettings = serviceProvider.GetRequiredService<IOptions<AppSettings>>();
             currentUserContext.CurrentUser = CurrentUser;
-            currentUserContext.Token = MockJwtTokens.GenerateJwtToken(new[]
-            {
+            currentUserContext.Token = MockJwtTokens.GenerateJwtToken(
+            [
                 new Claim("sub", CurrentUser.Sub.ToString()),
-                new Claim("aud", appSettings.Value.CLIENT_ID)
-            });
+                new Claim("aud", appSettings.Value.AUTH.CLIENT_ID)
+            ]);
         };
     }
 
@@ -33,11 +35,11 @@ public abstract class CQRSIntegrationTestBase : IntegrationTestBase<CQRSFinanceA
     {
         await base.SeedData(serviceProvider);
         using var scope = GetRequiredService<IServiceScopeFactory>().CreateScope();
-        var repository = scope.ServiceProvider.GetRequiredService<IRepository>();
-        await using (repository.BeginTransaction())
-        {
-            await repository.UpsertEntityAsync(CurrentUser, CancellationToken.None);
-        }
+        var dbContext = scope.ServiceProvider.GetRequiredService<IFinanceDbContext>();
+
+        await dbContext.UpsertEntityAsync(CurrentUser, CancellationToken.None);
+        await dbContext.SaveChangesAsync(CancellationToken.None);
+
         await SeedTestData();
     }
 

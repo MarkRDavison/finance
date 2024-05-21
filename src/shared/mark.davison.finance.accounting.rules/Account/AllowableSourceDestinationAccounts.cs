@@ -55,38 +55,38 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Asset,
+                        AccountTypeConstants.Asset,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Expense,
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage,
-                            AccountConstants.Cash
+                            AccountTypeConstants.Expense,
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage,
+                            AccountTypeConstants.Cash
                         }
                     },
                     {
-                        AccountConstants.Loan,
+                        AccountTypeConstants.Loan,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Expense,
-                            AccountConstants.Cash
+                            AccountTypeConstants.Expense,
+                            AccountTypeConstants.Cash
                         }
                     },
                     {
-                        AccountConstants.Debt,
+                        AccountTypeConstants.Debt,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Expense,
-                            AccountConstants.Cash
+                            AccountTypeConstants.Expense,
+                            AccountTypeConstants.Cash
                         }
                     },
                     {
-                        AccountConstants.Mortgage,
+                        AccountTypeConstants.Mortgage,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Expense,
-                            AccountConstants.Cash
+                            AccountTypeConstants.Expense,
+                            AccountTypeConstants.Cash
                         }
                     }
                 }
@@ -96,44 +96,44 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Revenue,
+                        AccountTypeConstants.Revenue,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset,
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Asset,
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     },
                     {
-                        AccountConstants.Cash,
+                        AccountTypeConstants.Cash,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset,
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Asset,
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     },
                     {
-                        AccountConstants.Loan,
+                        AccountTypeConstants.Loan,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset
+                            AccountTypeConstants.Asset
                         }
                     },
                     {
-                        AccountConstants.Debt,
+                        AccountTypeConstants.Debt,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset
+                            AccountTypeConstants.Asset
                         }
                     },
                     {
-                        AccountConstants.Mortgage,
+                        AccountTypeConstants.Mortgage,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset
+                            AccountTypeConstants.Asset
                         }
                     }
                 }
@@ -143,37 +143,37 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Asset,
+                        AccountTypeConstants.Asset,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset
+                            AccountTypeConstants.Asset
                         }
                     },
                     {
-                        AccountConstants.Loan,
+                        AccountTypeConstants.Loan,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     },
                     {
-                        AccountConstants.Debt,
+                        AccountTypeConstants.Debt,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     },
                     {
-                        AccountConstants.Mortgage,
+                        AccountTypeConstants.Mortgage,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     }
                 }
@@ -183,41 +183,41 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Asset,
+                        AccountTypeConstants.Asset,
                         new HashSet<Guid>
                         {
-                            AccountConstants.InitialBalance
+                            AccountTypeConstants.InitialBalance
                         }
                     },
                     {
-                        AccountConstants.Loan,
+                        AccountTypeConstants.Loan,
                         new HashSet<Guid>
                         {
-                            AccountConstants.InitialBalance
+                            AccountTypeConstants.InitialBalance
                         }
                     },
                     {
-                        AccountConstants.Debt,
+                        AccountTypeConstants.Debt,
                         new HashSet<Guid>
                         {
-                            AccountConstants.InitialBalance
+                            AccountTypeConstants.InitialBalance
                         }
                     },
                     {
-                        AccountConstants.Mortgage,
+                        AccountTypeConstants.Mortgage,
                         new HashSet<Guid>
                         {
-                            AccountConstants.InitialBalance
+                            AccountTypeConstants.InitialBalance
                         }
                     },
                     {
-                        AccountConstants.InitialBalance,
+                        AccountTypeConstants.InitialBalance,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset,
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Asset,
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     }
                 }
@@ -227,17 +227,17 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Reconciliation,
+                        AccountTypeConstants.Reconciliation,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Asset
+                            AccountTypeConstants.Asset
                         }
                     },
                     {
-                        AccountConstants.Asset,
+                        AccountTypeConstants.Asset,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Reconciliation
+                            AccountTypeConstants.Reconciliation
                         }
                     }
                 }
@@ -247,33 +247,33 @@ public static class AllowableSourceDestinationAccounts
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
-                        AccountConstants.Loan,
+                        AccountTypeConstants.Loan,
                         new HashSet<Guid>
                         {
-                            AccountConstants.LiabilityCredit
+                            AccountTypeConstants.LiabilityCredit
                         }
                     },
                     {
-                        AccountConstants.Debt,
+                        AccountTypeConstants.Debt,
                         new HashSet<Guid>
                         {
-                            AccountConstants.LiabilityCredit
+                            AccountTypeConstants.LiabilityCredit
                         }
                     },
                     {
-                        AccountConstants.Mortgage,
+                        AccountTypeConstants.Mortgage,
                         new HashSet<Guid>
                         {
-                            AccountConstants.LiabilityCredit
+                            AccountTypeConstants.LiabilityCredit
                         }
                     },
                     {
-                        AccountConstants.LiabilityCredit,
+                        AccountTypeConstants.LiabilityCredit,
                         new HashSet<Guid>
                         {
-                            AccountConstants.Loan,
-                            AccountConstants.Debt,
-                            AccountConstants.Mortgage
+                            AccountTypeConstants.Loan,
+                            AccountTypeConstants.Debt,
+                            AccountTypeConstants.Mortgage
                         }
                     }
                 }

@@ -15,8 +15,6 @@ Replace guids in urls with snippets/words?
 
 Rename shared command/query projects to shared/remove bff reference
 
-Review uses if IRepository and verify if we need to grab it from the IServiceScopeFactory, or whether the cqrs pipeline service provider will work
-
 create helper class for RepositoryPredicate<T>, RepositoryInclude<T> etc
 
 Account > Account Role
@@ -78,3 +76,8 @@ Still need to create another ci stage that starts with a blank database and appl
 
 dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj
 dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj
+
+#
+Remove Moq
+Move all command/query to ValidateAndProcess handlers
+Update all cqrs to use proper things, Reponse<T> etc

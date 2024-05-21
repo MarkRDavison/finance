@@ -31,18 +31,13 @@ public class FinanceApiWebApplicationFactory : WebApplicationFactory<Startup>, I
 
     protected virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>(_ => // TODO: Remove lambda???
-            new FinanceDataSeeder(
-                _.GetRequiredService<IServiceScopeFactory>(),
-                _.GetRequiredService<IOptions<AppSettings>>()
-            ));
         services.UseDataSeeders();
 
         services
             .AddHttpClient()
             .AddHttpContextAccessor();
 
-        services.UseCQRSServer();
+        services.AddCQRSServer();
         services.AddCommandCQRS();
         services.AddScoped<ICurrentUserContext, CurrentUserContext>(_ =>
         {

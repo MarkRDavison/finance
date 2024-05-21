@@ -2,36 +2,32 @@
 
 public class TransactionByIdQueryHandler : IQueryHandler<TransactionByIdQueryRequest, TransactionByIdQueryResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
 
-    public TransactionByIdQueryHandler(IRepository repository)
+    public TransactionByIdQueryHandler(IFinanceDbContext dbContext)
     {
-        _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<TransactionByIdQueryResponse> Handle(TransactionByIdQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new TransactionByIdQueryResponse();
 
-        await using (_repository.BeginTransaction())
+        var transactionJournals = await _dbContext
+            .Set<TransactionJournal>()
+            .AsNoTracking()
+            .Include(_ => _.Transactions)
+            .Include(_ => _.TransactionGroup)
+            .Where(_ => _.TransactionGroupId == query.TransactionGroupId)
+            .ToListAsync(cancellationToken);
+
+        foreach (var tj in transactionJournals)
         {
-            var transactionJournals = await _repository.GetEntitiesAsync<TransactionJournal>(
-                _ => _.TransactionGroupId == query.TransactionGroupId,
-                new Expression<Func<TransactionJournal, object>>[] {
-                    _ => _.Transactions,
-                    _ => _.TransactionGroup!
-                },
-                cancellationToken);
-
-            foreach (var tj in transactionJournals)
-            {
-                response.Transactions.AddRange(tj.Transactions.Select(
-                    _ => _.ToDto(
-                        tj,
-                        tj.TransactionGroup!)));
-            }
+            response.Transactions
+                .AddRange(tj.Transactions
+                    .Select(
+                        _ => _.ToDto(tj, tj.TransactionGroup!)));
         }
-
 
         return response;
     }

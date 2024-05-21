@@ -32,5 +32,15 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<User>
 
         builder
             .Property(_ => _.Admin);
+
+        builder
+            .HasData(new User
+            {
+                Id = Guid.Empty,
+                Email = "financesystem@markdavison.kiwi",
+                First = "Finance",
+                Last = "System",
+                Username = "Finance.System"
+            });
     }
 }

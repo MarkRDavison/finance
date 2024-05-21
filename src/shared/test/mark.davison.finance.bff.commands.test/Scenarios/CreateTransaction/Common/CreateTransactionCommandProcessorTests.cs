@@ -1,44 +1,28 @@
-﻿namespace mark.davison.finance.bff.commands.test.Scenarios.CreateTransaction.Common;
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace mark.davison.finance.bff.commands.test.Scenarios.CreateTransaction.Common;
 
 [TestClass]
 public class CreateTransactionCommandProcessorTests
 {
     private readonly Mock<ICurrentUserContext> _currentUserContext;
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly CreateTransactionCommandProcessor _processor;
     private readonly User _user;
+    private readonly CancellationToken _token;
 
     public CreateTransactionCommandProcessorTests()
     {
+        _token = CancellationToken.None;
         _currentUserContext = new(MockBehavior.Strict);
-        _repository = new(MockBehavior.Strict);
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
 
-        _processor = new(_repository.Object);
+        _processor = new((IFinanceDbContext)_dbContext);
 
         _user = new() { Id = Guid.NewGuid() };
 
         _currentUserContext.Setup(_ => _.Token).Returns(string.Empty);
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(_user);
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
-
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<TransactionGroup>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, CancellationToken c) => e);
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) => e);
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<Transaction>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, CancellationToken c) => e);
     }
 
     [TestMethod]
@@ -53,29 +37,17 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
 
-        _repository
-            .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
-                It.IsAny<TransactionGroup>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, CancellationToken c) =>
-            {
-                Assert.AreNotEqual(Guid.Empty, e.Id);
-                Assert.AreEqual(request.Description, e.Title);
+        var response = await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-                return e;
-            })
-            .Verifiable();
+        response.Success.Should().BeTrue();
 
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
+        var transactionGroupExists = await _dbContext
+            .Set<TransactionGroup>()
+            .Where(_ => _.Id == response.Group.Id && _.Title == request.Description)
+            .AnyAsync(_token);
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync<TransactionGroup>(
-                    It.IsAny<TransactionGroup>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        transactionGroupExists.Should().BeTrue();
     }
 
     [TestMethod]
@@ -89,60 +61,18 @@ public class CreateTransactionCommandProcessorTests
                 new CreateTransactionDto()
             }
         };
-        var response = new CreateTransactionResponse();
 
-        _repository
-            .Setup(_ => _.UpsertEntityAsync<TransactionGroup>(
-                It.IsAny<TransactionGroup>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionGroup e, CancellationToken c) =>
-            {
-                Assert.IsTrue(string.IsNullOrEmpty(e.Title));
+        var response = await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-                return e;
-            })
-            .Verifiable();
+        response.Success.Should().BeTrue();
 
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
+        var transactionGroup = await _dbContext
+            .Set<TransactionGroup>()
+            .Where(_ => _.Id == response.Group.Id)
+            .FirstOrDefaultAsync(_token);
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync<TransactionGroup>(
-                    It.IsAny<TransactionGroup>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
-
-    [TestMethod]
-    public async Task Process_CreatesTransactionJournal()
-    {
-        var request = new CreateTransactionRequest
-        {
-            Transactions =
-            {
-                new CreateTransactionDto()
-            }
-        };
-        var response = new CreateTransactionResponse();
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
-            {
-                return e;
-            })
-            .Verifiable();
-
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        transactionGroup.Should().NotBeNull();
+        transactionGroup!.Title.Should().BeNullOrEmpty();
     }
 
     [TestMethod]
@@ -165,68 +95,31 @@ public class CreateTransactionCommandProcessorTests
                 createTransactionDto
             }
         };
-        var response = new CreateTransactionResponse();
 
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
-            {
-                for (int i = 0; i < e.Count; ++i)
-                {
-                    Assert.AreNotEqual(Guid.Empty, e[i].Id);
-                    Assert.AreNotEqual(Guid.Empty, e[i].TransactionGroupId);
-                    Assert.AreEqual(request.TransactionTypeId, e[i].TransactionTypeId);
-                    Assert.AreEqual(createTransactionDto.Description, e[i].Description);
-                    Assert.AreEqual(createTransactionDto.BillId, e[i].BillId);
-                    Assert.AreEqual(createTransactionDto.CurrencyId, e[i].CurrencyId);
-                    Assert.AreEqual(createTransactionDto.ForeignCurrencyId, e[i].ForeignCurrencyId);
-                    Assert.AreEqual(createTransactionDto.Date, e[i].Date);
-                    Assert.AreEqual(i, e[i].Order);
-                    Assert.IsFalse(e[i].Completed);
-                }
-                return e;
-            })
-            .Verifiable();
+        var response = await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
+        response.Success.Should().BeTrue();
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
+        var tranasctionJournalIds = response.Journals.Select(_ => _.Id).ToList();
 
-    [TestMethod]
-    public async Task Process_CreatesTransactions()
-    {
-        var request = new CreateTransactionRequest
+        var transactionJournals = await _dbContext
+            .Set<TransactionJournal>()
+            .Where(_ => tranasctionJournalIds.Contains(_.Id))
+            .ToListAsync(_token);
+
+        for (int i = 0; i < transactionJournals.Count; ++i)
         {
-            Transactions =
-            {
-                new CreateTransactionDto()
-            }
-        };
-        var response = new CreateTransactionResponse();
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<Transaction>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, CancellationToken c) => e)
-            .Verifiable();
-
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<Transaction>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            Assert.AreNotEqual(Guid.Empty, transactionJournals[i].Id);
+            Assert.AreNotEqual(Guid.Empty, transactionJournals[i].TransactionGroupId);
+            Assert.AreEqual(request.TransactionTypeId, transactionJournals[i].TransactionTypeId);
+            Assert.AreEqual(createTransactionDto.Description, transactionJournals[i].Description);
+            Assert.AreEqual(createTransactionDto.BillId, transactionJournals[i].BillId);
+            Assert.AreEqual(createTransactionDto.CurrencyId, transactionJournals[i].CurrencyId);
+            Assert.AreEqual(createTransactionDto.ForeignCurrencyId, transactionJournals[i].ForeignCurrencyId);
+            Assert.AreEqual(createTransactionDto.Date, transactionJournals[i].Date);
+            Assert.AreEqual(i, transactionJournals[i].Order);
+            Assert.IsFalse(transactionJournals[i].Completed);
+        }
     }
 
     [TestMethod]
@@ -250,59 +143,50 @@ public class CreateTransactionCommandProcessorTests
                 transaction
             }
         };
-        var response = new CreateTransactionResponse();
 
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<Transaction>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, CancellationToken c) =>
-            {
+        var response = await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-                for (int i = 0; i < request.Transactions.Count; ++i)
-                {
-                    var index = i * 2;
-                    var sourceTransaction = e[index + 0];
-                    var destinationTransaction = e[index + 1];
+        response.Success.Should().BeTrue();
 
-                    Assert.AreNotEqual(Guid.Empty, sourceTransaction.Id);
-                    Assert.AreNotEqual(Guid.Empty, sourceTransaction.TransactionJournalId);
-                    Assert.AreEqual(request.Transactions[i].SourceAccountId, sourceTransaction.AccountId);
-                    Assert.AreEqual(request.Transactions[i].CurrencyId, sourceTransaction.CurrencyId);
-                    Assert.AreEqual(request.Transactions[i].ForeignCurrencyId, sourceTransaction.ForeignCurrencyId);
-                    Assert.AreEqual(request.Transactions[i].Description, sourceTransaction.Description);
-                    Assert.AreEqual(-request.Transactions[i].Amount, sourceTransaction.Amount);
-                    Assert.AreEqual(-request.Transactions[i].ForeignAmount, sourceTransaction.ForeignAmount);
-                    Assert.IsFalse(sourceTransaction.Reconciled);
-                    Assert.IsTrue(sourceTransaction.IsSource);
+        var tranasctionIds = response.Transactions.Select(_ => _.Id).ToList();
 
-                    Assert.AreNotEqual(Guid.Empty, destinationTransaction.Id);
-                    Assert.AreNotEqual(Guid.Empty, destinationTransaction.TransactionJournalId);
-                    Assert.AreEqual(request.Transactions[i].DestinationAccountId, destinationTransaction.AccountId);
-                    Assert.AreEqual(request.Transactions[i].CurrencyId, destinationTransaction.CurrencyId);
-                    Assert.AreEqual(request.Transactions[i].ForeignCurrencyId, destinationTransaction.ForeignCurrencyId);
-                    Assert.AreEqual(request.Transactions[i].Description, destinationTransaction.Description);
-                    Assert.AreEqual(request.Transactions[i].Amount, destinationTransaction.Amount);
-                    Assert.AreEqual(request.Transactions[i].ForeignAmount, destinationTransaction.ForeignAmount);
-                    Assert.IsFalse(destinationTransaction.Reconciled);
-                    Assert.IsFalse(destinationTransaction.IsSource);
-                }
-                return e;
-            })
-            .Verifiable();
+        var transactions = await _dbContext
+            .Set<Transaction>()
+            .Where(_ => tranasctionIds.Contains(_.Id))
+            .ToListAsync(_token);
 
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
+        for (int i = 0; i < request.Transactions.Count; ++i)
+        {
+            var index = i * 2;
+            var sourceTransaction = transactions[index + 0];
+            var destinationTransaction = transactions[index + 1];
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<Transaction>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            Assert.AreNotEqual(Guid.Empty, sourceTransaction.Id);
+            Assert.AreNotEqual(Guid.Empty, sourceTransaction.TransactionJournalId);
+            Assert.AreEqual(request.Transactions[i].SourceAccountId, sourceTransaction.AccountId);
+            Assert.AreEqual(request.Transactions[i].CurrencyId, sourceTransaction.CurrencyId);
+            Assert.AreEqual(request.Transactions[i].ForeignCurrencyId, sourceTransaction.ForeignCurrencyId);
+            Assert.AreEqual(request.Transactions[i].Description, sourceTransaction.Description);
+            Assert.AreEqual(-request.Transactions[i].Amount, sourceTransaction.Amount);
+            Assert.AreEqual(-request.Transactions[i].ForeignAmount, sourceTransaction.ForeignAmount);
+            Assert.IsFalse(sourceTransaction.Reconciled);
+            Assert.IsTrue(sourceTransaction.IsSource);
+
+            Assert.AreNotEqual(Guid.Empty, destinationTransaction.Id);
+            Assert.AreNotEqual(Guid.Empty, destinationTransaction.TransactionJournalId);
+            Assert.AreEqual(request.Transactions[i].DestinationAccountId, destinationTransaction.AccountId);
+            Assert.AreEqual(request.Transactions[i].CurrencyId, destinationTransaction.CurrencyId);
+            Assert.AreEqual(request.Transactions[i].ForeignCurrencyId, destinationTransaction.ForeignCurrencyId);
+            Assert.AreEqual(request.Transactions[i].Description, destinationTransaction.Description);
+            Assert.AreEqual(request.Transactions[i].Amount, destinationTransaction.Amount);
+            Assert.AreEqual(request.Transactions[i].ForeignAmount, destinationTransaction.ForeignAmount);
+            Assert.IsFalse(destinationTransaction.Reconciled);
+            Assert.IsFalse(destinationTransaction.IsSource);
+        }
     }
 
     [TestMethod]
-    public async Task Process_FetchesExistingTags_IfAnyUsedInNewTransactionCreation()
+    public async Task Process_CreatesTags_IfAnyUsedInNewTransactionCreation()
     {
         var transaction = new CreateTransactionDto
         {
@@ -322,137 +206,18 @@ public class CreateTransactionCommandProcessorTests
                 transaction
             }
         };
-        var response = new CreateTransactionResponse();
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<Expression<Func<Tag, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Tag>())
-            .Verifiable();
+        var response = await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
+        response.Success.Should().BeTrue();
 
-        _repository
-            .Verify(_ =>
-                _.GetEntitiesAsync<Tag>(
-                    It.IsAny<Expression<Func<Tag, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
+        var tags = await _dbContext.Set<Tag>().ToListAsync(_token);
 
-    [TestMethod]
-    public async Task Process_SavesWithExistingTags_IfAnyUsedInNewTransactionCreation()
-    {
-        var tags = new List<Tag>() {
-            new Tag { Id = Guid.NewGuid(), Name = "Tag 1"},
-            new Tag { Id = Guid.NewGuid(), Name = "Tag 2"}
-        };
-        var transaction = new CreateTransactionDto
+        foreach (var tag in transaction.Tags)
         {
-            SourceAccountId = Guid.NewGuid(),
-            DestinationAccountId = Guid.NewGuid(),
-            CurrencyId = Guid.NewGuid(),
-            ForeignCurrencyId = Guid.NewGuid(),
-            Description = "transaction description",
-            Amount = 100,
-            ForeignAmount = 125,
-            Tags = tags.Select(_ => _.Name).ToList()
-        };
-        var request = new CreateTransactionRequest
-        {
-            Transactions =
-            {
-                transaction
-            }
-        };
-        var response = new CreateTransactionResponse();
+            var t = tags.Find(_ => _.Name == tag);
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<Expression<Func<Tag, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(tags);
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
-            {
-                Assert.AreEqual(1, e.Count);
-                Assert.IsNotNull(e[0].Tags);
-                Assert.AreEqual(tags.Count, e[0].Tags!.Count);
-                return e;
-            })
-            .Verifiable();
-
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-    }
-
-    [TestMethod]
-    public async Task Process_SavesWithNewTags_IfAnyUsedInNewTransactionCreation()
-    {
-        const string tagName = "Tag 1";
-        var tags = new List<Tag>()
-        {
-        };
-        var transaction = new CreateTransactionDto
-        {
-            SourceAccountId = Guid.NewGuid(),
-            DestinationAccountId = Guid.NewGuid(),
-            CurrencyId = Guid.NewGuid(),
-            ForeignCurrencyId = Guid.NewGuid(),
-            Description = "transaction description",
-            Amount = 100,
-            ForeignAmount = 125,
-            Tags = new() { tagName }
-        };
-        var request = new CreateTransactionRequest
-        {
-            Transactions =
-            {
-                transaction
-            }
-        };
-        var response = new CreateTransactionResponse();
-
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<Expression<Func<Tag, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(tags);
-
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<TransactionJournal>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<TransactionJournal> e, CancellationToken c) =>
-            {
-                Assert.AreEqual(1, e.Count);
-                Assert.IsNotNull(e[0].Tags);
-                Assert.AreEqual(1, e[0].Tags!.Count);
-                Assert.AreEqual(tagName, e[0].Tags![0].Name);
-                Assert.AreNotEqual(Guid.Empty, e[0].Tags![0].Id);
-
-                return e;
-            })
-            .Verifiable();
-
-        await _processor.ProcessAsync(request, _currentUserContext.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<TransactionJournal>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            t.Should().NotBeNull();
+        }
     }
 }

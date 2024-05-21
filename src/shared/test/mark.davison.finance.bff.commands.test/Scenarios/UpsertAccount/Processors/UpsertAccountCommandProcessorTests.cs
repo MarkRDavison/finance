@@ -1,49 +1,30 @@
-﻿using mark.davison.finance.accounting.rules.Account;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace mark.davison.finance.bff.commands.test.Scenarios.UpsertAccount.Processors;
 
 [TestClass]
 public class UpsertAccountCommandProcessorTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContextMock;
     private readonly Mock<IDateService> _dateService;
     private readonly Mock<ICommandHandler<CreateTransactionRequest, CreateTransactionResponse>> _createTransactionHandlerMock;
     private readonly UpsertAccountCommandProcessor _upsertAccountCommandProcessor;
+    private readonly CancellationToken _token;
 
     public UpsertAccountCommandProcessorTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
         _currentUserContextMock = new(MockBehavior.Strict);
         _dateService = new(MockBehavior.Strict);
         _createTransactionHandlerMock = new(MockBehavior.Strict);
         _currentUserContextMock.Setup(_ => _.Token).Returns("");
         _currentUserContextMock.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object, _dateService.Object, _repository.Object);
+        _upsertAccountCommandProcessor = new(_createTransactionHandlerMock.Object, _dateService.Object, (IFinanceDbContext)_dbContext);
 
         _dateService.Setup(_ => _.Now).Returns(DateTime.Now);
-
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
-
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<Account>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, CancellationToken c) => a);
-
-        _repository
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account?)null);
-
-        _repository
-            .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionJournal?)null);
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
@@ -66,19 +47,6 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        Account? persistedAccount = null;
-
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<Account>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, CancellationToken c) =>
-            {
-                persistedAccount = a;
-                return a;
-            })
-            .Verifiable();
-
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
                 It.IsAny<CreateTransactionRequest>(),
@@ -94,8 +62,7 @@ public class UpsertAccountCommandProcessorTests
                 Assert.IsNull(transaction.ForeignCurrencyId);
                 Assert.IsNull(transaction.ForeignAmount);
                 Assert.IsFalse(string.IsNullOrEmpty(transaction.Description));
-                Assert.AreEqual(persistedAccount?.Id, transaction.DestinationAccountId);
-                Assert.AreEqual(BuiltinAccountNames.OpeningBalance, transaction.SourceAccountId);
+                Assert.AreEqual(AccountConstants.OpeningBalance, transaction.SourceAccountId);
                 Assert.AreEqual(request.UpsertAccountDto.OpeningBalanceDate, transaction.Date);
                 Assert.AreEqual(request.UpsertAccountDto.CurrencyId, transaction.CurrencyId);
                 Assert.IsNull(transaction.ForeignAmount);
@@ -107,15 +74,11 @@ public class UpsertAccountCommandProcessorTests
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync(
-                    It.IsAny<Account>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-        Assert.IsNotNull(persistedAccount);
+        var persistedAccount = await _dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, _token);
+
+        persistedAccount.Should().NotBeNull();
 
         _createTransactionHandlerMock
             .Verify(
@@ -137,19 +100,6 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        Account? persistedAccount = null;
-
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<Account>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, CancellationToken c) =>
-            {
-                persistedAccount = a;
-                return a;
-            })
-            .Verifiable();
-
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
                 It.IsAny<CreateTransactionRequest>(),
@@ -157,15 +107,7 @@ public class UpsertAccountCommandProcessorTests
                 It.IsAny<CancellationToken>()))
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync(
-                    It.IsAny<Account>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-        Assert.IsNotNull(persistedAccount);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
         _createTransactionHandlerMock
             .Verify(
@@ -194,21 +136,8 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(account);
-
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<Account>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((Account a, CancellationToken c) =>
-            {
-                return a;
-            })
-            .Verifiable();
+        await _dbContext.AddAsync(account, _token);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         _createTransactionHandlerMock
             .Setup(_ => _.Handle(
@@ -218,14 +147,7 @@ public class UpsertAccountCommandProcessorTests
             .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionResponse())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync(
-                    It.IsAny<Account>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
         _createTransactionHandlerMock
             .Verify(
@@ -253,13 +175,14 @@ public class UpsertAccountCommandProcessorTests
         transaction.TransactionJournal = new TransactionJournal
         {
             Id = Guid.NewGuid(),
+            TransactionTypeId = TransactionConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = BuiltinAccountNames.OpeningBalance
+                    AccountId = AccountConstants.OpeningBalance
                 }
             },
             TransactionGroup = new TransactionGroup
@@ -276,69 +199,21 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(account);
+        await _dbContext.AddAsync(account, _token);
+        await _dbContext.AddAsync(transaction, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction.TransactionJournal);
+        var fetchedTransaction = await _dbContext.GetByIdAsync<Transaction>(transaction.Id, _token);
+        var fetchedTransactionJournal = await _dbContext.GetByIdAsync<Transaction>(transaction.TransactionJournal.Id, _token);
+        var fetchedTransactionGroup = await _dbContext.GetByIdAsync<Transaction>(transaction.TransactionJournal.TransactionGroup.Id, _token);
 
-        _repository
-            .Setup(_ => _.DeleteEntitiesAsync<Transaction>(
-                It.IsAny<List<Guid>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Transaction>())
-            .Verifiable();
-
-        _repository
-            .Setup(_ => _.DeleteEntityAsync<TransactionJournal>(
-                transaction.TransactionJournal.Id,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new TransactionJournal())
-            .Verifiable();
-
-        _repository
-            .Setup(_ => _.DeleteEntityAsync<TransactionGroup>(
-                transaction.TransactionJournal.TransactionGroupId,
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new TransactionGroup())
-            .Verifiable();
-
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
-
-
-        _repository
-            .Verify(
-                _ => _.DeleteEntitiesAsync<Transaction>(
-                    It.IsAny<List<Guid>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        _repository
-            .Verify(
-                _ => _.DeleteEntityAsync<TransactionJournal>(
-                    transaction.TransactionJournal.Id,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        _repository
-            .Verify(
-                _ => _.DeleteEntityAsync<TransactionGroup>(
-                    transaction.TransactionJournal.TransactionGroupId,
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        fetchedTransaction.Should().BeNull();
+        fetchedTransactionJournal.Should().BeNull();
+        fetchedTransactionGroup.Should().BeNull();
     }
 
     [TestMethod]
@@ -358,13 +233,14 @@ public class UpsertAccountCommandProcessorTests
         transaction.TransactionJournal = new TransactionJournal
         {
             Id = Guid.NewGuid(),
+            TransactionTypeId = TransactionConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = BuiltinAccountNames.OpeningBalance
+                    AccountId = AccountConstants.OpeningBalance
                 }
             },
             TransactionGroup = new TransactionGroup
@@ -383,67 +259,34 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(account);
+        await _dbContext.AddAsync(account, _token);
+        await _dbContext.AddAsync(transaction, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                It.IsAny<Expression<Func<TransactionJournal, object>>[]>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction.TransactionJournal);
+        {
+            var persitedTransactions = await _dbContext
+                .Set<Transaction>()
+                .Where(_ => _.TransactionJournal!.Id == transaction.TransactionJournal.Id)
+                .ToListAsync(_token);
 
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<Transaction>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((List<Transaction> e, CancellationToken c) =>
-            {
-                var sourceAccountTransaction = e.First(_ => _.AccountId == BuiltinAccountNames.OpeningBalance);
-                var destinationAccountTransaction = e.First(_ => _.AccountId == account.Id);
+            var sourceAccountTransaction = persitedTransactions.First(_ => _.AccountId == AccountConstants.OpeningBalance);
+            var destinationAccountTransaction = persitedTransactions.First(_ => _.AccountId == account.Id);
 
-                Assert.AreEqual(-request.UpsertAccountDto.OpeningBalance, sourceAccountTransaction.Amount);
-                Assert.AreEqual(+request.UpsertAccountDto.OpeningBalance, destinationAccountTransaction.Amount);
+            sourceAccountTransaction.Amount.Should().Be(-request.UpsertAccountDto.OpeningBalance);
+            destinationAccountTransaction.Amount.Should().Be(+request.UpsertAccountDto.OpeningBalance);
 
-                return new List<Transaction>();
-            })
-            .Verifiable();
+            var persitedTransactionJournal = await _dbContext
+                .Set<TransactionJournal>()
+                .Where(_ => _.Id == transaction.TransactionJournal.Id)
+                .FirstOrDefaultAsync(_token);
 
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<TransactionJournal>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync((TransactionJournal tj, CancellationToken c) =>
-            {
-                Assert.AreEqual(request.UpsertAccountDto.OpeningBalanceDate, tj.Date);
-                return new TransactionJournal();
-            })
-            .Verifiable();
-
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<Transaction>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync(
-                    It.IsAny<TransactionJournal>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+            persitedTransactionJournal.Should().NotBeNull();
+            persitedTransactionJournal!.Date.Should().Be(request.UpsertAccountDto.OpeningBalanceDate);
+        }
     }
 
     [TestMethod]
@@ -465,13 +308,14 @@ public class UpsertAccountCommandProcessorTests
         {
             Id = Guid.NewGuid(),
             Date = DateOnly.FromDateTime(DateTime.Today),
+            TransactionTypeId = TransactionConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,
                 new Transaction
                 {
                     Id = Guid.NewGuid(),
-                    AccountId = BuiltinAccountNames.OpeningBalance,
+                    AccountId = AccountConstants.OpeningBalance,
                     Amount = -CurrencyRules.ToPersisted(100.0M)
                 }
             },
@@ -491,52 +335,33 @@ public class UpsertAccountCommandProcessorTests
             }
         };
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Account>(
-                It.IsAny<Guid>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(account);
+        await _dbContext.AddAsync(account, _token);
+        await _dbContext.AddAsync(transaction, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal, _token);
+        await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<Transaction>(
-                It.IsAny<Expression<Func<Transaction, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction);
+        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
 
-        _repository
-            .Setup(_ => _.GetEntityAsync<TransactionJournal>(
-                It.IsAny<Expression<Func<TransactionJournal, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(transaction.TransactionJournal);
+        {
+            var persitedTransactions = await _dbContext
+                .Set<Transaction>()
+                .Where(_ => _.TransactionJournal!.Id == transaction.TransactionJournal.Id)
+                .ToListAsync(_token);
 
-        _repository
-            .Setup(_ => _.UpsertEntitiesAsync(
-                It.IsAny<List<Transaction>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new List<Transaction>())
-            .Verifiable();
+            var sourceAccountTransaction = persitedTransactions.First(_ => _.AccountId == AccountConstants.OpeningBalance);
+            var destinationAccountTransaction = persitedTransactions.First(_ => _.AccountId == account.Id);
 
-        _repository
-            .Setup(_ => _.UpsertEntityAsync(
-                It.IsAny<TransactionJournal>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new TransactionJournal())
-            .Verifiable();
+            sourceAccountTransaction.Amount.Should().Be(-request.UpsertAccountDto.OpeningBalance);
+            destinationAccountTransaction.Amount.Should().Be(+request.UpsertAccountDto.OpeningBalance);
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, CancellationToken.None);
+            var persitedTransactionJournal = await _dbContext
+                .Set<TransactionJournal>()
+                .Where(_ => _.Id == transaction.TransactionJournal.Id)
+                .FirstOrDefaultAsync(_token);
 
-        _repository
-            .Verify(
-                _ => _.UpsertEntitiesAsync(
-                    It.IsAny<List<Transaction>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Never);
-
-        _repository
-            .Verify(
-                _ => _.UpsertEntityAsync(
-                    It.IsAny<TransactionJournal>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Never);
+            persitedTransactionJournal.Should().NotBeNull();
+            persitedTransactionJournal!.Date.Should().Be(request.UpsertAccountDto.OpeningBalanceDate);
+        }
     }
 }

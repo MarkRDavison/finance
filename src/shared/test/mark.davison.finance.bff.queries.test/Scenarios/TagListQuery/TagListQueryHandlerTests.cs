@@ -1,49 +1,40 @@
-﻿using System.Linq.Expressions;
-
-namespace mark.davison.finance.bff.queries.test.Scenarios.TagListQuery;
+﻿namespace mark.davison.finance.bff.queries.test.Scenarios.TagListQuery;
 
 [TestClass]
 public class TagListQueryHandlerTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly TagListQueryHandler _handler;
+    private readonly CancellationToken _token;
 
     public TagListQueryHandlerTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _token = CancellationToken.None;
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+
         _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new TagListQueryHandler(_repository.Object);
+        _handler = new TagListQueryHandler((IFinanceDbContext)_dbContext);
     }
 
     [TestMethod]
     public async Task Handle_RetrievesTagsFromRepository()
     {
-        var tags = new List<Tag> {
-            new Tag{ },
-            new Tag{ }
+        var tags = new List<Tag>
+        {
+            new Tag{ Id = Guid.NewGuid() },
+            new Tag{ Id = Guid.NewGuid() }
         };
 
-        _repository
-            .Setup(_ => _.GetEntitiesAsync<Tag>(
-                It.IsAny<Expression<Func<Tag, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(tags)
-            .Verifiable();
+        await _dbContext.UpsertEntitiesAsync(tags, _token);
+        await _dbContext.SaveChangesAsync(_token);
 
         var request = new TagListQueryRequest();
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        Assert.AreEqual(tags.Count, response.Tags.Count);
-
-        _repository
-            .Verify(
-                _ => _.GetEntitiesAsync<Tag>(
-                    It.IsAny<Expression<Func<Tag, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
+        response.Tags.Should().HaveCount(tags.Count);
     }
 }

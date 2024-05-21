@@ -2,52 +2,56 @@
 
 public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
 
-    public StartupQueryCommandHandler(IRepository repository)
+    public StartupQueryCommandHandler(IFinanceDbContext dbContext)
     {
-        _repository = repository;
+        _dbContext = dbContext;
     }
 
     public async Task<StartupQueryResponse> Handle(StartupQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new StartupQueryResponse();
 
-        await using (_repository.BeginTransaction())
-        {
-            var accountTypes = await _repository.GetEntitiesAsync<AccountType>(
-                cancellationToken);
-
-            var currencies = await _repository.GetEntitiesAsync<Currency>(
-                cancellationToken);
-
-            var transactionTypes = await _repository.GetEntitiesAsync<TransactionType>(
-                cancellationToken);
-
-            response.AccountTypes.AddRange(accountTypes.Select(_ =>
-            new AccountTypeDto
+        var accountTypes = await _dbContext
+            .Set<AccountType>()
+            .AsNoTracking()
+            .Select(_ => new AccountTypeDto
             {
                 Id = _.Id,
                 Type = _.Type
-            }));
+            })
+            .ToListAsync(cancellationToken);
 
-            response.TransactionTypes.AddRange(transactionTypes.Select(_ =>
-            new TransactionTypeDto
-            {
-                Id = _.Id,
-                Type = _.Type
-            }));
-
-            response.Currencies.AddRange(currencies.Where(_ => _.Id != Currency.INT).Select(_ =>
-            new CurrencyDto
+        var currencies = await _dbContext
+            .Set<Currency>()
+            .AsNoTracking()
+            .Where(_ => _.Id != Currency.INT)
+            .Select(_ => new CurrencyDto
             {
                 Id = _.Id,
                 Code = _.Code,
                 Name = _.Name,
                 DecimalPlaces = _.DecimalPlaces,
                 Symbol = _.Symbol
-            }));
-        }
+            })
+            .ToListAsync(cancellationToken);
+
+        var transactionTypes = await _dbContext
+            .Set<TransactionType>()
+            .AsNoTracking()
+            .Select(_ => new TransactionTypeDto
+            {
+                Id = _.Id,
+                Type = _.Type
+            })
+            .ToListAsync(cancellationToken);
+
+        response.AccountTypes.AddRange(accountTypes);
+
+        response.TransactionTypes.AddRange(transactionTypes);
+
+        response.Currencies.AddRange(currencies);
 
         return response;
     }

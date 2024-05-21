@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.web.services;
+﻿namespace mark.davison.finance.web.services.Injection;
 
 public static class DependencyInjectionExtensions
 {

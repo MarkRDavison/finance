@@ -38,7 +38,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.AssetAccount1Id,
             AccountNumber = "Asset 1",
-            AccountTypeId = AccountConstants.Asset,
+            AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
             Name = "Test Asset 1"
         };
@@ -46,7 +46,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.AssetAccount2Id,
             AccountNumber = "Asset 2",
-            AccountTypeId = AccountConstants.Asset,
+            AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
             Name = "Test Asset 2"
         };
@@ -54,7 +54,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.RevenueAccount1Id,
             AccountNumber = "Revenue 1",
-            AccountTypeId = AccountConstants.Revenue,
+            AccountTypeId = AccountTypeConstants.Revenue,
             CurrencyId = Currency.NZD,
             Name = "Test Revenue 1"
         };
@@ -62,7 +62,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.ExpenseAccount1Id,
             AccountNumber = "Expense 1",
-            AccountTypeId = AccountConstants.Expense,
+            AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
             Name = "Test Expense 1"
         };
@@ -70,7 +70,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.ExpenseAccount2Id,
             AccountNumber = "Expense 2",
-            AccountTypeId = AccountConstants.Expense,
+            AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
             Name = "Test Expense 2"
         };
@@ -78,7 +78,7 @@ public class AccountSeeder
         {
             Id = AccountTestConstants.ExpenseAccount3Id,
             AccountNumber = "Expense 3",
-            AccountTypeId = AccountConstants.Expense,
+            AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
             Name = "Test Expense 3"
         };

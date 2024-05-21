@@ -1,20 +1,19 @@
 ﻿namespace mark.davison.finance.bff.commands.Scenarios.CreateTransaction.Common;
 
-// TODO: Replace with ValidationContext
 public class CreateTransctionValidationContext : ICreateTransctionValidationContext
 {
-    private readonly IRepository _repository;
+    private readonly IFinanceDbContext _dbContext;
     private readonly ICurrentUserContext _currentUserContext;
 
     private readonly IDictionary<Guid, Account?> _accounts;
     private readonly IDictionary<Guid, Category?> _categories;
 
     public CreateTransctionValidationContext(
-        IRepository repository,
+        IFinanceDbContext dbContext,
         ICurrentUserContext currentUserContext
     )
     {
-        _repository = repository;
+        _dbContext = dbContext;
         _currentUserContext = currentUserContext;
 
         _accounts = new Dictionary<Guid, Account?>();
@@ -33,13 +32,10 @@ public class CreateTransctionValidationContext : ICreateTransctionValidationCont
             return entity;
         }
 
-        await using (_repository.BeginTransaction())
-        {
-            var newEntity = await _repository.GetEntityAsync<T>(id, cancellationToken);
+        var newEntity = await _dbContext.GetByIdAsync<T>(id, cancellationToken);
 
-            cache.Add(id, newEntity);
+        cache.Add(id, newEntity);
 
-            return newEntity;
-        }
+        return newEntity;
     }
 }

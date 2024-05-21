@@ -24,13 +24,13 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.Assets_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.Assets_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_PassesForValidDestinationAccount_ForAsset(Guid accountTypeId)
     {
         var sourceAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountTypeConstants.Asset
         };
         var destinationAccount = new Account
         {
@@ -73,13 +73,13 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.Liabilities_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.Liabilities_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_PassesForValidDestinationAccount_ForLiability(Guid accountTypeId)
     {
         var sourceAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Mortgage
+            AccountTypeId = AccountTypeConstants.Mortgage
         };
         var destinationAccount = new Account
         {
@@ -122,13 +122,13 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.Revenues_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.Revenues_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_FailsForInvalidDestinationAccount(Guid accountTypeId)
     {
         var sourceAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountTypeConstants.Asset
         };
         var destinationAccount = new Account
         {
@@ -170,7 +170,7 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.Assets_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.Assets_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_PassesForValidSourceAccount_ForAsset(Guid accountTypeId)
     {
         var sourceAccount = new Account
@@ -181,7 +181,7 @@ public class CreateTransferTransactionValidatorStrategyTests
         var destinationAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Asset
+            AccountTypeId = AccountTypeConstants.Asset
         };
 
         var transaction = new CreateTransactionDto
@@ -219,7 +219,7 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.Liabilities_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.Liabilities_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_PassesForValidSourceAccount_ForLiability(Guid accountTypeId)
     {
         var sourceAccount = new Account
@@ -230,7 +230,7 @@ public class CreateTransferTransactionValidatorStrategyTests
         var destinationAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Debt
+            AccountTypeId = AccountTypeConstants.Debt
         };
 
         var transaction = new CreateTransactionDto
@@ -268,7 +268,7 @@ public class CreateTransferTransactionValidatorStrategyTests
     }
 
     [DataTestMethod]
-    [DynamicData(nameof(AccountConstants.NonAssetsOrLiabilities_DynamicData), typeof(AccountConstants), DynamicDataSourceType.Property)]
+    [DynamicData(nameof(AccountTypeConstants.NonAssetsOrLiabilities_DynamicData), typeof(AccountTypeConstants), DynamicDataSourceType.Property)]
     public async Task ValidateTransaction_FailsForInvalidSourceAccount(Guid accountTypeId)
     {
         var sourceAccount = new Account
@@ -279,7 +279,7 @@ public class CreateTransferTransactionValidatorStrategyTests
         var destinationAccount = new Account
         {
             Id = Guid.NewGuid(),
-            AccountTypeId = AccountConstants.Expense
+            AccountTypeId = AccountTypeConstants.Expense
         };
 
         var transaction = new CreateTransactionDto

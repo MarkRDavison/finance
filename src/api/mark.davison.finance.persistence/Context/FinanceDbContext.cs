@@ -1,10 +1,12 @@
-﻿namespace mark.davison.finance.persistence;
+﻿using mark.davison.common.persistence;
 
-public class FinanceDbContext : DbContext
+namespace mark.davison.finance.persistence.Context;
+
+public partial class FinanceDbContext : DbContextBase<FinanceDbContext>, IFinanceDbContext
 {
     public FinanceDbContext(DbContextOptions options) : base(options)
     {
-        Database.Migrate();
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

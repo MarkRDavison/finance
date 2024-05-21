@@ -3,18 +3,19 @@
 [TestClass]
 public class CreateCategoryCommandValidatorTests
 {
-    private readonly Mock<IRepository> _repository;
+    private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
     private readonly CreateCategoryCommandValidator _validator;
+    private readonly Guid _userId;
 
     public CreateCategoryCommandValidatorTests()
     {
-        _repository = new(MockBehavior.Strict);
+        _userId = Guid.NewGuid();
+        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
         _currentUserContext = new(MockBehavior.Strict);
-        _validator = new(_repository.Object);
+        _validator = new((IFinanceDbContext)_dbContext);
         _currentUserContext.Setup(_ => _.Token).Returns("");
-        _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
-        _repository.Setup(_ => _.BeginTransaction()).Returns(() => new TestAsyncDisposable());
+        _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { Id = _userId }); ;
 
     }
 
@@ -27,24 +28,10 @@ public class CreateCategoryCommandValidatorTests
             Name = "Category Name"
         };
 
-        _repository
-            .Setup(_ => _.EntityExistsAsync<Category>(
-                It.IsAny<Expression<Func<Category, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false)
-            .Verifiable();
-
         var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _repository
-            .Verify(_ =>
-                _.EntityExistsAsync<Category>(
-                    It.IsAny<Expression<Func<Category, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        Assert.IsTrue(response.Success);
-        Assert.IsFalse(response.Errors.Any());
+        response.Success.Should().BeTrue();
+        response.Errors.Should().BeEmpty();
     }
 
     [TestMethod]
@@ -56,24 +43,18 @@ public class CreateCategoryCommandValidatorTests
             Name = "Category Name"
         };
 
-        _repository
-            .Setup(_ => _.EntityExistsAsync<Category>(
-                It.IsAny<Expression<Func<Category, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(true)
-            .Verifiable();
+        await _dbContext.UpsertEntityAsync(new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            UserId = _userId
+        }, CancellationToken.None);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _repository
-            .Verify(_ =>
-                _.EntityExistsAsync<Category>(
-                    It.IsAny<Expression<Func<Category, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        Assert.IsFalse(response.Success);
-        Assert.IsTrue(response.Errors.Any(_ => _ == CreateCategoryCommandValidator.VALIDATION_DUPLICATE_CATEGORY_NAME));
+        response.Success.Should().BeFalse();
+        response.Errors.Should().ContainMatch(CreateCategoryCommandValidator.VALIDATION_DUPLICATE_CATEGORY_NAME);
     }
 
     [TestMethod]
@@ -85,23 +66,17 @@ public class CreateCategoryCommandValidatorTests
             Name = "Category Name"
         };
 
-        _repository
-            .Setup(_ => _.EntityExistsAsync<Category>(
-                It.IsAny<Expression<Func<Category, bool>>>(),
-                It.IsAny<CancellationToken>()))
-            .ReturnsAsync(false)
-            .Verifiable();
+        await _dbContext.UpsertEntityAsync(new Category
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name,
+            UserId = Guid.NewGuid()
+        }, CancellationToken.None);
+        await _dbContext.SaveChangesAsync(CancellationToken.None);
 
         var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
-        _repository
-            .Verify(_ =>
-                _.EntityExistsAsync<Category>(
-                    It.IsAny<Expression<Func<Category, bool>>>(),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-
-        Assert.IsTrue(response.Success);
-        Assert.IsFalse(response.Errors.Any(_ => _ == CreateCategoryCommandValidator.VALIDATION_DUPLICATE_CATEGORY_NAME));
+        response.Success.Should().BeTrue();
+        response.Errors.Should().BeEmpty();
     }
 }

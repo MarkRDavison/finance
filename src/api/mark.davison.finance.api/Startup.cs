@@ -1,14 +1,4 @@
-﻿using mark.davison.common.server.Endpoints;
-using mark.davison.common.Services;
-using mark.davison.common.source.generators.CQRS;
-using mark.davison.finance.api.services.Ignition;
-using mark.davison.finance.bff.commands;
-using mark.davison.finance.bff.queries;
-using mark.davison.finance.models.dtos;
-using Microsoft.AspNetCore.DataProtection;
-using StackExchange.Redis;
-
-namespace mark.davison.finance.api;
+﻿namespace mark.davison.finance.api;
 
 [UseCQRSServer(typeof(DtosRootType), typeof(CommandsRootType), typeof(QueriesRootType))]
 public class Startup
@@ -24,133 +14,41 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        AppSettings = services.ConfigureSettingsServices(Configuration);
+        AppSettings = services.ConfigureSettingsServices<AppSettings>(Configuration);
         if (AppSettings == null) { throw new InvalidOperationException(); }
 
-        services.AddLogging();
+        Console.WriteLine(AppSettings.DumpAppSettings(AppSettings.PRODUCTION_MODE));
 
         services
-            .AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(o =>
-            {
-                o.Authority = AppSettings.AUTHORITY;
-                o.Audience = AppSettings.CLIENT_ID;
-            });
+            .AddCors()
+            .AddLogging()
+            .AddJwtAuth(AppSettings.AUTH)
+            .AddAuthorization()
+            .AddEndpointsApiExplorer()
+            .AddSwaggerGen()
+            .AddHttpContextAccessor()
+            .AddScoped<ICurrentUserContext, CurrentUserContext>()
+            .AddHealthCheckServices<InitializationHostedService>()
+            .AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc))
+            .AddDatabase<FinanceDbContext>(AppSettings.PRODUCTION_MODE, AppSettings.DATABASE, typeof(PostgresContextFactory), typeof(SqliteContextFactory))
+            .AddCoreDbContext<FinanceDbContext>()
+            .AddScoped<IFinanceDbContext>(_ => _.GetRequiredService<FinanceDbContext>())
+            .AddCQRSServer()
+            .AddRedis(AppSettings.REDIS, AppSettings.SECTION, AppSettings.PRODUCTION_MODE)
+            .UseFinancePersistence()
+            .UseUserApplicationContext();
 
-        services.AddScoped<ICurrentUserContext, CurrentUserContext>();
-
-        services.AddControllers().AddJsonOptions(_ =>
-        {
-            _.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        });
-
-        services.ConfigureHealthCheckServices<InitializationHostedService>();
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen();
-
-        services.AddCors(options =>
-            options.AddPolicy("AllowOrigin", _ => _
-                .SetIsOriginAllowedToAllowWildcardSubdomains()
-                .SetIsOriginAllowed(_ => true)
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .AllowAnyHeader()
-                .Build()
-            ));
-
-        if (AppSettings.DATABASE_TYPE == "sqlite")
-        {
-            if (AppSettings.CONNECTION_STRING.Equals("RANDOM", StringComparison.OrdinalIgnoreCase))
-            {
-                if (Directory.Exists("C:/temp"))
-                {
-                    AppSettings.CONNECTION_STRING = $"Data Source=C:/temp/{Guid.NewGuid()}.db";
-                }
-                else
-                {
-                    AppSettings.CONNECTION_STRING = $"Data Source={Guid.NewGuid()}.db";
-                }
-            }
-            services.AddDbContextFactory<FinanceDbContext>(_ =>
-            {
-                _.UseSqlite(
-                    AppSettings.CONNECTION_STRING,
-                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.sqlite"));
-                if (!AppSettings.PRODUCTION_MODE)
-                {
-                    _.EnableSensitiveDataLogging();
-                    _.EnableDetailedErrors();
-                }
-            });
-        }
-        else if (AppSettings.DATABASE_TYPE == "postgres")
-        {
-            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true); // TODO: Fix/remove when dotnet 7 comes out and we persist dateonly
-            var conn = new NpgsqlConnectionStringBuilder();
-            conn.IncludeErrorDetail = !AppSettings.PRODUCTION_MODE;
-            conn.Host = AppSettings.DB_HOST;
-            conn.Database = AppSettings.DB_DATABASE;
-            conn.Port = AppSettings.DB_PORT;
-            conn.Username = AppSettings.DB_USERNAME;
-            conn.Password = AppSettings.DB_PASSWORD;
-            services.AddDbContextFactory<FinanceDbContext>(_ => _
-                .UseNpgsql(
-                    conn.ConnectionString,
-                    _ => _.MigrationsAssembly("mark.davison.finance.migrations.postgresql")));
-        }
-        else
-        {
-            throw new NotImplementedException($"Cannot handle this database type: {AppSettings.DATABASE_TYPE}");
-        }
-
-        services.AddTransient<IFinanceDataSeeder, FinanceDataSeeder>();
-        services.AddSingleton<IDateService>(new DateService(DateService.DateMode.Utc));
-
-        services.AddScoped<IRepository>(_ =>
-            new FinanceRepository(
-                _.GetRequiredService<IDbContextFactory<FinanceDbContext>>(),
-                _.GetRequiredService<ILogger<FinanceRepository>>())
-            );
-
-
-        services
-            .AddHttpClient()
-            .AddHttpContextAccessor();
-        services.AddCommandCQRS();
-        services.UseCQRSServer();
-        services.UseFinancePersistence();
-        services.UseUserApplicationContext();
-        if (string.IsNullOrEmpty(AppSettings.REDIS_PASSWORD) ||
-            string.IsNullOrEmpty(AppSettings.REDIS_HOST))
-        {
-            services
-                .AddDistributedMemoryCache();
-        }
-        else
-        {
-            var config = new ConfigurationOptions
-            {
-                EndPoints = { AppSettings.REDIS_HOST + ":" + AppSettings.REDIS_PORT },
-                Password = AppSettings.REDIS_PASSWORD
-            };
-            IConnectionMultiplexer redis = ConnectionMultiplexer.Connect(config);
-            services.AddStackExchangeRedisCache(_ =>
-            {
-                _.InstanceName = "finance_" + (AppSettings.PRODUCTION_MODE ? "prod_" : "dev_");
-                _.Configuration = redis.Configuration;
-            });
-            services.AddDataProtection().PersistKeysToStackExchangeRedis(redis, "DataProtectionKeys");
-            services.AddSingleton(redis);
-        }
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseCors("AllowOrigin");
+        app.UseCors(builder =>
+            builder
+                .SetIsOriginAllowedToAllowWildcardSubdomains()
+                .SetIsOriginAllowed(_ => true) // TODO: Config driven
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .AllowAnyHeader());
 
         app.UseHttpsRedirection();
 
@@ -160,65 +58,20 @@ public class Startup
             app.UseSwaggerUI();
         }
 
-        app.UseMiddleware<RequestResponseLoggingMiddleware>();
-        app.UseRouting();
-        app.UseAuthentication();
-        app.UseAuthorization();
-        app.UseMiddleware<HydrateAuthenticationFromClaimsPrincipalMiddleware>();
-
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints
-                .MapHealthChecks();
-
-            endpoints
-                .ConfigureCQRSEndpoints();
-
-            endpoints
-                .UseGet<User>()
-                .UseGetById<User>()
-                .UsePost<User>();
-
-            if (!AppSettings.PRODUCTION_MODE)
+        app.UseMiddleware<RequestResponseLoggingMiddleware>()
+            .UseRouting()
+            .UseAuthentication()
+            .UseAuthorization()
+            .UseMiddleware<PopulateUserContextMiddleware>()
+            .UseEndpoints(_ =>
             {
-                endpoints
-                    .UseGet<Account>()
-                    .UseGetById<Account>()
-                    .UsePost<Account>()
-
-                    .UseGet<AccountType>()
-                    .UseGetById<AccountType>()
-                    .UsePost<AccountType>()
-
-                    .UseGet<Category>()
-                    .UseGetById<Category>()
-                    .UsePost<Category>()
-
-                    .UseGet<Currency>()
-                    .UseGetById<Currency>()
-                    .UsePost<Currency>()
-
-                    .UseGet<Tag>()
-                    .UseGetById<Tag>()
-                    .UsePost<Tag>()
-
-                    .UseGet<Transaction>()
-                    .UseGetById<Transaction>()
-                    .UsePost<Transaction>()
-
-                    .UseGet<TransactionJournal>()
-                    .UseGetById<TransactionJournal>()
-                    .UsePost<TransactionJournal>()
-
-                    .UseGet<TransactionGroup>()
-                    .UseGetById<TransactionGroup>()
-                    .UsePost<TransactionGroup>()
-
-                    .UseGet<TransactionType>()
-                    .UseGetById<TransactionType>()
-                    .UsePost<TransactionType>();
-            }
-        });
+                _
+                    .MapHealthChecks()
+                    .MapGet<User>()
+                    .MapGetById<User>()
+                    .MapPost<User>()
+                    .MapCQRSEndpoints();
+            });
 
     }
 

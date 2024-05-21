@@ -18,6 +18,13 @@ public partial class LinkTypeEntityConfiguration : FinanceEntityConfiguration<Li
 
         builder
             .Property(_ => _.Editable);
+
+        builder.HasData(
+            new LinkType { Id = LinkType.Related, Name = "Related", Inward = "relates to", Outward = "relates to", Editable = false, UserId = Guid.Empty },
+            new LinkType { Id = LinkType.Refund, Name = "Refund", Inward = "is (partially) refunded by", Outward = "(partially) refunds", Editable = false, UserId = Guid.Empty },
+            new LinkType { Id = LinkType.Paid, Name = "Paid", Inward = "is (partially) paid for by", Outward = "(partially) pays for", Editable = false, UserId = Guid.Empty },
+            new LinkType { Id = LinkType.Reimbursement, Name = "Reimbursement", Inward = "is (partially) reimbursed by", Outward = "(partially) reimburses", Editable = false, UserId = Guid.Empty }
+        );
     }
 }
 
