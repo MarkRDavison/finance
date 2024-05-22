@@ -5,7 +5,7 @@ public class StartupQueryCommandHandlerTests
 {
     private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
-    private readonly StartupQueryCommandHandler _handler;
+    private readonly StartupQueryHandler _handler;
     private readonly CancellationToken _token;
 
     public StartupQueryCommandHandlerTests()
@@ -17,7 +17,7 @@ public class StartupQueryCommandHandlerTests
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new StartupQueryCommandHandler((IFinanceDbContext)_dbContext);
+        _handler = new StartupQueryHandler((IFinanceDbContext)_dbContext);
     }
 
     [TestMethod]

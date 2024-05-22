@@ -1,11 +1,10 @@
 ﻿namespace mark.davison.finance.shared.queries.Scenarios.StartupQuery;
 
-// TODO: Fix name
-public class StartupQueryCommandHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
+public class StartupQueryHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
 {
     private readonly IFinanceDbContext _dbContext;
 
-    public StartupQueryCommandHandler(IFinanceDbContext dbContext)
+    public StartupQueryHandler(IFinanceDbContext dbContext)
     {
         _dbContext = dbContext;
     }
