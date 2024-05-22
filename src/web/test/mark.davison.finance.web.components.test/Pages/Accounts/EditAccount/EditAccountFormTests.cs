@@ -6,8 +6,6 @@ public class EditAccountFormTests : BunitTestContext
     [TestMethod]
     public void ExpectedControlsAreRendered()
     {
-        SetState(new LookupState());
-
         var cut = RenderComponent<EditAccountForm>(_ => _
             .Add(p => p.FormViewModel, new EditAccountFormViewModel()));
 
@@ -36,8 +34,6 @@ public class EditAccountFormTests : BunitTestContext
     [TestMethod]
     public void ExpectedControlsAreRendered_WhenAccountTypeHidden()
     {
-        SetState(new LookupState());
-
         var cut = RenderComponent<EditAccountForm>(_ => _
             .Add(p => p.FormViewModel, new EditAccountFormViewModel
             {

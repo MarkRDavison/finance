@@ -1,4 +1,10 @@
-﻿namespace mark.davison.finance.web.components.test;
+﻿using mark.davison.common.client.Authentication;
+using mark.davison.common.client.Ignition;
+using mark.davison.finance.web.features;
+using mark.davison.finance.web.services.Injection;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+
+namespace mark.davison.finance.web.components.test;
 
 // TODO: move version to mark.davison.common.client.test
 public abstract class BunitTestContext : TestContextWrapper
@@ -13,14 +19,15 @@ public abstract class BunitTestContext : TestContextWrapper
         JSInterop
             .SetupVoid("mudPopover.initialize", _ => true);
         JSInterop
+            .SetupVoid("mudPopover.connect", _ => true);
+        JSInterop
             .SetupVoid("mudKeyInterceptor.connect", _ => true);
 
         services
             .AddLogging()
-            .UseState()
             .UseFinanceWebServices()
-            .UseFinanceComponents()
-            .UseCQRS(typeof(FeaturesRootType))
+            .UseFinanceComponents(new AuthenticationConfig())
+            .UseFluxorState(_ => { }, typeof(Program), typeof(FeaturesRootType))
             .AddSingleton(_ => JSInterop.JSRuntime);
 
         SetupTest(services);
@@ -32,12 +39,6 @@ public abstract class BunitTestContext : TestContextWrapper
     protected virtual void SetupTest(IServiceCollection services)
     {
 
-    }
-
-    protected void SetState<TState>(TState state) where TState : class, IState, new()
-    {
-        var stateStore = Services.GetRequiredService<IStateStore>();
-        stateStore.SetState<TState>(state);
     }
 
     [TestCleanup]
