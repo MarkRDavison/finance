@@ -15,9 +15,13 @@ public sealed class CategoryEffects
         // TODO: Rename query req/res
         var queryResponse = await _repository.Get<CategoryListQueryResponse, CategoryListQueryRequest>(CancellationToken.None);
 
-        var actionResponse = FetchCategoriesActionResponse.From(queryResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = queryResponse.Value;
+        var actionResponse = new FetchCategoriesActionResponse
+        {
+            Errors = queryResponse.Errors,
+            Warnings = queryResponse.Warnings,
+            ActionId = action.ActionId,
+            Value = queryResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 
@@ -35,9 +39,13 @@ public sealed class CategoryEffects
 
         var commandResponse = await _repository.Post<CreateCategoryCommandResponse, CreateCategoryCommandRequest>(commandRequest, CancellationToken.None);
 
-        var actionResponse = CreateCategoryActionResponse.From(commandResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = commandResponse.Value;
+        var actionResponse = new CreateCategoryActionResponse
+        {
+            ActionId = action.ActionId,
+            Errors = commandResponse.Errors,
+            Warnings = commandResponse.Warnings,
+            Value = commandResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 

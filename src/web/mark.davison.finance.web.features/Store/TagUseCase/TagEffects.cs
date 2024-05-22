@@ -15,9 +15,13 @@ public sealed class TagEffects
         // TODO: Rename query req/res
         var queryResponse = await _repository.Get<TagListQueryResponse, TagListQueryRequest>(CancellationToken.None);
 
-        var actionResponse = FetchTagsActionResponse.From(queryResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = queryResponse.Value;
+        var actionResponse = new FetchTagsActionResponse
+        {
+            ActionId = action.ActionId,
+            Errors = queryResponse.Errors,
+            Warnings = queryResponse.Warnings,
+            Value = queryResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 
@@ -35,9 +39,13 @@ public sealed class TagEffects
 
         var commandResponse = await _repository.Post<CreateTagCommandResponse, CreateTagCommandRequest>(commandRequest, CancellationToken.None);
 
-        var actionResponse = CreateTagActionResponse.From(commandResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = commandResponse.Value;
+        var actionResponse = new CreateTagActionResponse
+        {
+            ActionId = action.ActionId,
+            Errors = commandResponse.Errors,
+            Warnings = commandResponse.Warnings,
+            Value = commandResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 

@@ -13,14 +13,14 @@
     </script>
     <base href="/" />
     <link href="css/app.css" rel="stylesheet" />
-
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
     <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+    <link href="_content/markdavison.common.client/css/mark.davison.common.client.css" rel="stylesheet" type="text/css" />
     <!-- If you add any scoped CSS files, uncomment the following to load them
     <link href="mark.davison.finance.web.ui.styles.css" rel="stylesheet" /> -->
     <style>
         :root {
             min-width: 250px;
+            background-color: rgba(50,51,61,1);
         }
 
         .entire-app-loading {
@@ -35,12 +35,10 @@
 
         @keyframes sk-scaleout {
             0% {
-                -webkit-transform: scale(0);
                 transform: scale(0);
             }
 
             100% {
-                -webkit-transform: scale(1.0);
                 opacity: 0;
                 transform: scale(1.0);
             }
@@ -73,19 +71,20 @@
     </style>
 </head>
 
-    <body>
-        <div id="app">
-            <div class="entire-app-loading">
-            </div>
+<body>
+    <div id="app">
+        <div class="entire-app-loading">
         </div>
+    </div>
 
-        <div id="blazor-error-ui">
-            An unhandled error has occurred.
-            <a href="" class="reload">Reload</a>
-            <a class="dismiss">🗙</a>
-        </div>
+    <div id="blazor-error-ui">
+        An unhandled error has occurred.
+        <a href="" class="reload">Reload</a>
+        <a class="dismiss">🗙</a>
+    </div>
 
-        <script src="_framework/blazor.webassembly.js"></script>
-        <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    </body>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+    <script src="_content/markdavison.common.client/js/mark.davison.common.client.js"></script>
+</body>
 </html>

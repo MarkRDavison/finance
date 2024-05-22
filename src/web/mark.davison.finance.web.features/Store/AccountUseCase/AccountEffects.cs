@@ -18,9 +18,13 @@ public sealed class AccountEffects
         var queryResponse = await _repository.Get<AccountListQueryResponse, AccountListQueryRequest>(CancellationToken.None);
 
         // TODO: Helper to remove the action id and value from 2 more lines
-        var actionResponse = FetchAccountsActionResponse.From(queryResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = queryResponse.Value;
+        var actionResponse = new FetchAccountsActionResponse
+        {
+            Errors = queryResponse.Errors,
+            Warnings = queryResponse.Warnings,
+            ActionId = action.ActionId,
+            Value = queryResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 
@@ -37,9 +41,13 @@ public sealed class AccountEffects
 
         var commandResponse = await _repository.Post<UpsertAccountCommandResponse, UpsertAccountCommandRequest>(commandRequest, CancellationToken.None);
 
-        var actionResponse = CreateAccountActionResponse.From(commandResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = commandResponse.Value;
+        var actionResponse = new CreateAccountActionResponse
+        {
+            Errors = commandResponse.Errors,
+            Warnings = commandResponse.Warnings,
+            ActionId = action.ActionId,
+            Value = commandResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 

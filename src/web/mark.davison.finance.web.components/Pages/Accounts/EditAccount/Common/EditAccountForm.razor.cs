@@ -2,13 +2,12 @@
 
 public partial class EditAccountForm
 {
-    // TODO: Framework/source gen to add state etc/lookups??
+    [Inject]
+    public required IState<StartupState> StartupState { get; set; }
 
-    public IEnumerable<IDropdownItem> _currencyItems => FormViewModel.LookupState.Instance.Currencies.Select(_ => new DropdownItem { Id = _.Id, Name = _.Name });
-    public IEnumerable<IDropdownItem> _accountTypes => FormViewModel.LookupState.Instance.AccountTypes.Select(_ => new DropdownItem { Id = _.Id, Name = _.Type });
+    public int? DecimalPlaces => StartupState.Value.Currencies.FirstOrDefault(_ => _.Id == FormViewModel.CurrencyId)?.DecimalPlaces;
 
-    protected override void OnInitialized()
-    {
-        FormViewModel.LookupState = GetState<LookupState>();
-    }
+    public IEnumerable<IDropdownItem> _currencyItems => StartupState.Value.Currencies.Select(_ => new DropdownItem { Id = _.Id, Name = _.Name });
+    public IEnumerable<IDropdownItem> _accountTypes => StartupState.Value.AccountTypes.Select(_ => new DropdownItem { Id = _.Id, Name = _.Type });
+
 }

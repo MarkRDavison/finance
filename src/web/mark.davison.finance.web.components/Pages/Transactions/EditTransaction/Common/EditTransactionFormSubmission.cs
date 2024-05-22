@@ -2,25 +2,26 @@
 
 public class EditTransactionFormSubmission : IFormSubmission<EditTransactionFormViewModel>
 {
-    private readonly IClientHttpRepository _repository;
-    private readonly ICQRSDispatcher _dispatcher;
+    private readonly IStoreHelper _storeHelper;
+    private readonly IDispatcher _dispatcher;
+    private readonly IState<AccountState> _accountState;
+    private readonly IActionSubscriber _actionSubscriber;
 
     public EditTransactionFormSubmission(
-        IClientHttpRepository repository,
-        ICQRSDispatcher dispatcher
-    )
+        IStoreHelper storeHelper,
+        IState<AccountState> accountState
+,
+        IActionSubscriber actionSubscriber,
+        IDispatcher dispatcher)
     {
-        _repository = repository;
+        _storeHelper = storeHelper;
+        _accountState = accountState;
+        _actionSubscriber = actionSubscriber;
         _dispatcher = dispatcher;
     }
 
-    public async Task<bool> Primary(EditTransactionFormViewModel formViewModel)
+    public async Task<Response> Primary(EditTransactionFormViewModel formViewModel)
     {
-        if (!formViewModel.Valid)
-        {
-            return false;
-        }
-
         var request = new CreateTransactionRequest
         {
             Description = formViewModel.SplitDescription,
@@ -28,30 +29,73 @@ public class EditTransactionFormSubmission : IFormSubmission<EditTransactionForm
             Transactions = formViewModel.Items.Select(_ => ToCreateTransactionDto(_, formViewModel)).ToList()
         };
 
-        var response = await _repository.Post<CreateTransactionResponse, CreateTransactionRequest>(request, CancellationToken.None);
 
-        if (response.Success)
+        var action = new CreateTransactionAction
         {
-            var action = new UpdateTransactionStateItemsAction(response.Transactions);
-            await _dispatcher.Dispatch<UpdateTransactionStateItemsAction>(action, CancellationToken.None);
+            ActionId = Guid.NewGuid(),
+            Request = request
+        };
 
-            // TODO: Trigger current balance flags dirty for accounts in transaction
+        if (false)
+        {
+            TaskCompletionSource tcs = new();
+            CreateTransactionActionResponse? result = null;
 
+            _actionSubscriber.SubscribeToAction(
+                    this,
+                    (CreateTransactionActionResponse actionResponse) =>
+                    {
+                        if (actionResponse.ActionId == action.ActionId)
+                        {
+                            result = actionResponse;
+                            tcs.SetResult();
+                        }
+                    });
 
-            if (formViewModel.Id == Guid.Empty)
+            using (_actionSubscriber.GetActionUnsubscriberAsIDisposable(this))
             {
-                formViewModel.Id = response.Group.Id;
+                _dispatcher.Dispatch(action);
+
+                await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(50)));
             }
 
-            return true;
-        }
+            Console.WriteLine("CreateTransactionActionResponse submitted in submission");
+            if (result?.Success ?? false)
+            {
+                // TODO: Trigger current balance flags dirty for accounts in transaction
 
-        return false;
+                if (formViewModel.Id == Guid.Empty)
+                {
+                    formViewModel.Id = result.Group.Id;
+                }
+            }
+
+            return result ?? new() { Errors = ["TODO"] };
+        }
+        else
+        {
+            var result = await _storeHelper.DispatchAndWaitForResponse<
+                CreateTransactionAction,
+                CreateTransactionActionResponse>(action);
+
+            if (result?.Success ?? false)
+            {
+                // TODO: Trigger current balance flags dirty for accounts in transaction
+
+                if (formViewModel.Id == Guid.Empty)
+                {
+                    formViewModel.Id = result.Group.Id;
+                }
+            }
+
+
+            return result ?? new() { Errors = ["TODO"] };
+        }
     }
 
     private CreateTransactionDto ToCreateTransactionDto(EditTransactionFormViewModelItem item, EditTransactionFormViewModel formViewModel)
     {
-        var account = formViewModel.AccountState.Instance.Accounts.FirstOrDefault(_ => _.Id == item.SourceAccountId);
+        var account = _accountState.Value.Accounts.FirstOrDefault(_ => _.Id == item.SourceAccountId);
 
         return new CreateTransactionDto
         {

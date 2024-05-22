@@ -2,7 +2,7 @@
 
 public class Routes
 {
-    public const string Root = "/";
+    public const string Dashboard = "/";
 
     public const string Accounts = "/accounts";
     public const string AccountsByType = "/accounts/{type:guid}";

@@ -5,7 +5,8 @@ namespace mark.davison.finance.web.components.Pages.Accounts.EditAccount.Page;
 // TODO: Common base class between edit transaction/account
 public partial class EditAccountPage
 {
-    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
+    [Inject, EditorRequired]
+    public required IState<StartupState> StartupState { get; set; }
 
     private EditContext? _editContext;
     private bool _inProgress;
@@ -18,8 +19,6 @@ public partial class EditAccountPage
 
     protected override Task OnInitializedAsync()
     {
-        _lookupState = GetState<LookupState>();
-
         FormViewModel = new()
         {
             AccountTypeId = Type,
@@ -36,7 +35,9 @@ public partial class EditAccountPage
 
         return EnsureStateLoaded();
     }
+
     private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
+
     protected override Task OnParametersSetAsync() => EnsureStateLoaded();
 
     private Task EnsureStateLoaded() => Task.CompletedTask;
@@ -44,10 +45,13 @@ public partial class EditAccountPage
     private async Task OnCreate()
     {
         _inProgress = true;
-        if (FormViewModel.Valid &&
-            await _formSubmission.Primary(FormViewModel))
+        if (FormViewModel.Valid)
         {
-            _navigation.NavigateTo(RouteHelpers.Account(FormViewModel.Id));
+            var response = await _formSubmission.Primary(FormViewModel);
+            if (response.Success)
+            {
+                _navigation.NavigateTo(RouteHelpers.Account(FormViewModel.Id));
+            }
         }
         _inProgress = false;
     }

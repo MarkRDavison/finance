@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.accounting.constants;
-
-namespace mark.davison.finance.web.components.Components.QuickAdd;
+﻿namespace mark.davison.finance.web.components.Components.QuickAdd;
 
 public partial class QuickAdd
 {
@@ -51,21 +49,21 @@ public partial class QuickAdd
             new()
             {
                 Text = "New asset account",
-                Href = RouteHelpers.AccountNew(AccountConstants.Asset),
+                Href = RouteHelpers.AccountNew(AccountTypeConstants.Asset),
                 Icon = Icons.Material.Filled.QuestionMark,
                 FlipX = false
             },
             new()
             {
                 Text = "New expense account",
-                Href = RouteHelpers.AccountNew(AccountConstants.Expense),
+                Href = RouteHelpers.AccountNew(AccountTypeConstants.Expense),
                 Icon = Icons.Material.Filled.QuestionMark,
                 FlipX = false
             },
             new()
             {
                 Text = "New revenue account",
-                Href = RouteHelpers.AccountNew(AccountConstants.Revenue),
+                Href = RouteHelpers.AccountNew(AccountTypeConstants.Revenue),
                 Icon = Icons.Material.Filled.QuestionMark,
                 FlipX = false
             }

@@ -36,7 +36,8 @@ public class Startup
             .AddCQRSServer()
             .AddRedis(AppSettings.REDIS, AppSettings.SECTION, AppSettings.PRODUCTION_MODE)
             .UseFinancePersistence()
-            .UseUserApplicationContext();
+            .UseUserApplicationContext()
+            .AddCommandCQRS(); // TODO: Remove when IValidateAndProcess implemented
 
     }
 
@@ -58,11 +59,19 @@ public class Startup
             app.UseSwaggerUI();
         }
 
-        app.UseMiddleware<RequestResponseLoggingMiddleware>()
+        app
+            .UseMiddleware<RequestResponseLoggingMiddleware>()
             .UseRouting()
             .UseAuthentication()
             .UseAuthorization()
-            .UseMiddleware<PopulateUserContextMiddleware>()
+            .UseMiddleware<PopulateUserContextMiddleware>();
+
+        if (!AppSettings.PRODUCTION_MODE)
+        {
+            app.UseMiddleware<ValidateUserExistsInDbMiddleware>();
+        }
+
+        app
             .UseEndpoints(_ =>
             {
                 _

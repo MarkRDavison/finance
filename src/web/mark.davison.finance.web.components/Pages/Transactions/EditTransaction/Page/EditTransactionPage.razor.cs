@@ -5,7 +5,8 @@ namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction
 // TODO: Common base class between edit transaction/account
 public partial class EditTransactionPage
 {
-    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
+    [Inject, EditorRequired]
+    public required IState<StartupState> StartupState { get; set; }
 
     private EditContext? _editContext;
     private bool _inProgress;
@@ -18,8 +19,6 @@ public partial class EditTransactionPage
 
     protected override Task OnInitializedAsync()
     {
-        _lookupState = GetState<LookupState>();
-
         FormViewModel = new()
         {
             TransactionTypeId = Type
@@ -37,7 +36,11 @@ public partial class EditTransactionPage
 
         return EnsureStateLoaded();
     }
-    private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
+    private async void FieldChanged(object? sender, FieldChangedEventArgs args)
+    {
+        Console.WriteLine("EditTransaction.FieldChanged: {0}", args.FieldIdentifier.FieldName);
+        await InvokeAsync(StateHasChanged);
+    }
     protected override Task OnParametersSetAsync() => EnsureStateLoaded();
 
     private Task EnsureStateLoaded() => Task.CompletedTask;
@@ -45,11 +48,20 @@ public partial class EditTransactionPage
     private async Task OnCreate()
     {
         _inProgress = true;
-        if (FormViewModel.Valid &&
-            await _formSubmission.Primary(FormViewModel))
+        if (FormViewModel.Valid)
         {
-            _navigation.NavigateTo(RouteHelpers.Transaction(FormViewModel.Id));
+            Console.WriteLine("EditTransactionPage.OnCreate 1 - {0}", FormViewModel.Id);
+            var response = await _formSubmission.Primary(FormViewModel);
+            Console.WriteLine("EditTransactionPage.OnCreate 2 - {0}", FormViewModel.Id);
+            if (response.Success)
+            {
+                Console.WriteLine("EditTransactionPage.OnCreate 2.5");
+                _navigation.NavigateTo(RouteHelpers.Transaction(FormViewModel.Id));
+            }
         }
+
         _inProgress = false;
+        await InvokeAsync(StateHasChanged);
+        Console.WriteLine("EditTransactionPage.OnCreate 2.5");
     }
 }

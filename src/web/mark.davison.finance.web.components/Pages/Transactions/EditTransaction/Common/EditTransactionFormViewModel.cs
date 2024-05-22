@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.web.features.Category;
-
-namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common;
+﻿namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common;
 
 public class EditTransactionFormViewModel : IFormViewModel
 {
@@ -37,8 +35,4 @@ public class EditTransactionFormViewModel : IFormViewModel
     }
 
     public List<EditTransactionFormViewModelItem> Items { get; } = new();
-
-    public IStateInstance<LookupState> LookupState { get; set; } = default!;
-    public IStateInstance<AccountListState> AccountState { get; set; } = default!;
-    public IStateInstance<CategoryListState> CategoryState { get; set; } = default!;
 }

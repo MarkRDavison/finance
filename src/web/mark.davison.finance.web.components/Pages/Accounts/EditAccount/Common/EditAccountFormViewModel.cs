@@ -12,10 +12,6 @@ public class EditAccountFormViewModel : IFormViewModel
     public decimal? OpeningBalance { get; set; }
     public DateTime? OpeningBalanceDate { get; set; }
 
-    public IStateInstance<LookupState> LookupState { get; set; } = default!;
-
-    public int? DecimalPlaces => LookupState.Instance.Currencies.FirstOrDefault(_ => _.Id == CurrencyId)?.DecimalPlaces;
-
     public bool Valid =>
         !string.IsNullOrEmpty(Name) &&
         AccountTypeId != Guid.Empty && AccountTypeId != null &&

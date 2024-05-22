@@ -4,10 +4,14 @@ namespace mark.davison.finance.web.components.Pages.Transactions.ViewTransaction
 
 public partial class ViewTransaction
 {
-    private IStateInstance<TransactionState> _transactionState { get; set; } = default!;
-    private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
-    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
-    private IStateInstance<CategoryListState> _categoryListState { get; set; } = default!;
+    [Inject, EditorRequired]
+    public required IState<StartupState> StartupState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<AccountState> AccountListState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<CategoryState> CategoryListState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<TransactionState> TransactionState { get; set; }
 
     private IEnumerable<ViewTransactionItem> _items => ToCardItems();
 
@@ -23,11 +27,6 @@ public partial class ViewTransaction
 
     protected override async Task OnInitializedAsync()
     {
-        _transactionState = GetState<TransactionState>();
-        _accountListState = GetState<AccountListState>();
-        _lookupState = GetState<LookupState>();
-        _categoryListState = GetState<CategoryListState>();
-
         await EnsureStateLoaded();
     }
 
@@ -63,7 +62,7 @@ public partial class ViewTransaction
             {
                 // TODO: Helper on account list state to go from id -> accountType???
                 // TODO: Loading this page directly crashes here, state not loaded???
-                var account = _accountListState.Instance.Accounts.First(__ => __.Id == _.AccountId);
+                var account = AccountListState.Value.Accounts.First(__ => __.Id == _.AccountId);
 
                 return sourceTransactionAccountTypes.Contains(account.AccountTypeId);
             });
@@ -94,7 +93,7 @@ public partial class ViewTransaction
                 }
 
                 // TODO: Helper on account list state to go from id -> accountType???
-                var account = _accountListState.Instance.Accounts.First(__ => __.Id == _.AccountId);
+                var account = AccountListState.Value.Accounts.First(__ => __.Id == _.AccountId);
 
                 return destTransactionAccountTypes.Contains(account.AccountTypeId);
             });
@@ -173,7 +172,7 @@ public partial class ViewTransaction
         Guid transactionTypeId = Guid.Empty;
         _sourceAccounts.Clear();
 
-        var items = _transactionState.Instance.Transactions
+        var items = TransactionState.Value.Transactions
             .Where(_ => _.TransactionGroupId == Id)
             .GroupBy(_ => _.TransactionJournalId)
             .Select(_ =>
@@ -195,7 +194,7 @@ public partial class ViewTransaction
 
                 var source = GetSourceTransaction(transactionTypeId, transactions);
 
-                var sourceAccount = _accountListState.Instance.Accounts.FirstOrDefault(__ => __.Id == source.AccountId);
+                var sourceAccount = AccountListState.Value.Accounts.FirstOrDefault(__ => __.Id == source.AccountId);
 
                 if (sourceAccount == null)
                 {
@@ -204,23 +203,23 @@ public partial class ViewTransaction
 
                 var dest = GetDestinationTransaction(transactionTypeId, source.AccountId, sourceAccount.AccountTypeId, transactions);
 
-                var destAccount = _accountListState.Instance.Accounts.FirstOrDefault(__ => __.Id == dest.AccountId);
+                var destAccount = AccountListState.Value.Accounts.FirstOrDefault(__ => __.Id == dest.AccountId);
 
                 if (destAccount == null)
                 {
                     return (ViewTransactionItem?)null;
                 }
 
-                currency = _lookupState.Instance.Currencies.FirstOrDefault(__ => __.Id == sourceAccount.CurrencyId);
+                currency = StartupState.Value.Currencies.FirstOrDefault(__ => __.Id == sourceAccount.CurrencyId);
 
                 if (currency == null)
                 {
                     return (ViewTransactionItem?)null;
                 }
 
-                var category = _categoryListState.Instance.Categories.FirstOrDefault(__ => __.Id == source.CategoryId);
+                var category = CategoryListState.Value.Categories.FirstOrDefault(__ => __.Id == source.CategoryId);
 
-                var transactionType = _lookupState.Instance.TransactionTypes.First(__ => __.Id == transactionTypeId);
+                var transactionType = StartupState.Value.TransactionTypes.First(__ => __.Id == transactionTypeId);
 
                 _transactionType = transactionType.Type;
                 _transactionDescription = _.First().SplitTransactionDescription;

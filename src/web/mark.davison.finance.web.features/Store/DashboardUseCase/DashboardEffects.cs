@@ -19,9 +19,13 @@ public sealed class DashboardEffects
 
         var commandResponse = await _repository.Get<AccountDashboardSummaryQueryResponse, AccountDashboardSummaryQueryRequest>(commandRequest, CancellationToken.None);
 
-        var actionResponse = FetchDashboardSummaryActionResponse.From(commandResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = commandResponse.Value;
+        var actionResponse = new FetchDashboardSummaryActionResponse
+        {
+            ActionId = action.ActionId,
+            Errors = commandResponse.Errors,
+            Warnings = commandResponse.Warnings,
+            Value = commandResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 

@@ -1,10 +1,17 @@
-﻿using mark.davison.finance.accounting.rules.Account;
-using mark.davison.finance.web.features.Category;
-
-namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common;
+﻿namespace mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common;
 
 public partial class EditTransactionForm
 {
+
+    [Parameter, EditorRequired]
+    public required bool Processing { get; set; }
+
+    [Inject]
+    public required IState<StartupState> StartupState { get; set; }
+    [Inject]
+    public required IState<AccountState> AccountState { get; set; }
+    [Inject]
+    public required IState<CategoryState> CategoryState { get; set; }
 
     private IEnumerable<IDropdownItem> _sourceAccountItems
     {
@@ -12,7 +19,7 @@ public partial class EditTransactionForm
         {
             var sourceAccountTypes = AllowableSourceDestinationAccounts.GetSourceAccountTypes(FormViewModel.TransactionTypeId);
 
-            return FormViewModel.AccountState.Instance.Accounts
+            return AccountState.Value.Accounts
                 .Where(_ => _.Active && sourceAccountTypes.Contains(_.AccountTypeId))
                 .Select(_ => new DropdownItem
                 {
@@ -22,7 +29,7 @@ public partial class EditTransactionForm
         }
     }
 
-    private IEnumerable<IDropdownItem> _categoryItems => FormViewModel.CategoryState.Instance.Categories.Select(_ => new DropdownItem
+    private IEnumerable<IDropdownItem> _categoryItems => CategoryState.Value.Categories.Select(_ => new DropdownItem
     {
         Id = _.Id,
         Name = _.Name
@@ -34,7 +41,7 @@ public partial class EditTransactionForm
         {
             var destAccountTypes = AllowableSourceDestinationAccounts.GetDestinationAccountTypes(FormViewModel.TransactionTypeId);
 
-            return FormViewModel.AccountState.Instance.Accounts
+            return AccountState.Value.Accounts
                 .Where(_ => _.Active && destAccountTypes.Contains(_.AccountTypeId))
                 .Select(_ => new DropdownItem
                 {
@@ -54,16 +61,12 @@ public partial class EditTransactionForm
         return $"Split {index + 1}/{FormViewModel.Items.Count}";
     }
 
-    public int GetDecimalPlacesForCurrencyId(Guid? currencyId) => FormViewModel.LookupState.Instance.Currencies.FirstOrDefault(_ => _.Id == currencyId)?.DecimalPlaces ?? 2;
+    public int GetDecimalPlacesForCurrencyId(Guid? currencyId) => StartupState.Value.Currencies.FirstOrDefault(_ => _.Id == currencyId)?.DecimalPlaces ?? 2;
 
-    public IEnumerable<IDropdownItem> _currencyItems => FormViewModel.LookupState.Instance.Currencies.Select(_ => new DropdownItem { Id = _.Id, Name = _.Name });
+    public IEnumerable<IDropdownItem> _currencyItems => StartupState.Value.Currencies.Select(_ => new DropdownItem { Id = _.Id, Name = _.Name });
 
     protected override async Task OnInitializedAsync()
     {
-        FormViewModel.LookupState = GetState<LookupState>();
-        FormViewModel.AccountState = GetState<AccountListState>();
-        FormViewModel.CategoryState = GetState<CategoryListState>();
-
         await EnsureStateLoaded();
     }
 
@@ -81,7 +84,4 @@ public partial class EditTransactionForm
     }
 
     private static string Id(string id, int index) => $"{id}-{index}";
-
-    [Parameter, EditorRequired]
-    public bool Processing { get; set; }
 }

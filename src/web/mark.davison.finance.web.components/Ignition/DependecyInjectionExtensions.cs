@@ -6,8 +6,9 @@ public static class DependecyInjectionExtensions
         this IServiceCollection services,
         IAuthenticationConfig authConfig)
     {
-        services.UseCommonClient(authConfig, typeof(Routes));
-
+        services.UseCommonClient(authConfig, typeof(Routes), typeof(FeaturesRootType));
+        services.AddScoped<IStateHelper, StateHelper>();
+        services.UseFinanceWebServices();
         return services;
     }
 }

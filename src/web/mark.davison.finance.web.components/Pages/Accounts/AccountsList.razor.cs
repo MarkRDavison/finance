@@ -2,15 +2,17 @@
 
 public partial class AccountsList
 {
-    private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
-    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
-    private IEnumerable<AccountListItemViewModel> _items => _accountListState.Instance.Accounts.Where(_ => Type == null || _.AccountTypeId == Type).Select(AccountListStateToViewModel);
+    [Inject, EditorRequired]
+    public required IState<StartupState> StartupState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<AccountState> AccountListState { get; set; }
+    private IEnumerable<AccountListItemViewModel> _items => AccountListState.Value.Accounts.Where(_ => Type == null || _.AccountTypeId == Type).Select(AccountListStateToViewModel);
 
-    private string _title => Type == null ? "Accounts" : (_lookupState.Instance.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type + " accounts");
+    private string _title => Type == null ? "Accounts" : (StartupState.Value.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type + " accounts");
 
     private AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
     {
-        var currency = _lookupState.Instance.Currencies.First(_ => _.Id == dto.CurrencyId);
+        var currency = StartupState.Value.Currencies.First(_ => _.Id == dto.CurrencyId);
 
         return new AccountListItemViewModel
         {
@@ -33,13 +35,12 @@ public partial class AccountsList
 
     protected override async Task OnInitializedAsync()
     {
-        _accountListState = GetState<AccountListState>();
-        _lookupState = GetState<LookupState>();
         await EnsureStateLoaded();
     }
     protected override async Task OnParametersSetAsync()
     {
         await EnsureStateLoaded();
+        Console.WriteLine("AccountsList.OnParametersSetAsync");
     }
 
     private Task EnsureStateLoaded() => _stateHelper.FetchAccountList(false);
@@ -48,12 +49,12 @@ public partial class AccountsList
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
 
-        var param = new DialogParameters<Modal<EditAccountModalViewModel, EditAccountFormViewModel, EditAccountForm>>
+        var param = new DialogParameters<FormModal<ModalViewModel<EditAccountFormViewModel, EditAccountForm>, EditAccountFormViewModel, EditAccountForm>>
         {
             { _ => _.PrimaryText, "Save" },
-            { _ => _.Instance, null } // Pass instance of TFormViewModel to be an edit instead of a create
+            { _ => _.Instance, null }
         };
-        var dialog = _dialogService.Show<Modal<EditAccountModalViewModel, EditAccountFormViewModel, EditAccountForm>>(add ? "Add account" : "Edit account", param, options);
+        var dialog = _dialogService.Show<FormModal<ModalViewModel<EditAccountFormViewModel, EditAccountForm>, EditAccountFormViewModel, EditAccountForm>>(add ? "Add account" : "Edit account", param, options);
         await dialog.Result;
     }
 

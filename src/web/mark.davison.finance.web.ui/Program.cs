@@ -1,3 +1,5 @@
+using mark.davison.finance.web.ui.Ignition;
+
 var authConfig = new AuthenticationConfig();
 authConfig.SetBffBase(WebConstants.LocalBffRoot);
 

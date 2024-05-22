@@ -11,7 +11,7 @@ public class CreateTransactionCommandValidator : ICommandValidator<CreateTransac
     public const string VALIDATION_CATEGORY_ID = "INVALID_CATEGORYID${0}";
     public const string VALIDATION_DATE = "INVALID_DATE${0}";
     public const string VALIDATION_DUPLICATE_SRC_DEST_ACCOUNT = "DUP_ACT${0}";
-    public const string VALIDATION_DUPLICATE_TAGS = "DUP_ACT${0}";
+    public const string VALIDATION_DUPLICATE_TAGS = "DUP_TAG${0}";
     public const string VALIDATION_INVALID_DESTINATION_ACCOUNT_TYPE = "INVALID_DEST_ACCT_TYPE";
     public const string VALIDATION_INVALID_ACCOUNT_PAIR = "INVALID_ACCT_PAIR";
     public const string VALIDATION_INVALID_SOURCE_ACCOUNT_TYPE = "INVALID_SRC_ACCT_TYPE";

@@ -24,6 +24,18 @@ public static class TransactionReducers
         return state;
     }
 
+    //[ReducerMethod]
+    //public static TransactionState CreateTransactionActionResponse(TransactionState state, CreateTransactionActionResponse response)
+    //{
+    //    Console.WriteLine("CreateTransactionActionResponse reduced");
+    //    if (response.Success)
+    //    {
+    //        return new TransactionState(Merge(state, response.Transactions));
+    //    }
+
+    //    return state;
+    //}
+
     private static List<TransactionDto> Merge(TransactionState state, List<TransactionDto> transactions)
     {
         var existingIds = state.Transactions.Select(_ => _.Id).ToHashSet();

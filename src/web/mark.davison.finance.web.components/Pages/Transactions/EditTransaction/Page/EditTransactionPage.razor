@@ -1,13 +1,13 @@
 ﻿@using mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common
 @attribute [Route(Routes.TransactionNew)]
-@inherits ComponentWithState
+@inherits FluxorComponent
 @inject IStateHelper _stateHelper
 @inject IClientNavigationManager _navigation
 @inject IFormSubmission<EditTransactionFormViewModel> _formSubmission
 
 <MudGrid>
     <MudItem Class="py-4">
-        <MudText Typo="Typo.h4">New @_lookupState.Instance.TransactionTypes.FirstOrDefault(_ => _.Id == Type)?.Type</MudText>
+        <MudText Typo="Typo.h4">New @StartupState.Value.TransactionTypes.FirstOrDefault(_ => _.Id == Type)?.Type</MudText>
     </MudItem>
 
     <MudItem Class="d-flex align-center justify-left mud-width-full py-8">

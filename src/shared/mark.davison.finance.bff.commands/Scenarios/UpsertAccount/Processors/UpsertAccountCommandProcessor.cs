@@ -62,9 +62,7 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
             account.AccountTypeId = request.UpsertAccountDto.AccountTypeId;
             account.CurrencyId = request.UpsertAccountDto.CurrencyId;
 
-            await _dbContext.UpsertEntityAsync(
-                account,
-                cancellationToken);
+            await _dbContext.UpsertEntityAsync(account, cancellationToken);
 
             bool requestHasOpeningBalance =
                 request.UpsertAccountDto.OpeningBalance != null &&
@@ -141,6 +139,7 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
             }
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
             await transaction.CommitTransactionAsync(cancellationToken);
 
             return response;

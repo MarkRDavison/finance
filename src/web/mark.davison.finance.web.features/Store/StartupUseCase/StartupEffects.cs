@@ -14,12 +14,17 @@ public sealed class StartupEffects
     {
         var queryResponse = await _repository.Get<StartupQueryResponse, StartupQueryRequest>(CancellationToken.None);
 
-        var actionResponse = FetchStartupActionResponse.From(queryResponse);
-        actionResponse.ActionId = action.ActionId;
-        actionResponse.Value = queryResponse.Value;
+        var actionResponse = new FetchStartupActionResponse
+        {
+            Errors = queryResponse.Errors,
+            Warnings = queryResponse.Warnings,
+            ActionId = action.ActionId,
+            Value = queryResponse.Value
+        };
 
         // TODO: Framework to dispatch general ***something went wrong***
 
+        Console.WriteLine("StartupEffects.FetchStartupActionResponse");
         dispatcher.Dispatch(actionResponse);
     }
 }

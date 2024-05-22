@@ -2,11 +2,15 @@
 
 public partial class ViewAccount
 {
-    private IStateInstance<LookupState> _lookupState { get; set; } = default!;
-    private IStateInstance<AccountListState> _accountListState { get; set; } = default!;
-    private IStateInstance<CategoryListState> _categoryListState { get; set; } = default!;
-    private IStateInstance<TransactionState> _transactionState { get; set; } = default!;
-    private AccountListItemDto? _currentAccount => _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == Id);
+    [Inject, EditorRequired]
+    public required IState<StartupState> StartupState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<AccountState> AccountListState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<CategoryState> CategoryListState { get; set; }
+    [Inject, EditorRequired]
+    public required IState<TransactionState> TransactionState { get; set; }
+    private AccountListItemDto? _currentAccount => AccountListState.Value.Accounts.FirstOrDefault(_ => _.Id == Id);
 
     private MudDataGrid<ViewAccountGridRow>? MudDataGrid { get; set; }
 
@@ -17,11 +21,6 @@ public partial class ViewAccount
 
     protected override async Task OnInitializedAsync()
     {
-        _lookupState = GetState<LookupState>();
-        _accountListState = GetState<AccountListState>();
-        _categoryListState = GetState<CategoryListState>();
-        _transactionState = GetState<TransactionState>();
-
         commandMenuItems = new()
         {
             new CommandMenuItem{ Text = "Edit", Id = "EDIT" },
@@ -59,7 +58,7 @@ public partial class ViewAccount
     {
         List<ViewAccountGridRow> items = new();
 
-        foreach (var tGroup in _transactionState.Instance.Transactions
+        foreach (var tGroup in TransactionState.Value.Transactions
             .GroupBy(_ => _.TransactionGroupId)
             .Where(_ => _appContext.RangeStart <= _.First().Date || _appContext.RangeEnd <= _.First().Date)
             .OrderByDescending(_ => _.First().Date)) // TODO: Sorting with multi line entries
@@ -110,12 +109,12 @@ public partial class ViewAccount
                 var sourceTransaction = tbjs.First(_ => _.Source);
                 var destinationTransaction = tbjs.First(_ => !_.Source);
 
-                var sourceAccount = _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == sourceTransaction.AccountId); ;
-                var destAccount = _accountListState.Instance.Accounts.FirstOrDefault(_ => _.Id == destinationTransaction.AccountId); ;
+                var sourceAccount = AccountListState.Value.Accounts.FirstOrDefault(_ => _.Id == sourceTransaction.AccountId); ;
+                var destAccount = AccountListState.Value.Accounts.FirstOrDefault(_ => _.Id == destinationTransaction.AccountId); ;
 
                 var thisAccountTransaction = sourceAccount == null ? destinationTransaction : (sourceAccount.Id == accountId ? sourceTransaction : destinationTransaction);
 
-                var transactionType = _lookupState.Instance.TransactionTypes.First(_ => _.Id == thisAccountTransaction.TransactionTypeId);
+                var transactionType = StartupState.Value.TransactionTypes.First(_ => _.Id == thisAccountTransaction.TransactionTypeId);
 
                 var sourceAccountLinkInfo = new LinkInfo
                 {
@@ -131,7 +130,7 @@ public partial class ViewAccount
 
                 var categoryLinkInfo = new LinkInfo
                 {
-                    Text = thisAccountTransaction.CategoryId == null ? string.Empty : _categoryListState.Instance.Categories.FirstOrDefault(_ => _.Id == thisAccountTransaction.CategoryId)?.Name ?? string.Empty,
+                    Text = thisAccountTransaction.CategoryId == null ? string.Empty : CategoryListState.Value.Categories.FirstOrDefault(_ => _.Id == thisAccountTransaction.CategoryId)?.Name ?? string.Empty,
                     Href = thisAccountTransaction.CategoryId == null ? string.Empty : RouteHelpers.Category(thisAccountTransaction.CategoryId.Value)
                 };
 
