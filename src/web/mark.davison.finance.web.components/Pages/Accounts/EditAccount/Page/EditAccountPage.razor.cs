@@ -38,7 +38,11 @@ public partial class EditAccountPage
 
     private void FieldChanged(object? sender, FieldChangedEventArgs args) => InvokeAsync(StateHasChanged);
 
-    protected override Task OnParametersSetAsync() => EnsureStateLoaded();
+    // TODO: Throttle
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await EnsureStateLoaded();
+    //}
 
     private Task EnsureStateLoaded() => Task.CompletedTask;
 

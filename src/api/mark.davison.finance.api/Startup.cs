@@ -35,9 +35,9 @@ public class Startup
             .AddScoped<IFinanceDbContext>(_ => _.GetRequiredService<FinanceDbContext>())
             .AddCQRSServer()
             .AddRedis(AppSettings.REDIS, AppSettings.SECTION, AppSettings.PRODUCTION_MODE)
-            .UseFinancePersistence()
+            .UseFinancePersistence() // TODO: Include optional defaulters in IFinanceDbContext wrapper????
             .UseUserApplicationContext()
-            .AddCommandCQRS(); // TODO: Remove when IValidateAndProcess implemented
+            .AddCommandCQRS(); // TODO: Remove when ValidateAndProcess implemented
 
     }
 
@@ -64,17 +64,11 @@ public class Startup
             .UseRouting()
             .UseAuthentication()
             .UseAuthorization()
-            .UseMiddleware<PopulateUserContextMiddleware>();
-
-        if (!AppSettings.PRODUCTION_MODE)
-        {
-            app.UseMiddleware<ValidateUserExistsInDbMiddleware>();
-        }
-
-        app
-            .UseEndpoints(_ =>
+            .UseMiddleware<PopulateUserContextMiddleware>()
+            .UseMiddleware<ValidateUserExistsInDbMiddleware>()
+            .UseEndpoints(endpoints =>
             {
-                _
+                endpoints
                     .MapHealthChecks()
                     .MapGet<User>()
                     .MapGetById<User>()

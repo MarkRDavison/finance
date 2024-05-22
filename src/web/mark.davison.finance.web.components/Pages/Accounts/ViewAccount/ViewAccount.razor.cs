@@ -40,10 +40,12 @@ public partial class ViewAccount
         }
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await EnsureStateLoaded();
-    }
+
+    // TODO: Throttle
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await EnsureStateLoaded();
+    //}
 
     private async Task EnsureStateLoaded()
     {

@@ -86,8 +86,6 @@ public sealed class TransactionEffects
         Console.WriteLine("CreateTransactionActionResponse   ActionId: {0}", action.ActionId);
         Console.WriteLine("CreateTransactionActionResponse ResponseId: {0}", actionResponse.ActionId);
 
-
-
         dispatcher.Dispatch(actionResponse);
     }
 }

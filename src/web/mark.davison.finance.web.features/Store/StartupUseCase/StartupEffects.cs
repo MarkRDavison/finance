@@ -24,7 +24,6 @@ public sealed class StartupEffects
 
         // TODO: Framework to dispatch general ***something went wrong***
 
-        Console.WriteLine("StartupEffects.FetchStartupActionResponse");
         dispatcher.Dispatch(actionResponse);
     }
 }

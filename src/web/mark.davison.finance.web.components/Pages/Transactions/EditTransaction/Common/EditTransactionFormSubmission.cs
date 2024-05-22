@@ -36,61 +36,22 @@ public class EditTransactionFormSubmission : IFormSubmission<EditTransactionForm
             Request = request
         };
 
-        if (false)
+        var actionResponse = await _storeHelper.DispatchAndWaitForResponse<
+            CreateTransactionAction,
+            CreateTransactionActionResponse>(action);
+
+        if (actionResponse.Success)
         {
-            TaskCompletionSource tcs = new();
-            CreateTransactionActionResponse? result = null;
+            // TODO: Trigger current balance flags dirty for accounts in transaction
 
-            _actionSubscriber.SubscribeToAction(
-                    this,
-                    (CreateTransactionActionResponse actionResponse) =>
-                    {
-                        if (actionResponse.ActionId == action.ActionId)
-                        {
-                            result = actionResponse;
-                            tcs.SetResult();
-                        }
-                    });
-
-            using (_actionSubscriber.GetActionUnsubscriberAsIDisposable(this))
+            if (formViewModel.Id == Guid.Empty)
             {
-                _dispatcher.Dispatch(action);
-
-                await Task.WhenAny(tcs.Task, Task.Delay(TimeSpan.FromSeconds(50)));
+                formViewModel.Id = actionResponse.Group.Id;
             }
-
-            Console.WriteLine("CreateTransactionActionResponse submitted in submission");
-            if (result?.Success ?? false)
-            {
-                // TODO: Trigger current balance flags dirty for accounts in transaction
-
-                if (formViewModel.Id == Guid.Empty)
-                {
-                    formViewModel.Id = result.Group.Id;
-                }
-            }
-
-            return result ?? new() { Errors = ["TODO"] };
         }
-        else
-        {
-            var result = await _storeHelper.DispatchAndWaitForResponse<
-                CreateTransactionAction,
-                CreateTransactionActionResponse>(action);
-
-            if (result?.Success ?? false)
-            {
-                // TODO: Trigger current balance flags dirty for accounts in transaction
-
-                if (formViewModel.Id == Guid.Empty)
-                {
-                    formViewModel.Id = result.Group.Id;
-                }
-            }
 
 
-            return result ?? new() { Errors = ["TODO"] };
-        }
+        return actionResponse;
     }
 
     private CreateTransactionDto ToCreateTransactionDto(EditTransactionFormViewModelItem item, EditTransactionFormViewModel formViewModel)

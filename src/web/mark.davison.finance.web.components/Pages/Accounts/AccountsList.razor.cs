@@ -37,11 +37,11 @@ public partial class AccountsList
     {
         await EnsureStateLoaded();
     }
-    protected override async Task OnParametersSetAsync()
-    {
-        await EnsureStateLoaded();
-        Console.WriteLine("AccountsList.OnParametersSetAsync");
-    }
+    // TODO: Throttle
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await EnsureStateLoaded();
+    //}
 
     private Task EnsureStateLoaded() => _stateHelper.FetchAccountList(false);
 

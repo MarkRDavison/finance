@@ -38,10 +38,9 @@ public partial class EditTransactionPage
     }
     private async void FieldChanged(object? sender, FieldChangedEventArgs args)
     {
-        Console.WriteLine("EditTransaction.FieldChanged: {0}", args.FieldIdentifier.FieldName);
         await InvokeAsync(StateHasChanged);
     }
-    protected override Task OnParametersSetAsync() => EnsureStateLoaded();
+    //protected override Task OnParametersSetAsync() => EnsureStateLoaded();
 
     private Task EnsureStateLoaded() => Task.CompletedTask;
 
@@ -50,18 +49,13 @@ public partial class EditTransactionPage
         _inProgress = true;
         if (FormViewModel.Valid)
         {
-            Console.WriteLine("EditTransactionPage.OnCreate 1 - {0}", FormViewModel.Id);
-            var response = await _formSubmission.Primary(FormViewModel);
-            Console.WriteLine("EditTransactionPage.OnCreate 2 - {0}", FormViewModel.Id);
-            if (response.Success)
+            if (await _formSubmission.Primary(FormViewModel) is { Success: true })
             {
-                Console.WriteLine("EditTransactionPage.OnCreate 2.5");
                 _navigation.NavigateTo(RouteHelpers.Transaction(FormViewModel.Id));
             }
         }
 
         _inProgress = false;
         await InvokeAsync(StateHasChanged);
-        Console.WriteLine("EditTransactionPage.OnCreate 2.5");
     }
 }

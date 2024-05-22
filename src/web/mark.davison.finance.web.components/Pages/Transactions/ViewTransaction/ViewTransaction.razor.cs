@@ -1,6 +1,4 @@
-﻿using mark.davison.finance.accounting.constants;
-
-namespace mark.davison.finance.web.components.Pages.Transactions.ViewTransaction;
+﻿namespace mark.davison.finance.web.components.Pages.Transactions.ViewTransaction;
 
 public partial class ViewTransaction
 {
@@ -30,10 +28,12 @@ public partial class ViewTransaction
         await EnsureStateLoaded();
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await EnsureStateLoaded();
-    }
+
+    // TODO: Throttle
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await EnsureStateLoaded();
+    //}
 
     private async Task EnsureStateLoaded()
     {

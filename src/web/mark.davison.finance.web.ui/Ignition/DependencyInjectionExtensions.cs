@@ -6,9 +6,8 @@ public static class DependencyInjectionExtensions
     {
         services
             .UseFinanceComponents(authConfig)
-            .UseFluxorState(typeof(Program), typeof(FeaturesRootType))
-            .UseClientRepository(WebConstants.ApiClientName, WebConstants.LocalBffRoot)
-            .UseClientCQRS(typeof(Program), typeof(FeaturesRootType));
+            .UseFluxorState(_ => { }, typeof(Program), typeof(FeaturesRootType))
+            .UseClientRepository(WebConstants.ApiClientName, WebConstants.LocalBffRoot);
 
         return services;
     }

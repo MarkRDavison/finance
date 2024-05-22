@@ -70,13 +70,14 @@ public partial class EditTransactionForm
         await EnsureStateLoaded();
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        await EnsureStateLoaded();
-    }
+
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    await EnsureStateLoaded();
+    //}
 
     private async Task EnsureStateLoaded()
-    {
+    {// TODO: Need to throttle these
         await Task.WhenAll(
             _stateHelper.FetchAccountList(false),
             _stateHelper.FetchCategoryList()

@@ -7,8 +7,6 @@ quick create new deposit -> immediate quick create new transfer, then look at so
 Make sure breakpoints work well.
  - The sidebar needs to collapse when we hit the first one, i.e. on view transaction page half width goes to full, sidebar should collapse then
 
-In web features/web ui we have commands that wrap bff/api commands, so we dispatch web command and in the handler we call the clienthttprepository and submit the api command.  This seems wasteful???
-
 numeric/decimal input not triggering form validation
 
 Replace guids in urls with snippets/words?
