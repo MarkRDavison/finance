@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.shared.commands.Scenarios.UpsertAccount.Processors;
 
-public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
+public class UpsertAccountCommandProcessor : ICommandProcessor<UpsertAccountCommandRequest, UpsertAccountCommandResponse>
 {
     private readonly ICommandHandler<CreateTransactionRequest, CreateTransactionResponse> _createTransactionHandler;
     private readonly IDateService _dateService;
@@ -17,9 +17,8 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
         _dbContext = dbContext;
     }
 
-    public async Task<UpsertAccountCommandResponse> Process(
+    public async Task<UpsertAccountCommandResponse> ProcessAsync(
         UpsertAccountCommandRequest request,
-        UpsertAccountCommandResponse response,
         ICurrentUserContext currentUserContext,
         CancellationToken cancellationToken)
     {
@@ -141,6 +140,26 @@ public class UpsertAccountCommandProcessor : IUpsertAccountCommandProcessor
             await _dbContext.SaveChangesAsync(cancellationToken);
 
             await transaction.CommitTransactionAsync(cancellationToken);
+
+            var response = new UpsertAccountCommandResponse
+            {
+                Value = new() // TODO: Helper
+                {
+                    Id = account.Id,
+                    Name = account.Name,
+                    AccountNumber = account.AccountNumber,
+                    // AccountType = account.AccountType!.Type, TODO: Remove, client can look it up
+                    AccountTypeId = account.AccountTypeId,
+                    Active = account.IsActive,
+                    CurrencyId = account.CurrencyId,
+                    LastModified = account.LastModified,
+                    VirtualBalance = account.VirtualBalance,
+                    OpeningBalance = request.UpsertAccountDto.OpeningBalance,
+                    OpeningBalanceDate = request.UpsertAccountDto.OpeningBalanceDate,
+                    BalanceDifference = request.UpsertAccountDto.OpeningBalance ?? 0,
+                    CurrentBalance = request.UpsertAccountDto.OpeningBalance ?? 0
+                }
+            };
 
             return response;
         }

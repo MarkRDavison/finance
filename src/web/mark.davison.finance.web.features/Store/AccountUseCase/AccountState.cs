@@ -7,10 +7,10 @@ public sealed class AccountState
     {
     }
 
-    public AccountState(IEnumerable<AccountListItemDto> accounts)
+    public AccountState(IEnumerable<AccountDto> accounts)
     {
         Accounts = new(accounts.ToList());
     }
 
-    public ReadOnlyCollection<AccountListItemDto> Accounts { get; }
+    public ReadOnlyCollection<AccountDto> Accounts { get; }
 }

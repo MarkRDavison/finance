@@ -10,7 +10,7 @@ public partial class AccountsList
 
     private string _title => Type == null ? "Accounts" : (StartupState.Value.AccountTypes.FirstOrDefault(_ => _.Id == Type)?.Type + " accounts");
 
-    private AccountListItemViewModel AccountListStateToViewModel(AccountListItemDto dto)
+    private AccountListItemViewModel AccountListStateToViewModel(AccountDto dto)
     {
         var currency = StartupState.Value.Currencies.First(_ => _.Id == dto.CurrencyId);
 
@@ -23,7 +23,7 @@ public partial class AccountsList
                 Href = RouteHelpers.Account(dto.Id)
             },
             AccountNumber = dto.AccountNumber,
-            AccountType = dto.AccountType,
+            AccountType = dto.AccountType, // TODO: Replace with state lookup
             CurrentBalance = CurrencyRules.FromPersistedToFormatted(dto.CurrentBalance, currency.Symbol, currency.DecimalPlaces),
             CurrentBalanceAmount = dto.CurrentBalance,
             BalanceDifference = CurrencyRules.FromPersistedToFormatted(dto.BalanceDifference, currency.Symbol, currency.DecimalPlaces),

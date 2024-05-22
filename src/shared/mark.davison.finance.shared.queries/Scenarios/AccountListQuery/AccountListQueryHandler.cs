@@ -76,7 +76,7 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
                 .Where(_ => context.RangeStart <= _.Date && _.Date <= context.RangeEnd)
                 .Sum(_ => _.Amount);
 
-            response.Value.Add(new AccountListItemDto
+            response.Value.Add(new AccountDto
             {
                 Id = account.Id,
                 Name = account.Name,

@@ -1,30 +1,13 @@
 ﻿namespace mark.davison.finance.shared.commands.Scenarios.CreateAccount;
 
-// TODO: Replace with ValidateAndProcessCommandHandler
-public class UpsertAccountCommandHandler : ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>
+public class UpsertAccountCommandHandler : ValidateAndProcessCommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>
 {
-
-    private readonly IUpsertAccountCommandValidator _upsertAccountCommandValidator;
-    private readonly IUpsertAccountCommandProcessor _upsertAccountCommandProcessor;
-
     public UpsertAccountCommandHandler(
-        IUpsertAccountCommandValidator createAccountCommandValidator,
-        IUpsertAccountCommandProcessor upsertAccountCommandProcessor
-    )
+        ICommandProcessor<UpsertAccountCommandRequest, UpsertAccountCommandResponse> processor,
+        ICommandValidator<UpsertAccountCommandRequest, UpsertAccountCommandResponse> validator
+    ) : base(
+        processor,
+        validator)
     {
-        _upsertAccountCommandValidator = createAccountCommandValidator;
-        _upsertAccountCommandProcessor = upsertAccountCommandProcessor;
-    }
-
-    public async Task<UpsertAccountCommandResponse> Handle(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
-    {
-        var response = await _upsertAccountCommandValidator.Validate(request, currentUserContext, cancellationToken);
-
-        if (!response.Success)
-        {
-            return response;
-        }
-
-        return await _upsertAccountCommandProcessor.Process(request, response, currentUserContext, cancellationToken);
     }
 }

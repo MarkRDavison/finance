@@ -1,10 +1,10 @@
 ﻿namespace mark.davison.finance.models.dtos.Queries.AccountListQuery;
 
-public class AccountListItemDto
+public class AccountDto
 {
     public Guid Id { get; set; }
     public string Name { get; set; } = string.Empty;
-    public string AccountType { get; set; } = string.Empty;
+    public string AccountType { get; set; } = string.Empty; // TODO: remove this, client can look it up
     public Guid AccountTypeId { get; set; }
     public string AccountNumber { get; set; } = string.Empty;
     public long CurrentBalance { get; set; }

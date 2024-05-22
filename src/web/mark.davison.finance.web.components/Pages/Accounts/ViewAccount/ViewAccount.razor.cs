@@ -10,7 +10,7 @@ public partial class ViewAccount
     public required IState<CategoryState> CategoryListState { get; set; }
     [Inject, EditorRequired]
     public required IState<TransactionState> TransactionState { get; set; }
-    private AccountListItemDto? _currentAccount => AccountListState.Value.Accounts.FirstOrDefault(_ => _.Id == Id);
+    private AccountDto? _currentAccount => AccountListState.Value.Accounts.FirstOrDefault(_ => _.Id == Id);
 
     private MudDataGrid<ViewAccountGridRow>? MudDataGrid { get; set; }
 

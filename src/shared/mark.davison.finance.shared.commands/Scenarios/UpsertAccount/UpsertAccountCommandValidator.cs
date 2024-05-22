@@ -1,6 +1,6 @@
 ﻿namespace mark.davison.finance.shared.commands.Scenarios.CreateAccount.Validators;
 
-public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
+public class UpsertAccountCommandValidator : ICommandValidator<UpsertAccountCommandRequest, UpsertAccountCommandResponse>
 {
     private readonly IFinanceDbContext _dbContext;
 
@@ -15,13 +15,11 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
         _dbContext = dbContext;
     }
 
-    public async Task<UpsertAccountCommandResponse> Validate(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
+    public async Task<UpsertAccountCommandResponse> ValidateAsync(UpsertAccountCommandRequest request, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
         var response = new UpsertAccountCommandResponse();
 
-        var accountTypeExists = (await _dbContext.GetByIdAsync<AccountType>(
-            request.UpsertAccountDto.AccountTypeId,
-            cancellationToken)) != null; // TODO: ExistsAsync
+        var accountTypeExists = await _dbContext.ExistsAsync<AccountType>(request.UpsertAccountDto.AccountTypeId, cancellationToken);
 
         if (!accountTypeExists)
         {
@@ -29,9 +27,7 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
             return response;
         }
 
-        var currencyExists = (await _dbContext.GetByIdAsync<Currency>(
-            request.UpsertAccountDto.CurrencyId,
-            cancellationToken)) != null;// TODO: ExistsAsync
+        var currencyExists = await _dbContext.ExistsAsync<Currency>(request.UpsertAccountDto.CurrencyId, cancellationToken);
 
         if (!currencyExists)
         {
@@ -79,7 +75,9 @@ public class UpsertAccountCommandValidator : IUpsertAccountCommandValidator
 
         var duplicateAccounts = await _dbContext
             .Set<Account>()
+            .AsNoTracking()
             .Where(_ => _.UserId == currentUserContext.CurrentUser.Id)
+            .Select(_ => new { _.Id, _.AccountNumber, _.AccountTypeId })
             .ToListAsync(cancellationToken);
 
         foreach (var duplicateAccount in duplicateAccounts

@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace mark.davison.finance.shared.commands.test.Scenarios.UpsertAccount.Processors;
+﻿namespace mark.davison.finance.shared.commands.test.Scenarios.UpsertAccount;
 
 [TestClass]
 public class UpsertAccountCommandProcessorTests
@@ -15,7 +13,7 @@ public class UpsertAccountCommandProcessorTests
     public UpsertAccountCommandProcessorTests()
     {
         _token = CancellationToken.None;
-        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+        _dbContext = DbContextHelpers.CreateInMemory(_ => new FinanceDbContext(_));
         _currentUserContextMock = new(MockBehavior.Strict);
         _dateService = new(MockBehavior.Strict);
         _createTransactionHandlerMock = new(MockBehavior.Strict);
@@ -74,7 +72,7 @@ public class UpsertAccountCommandProcessorTests
             })
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         var persistedAccount = await _dbContext.GetByIdAsync<Account>(request.UpsertAccountDto.Id, _token);
 
@@ -107,7 +105,7 @@ public class UpsertAccountCommandProcessorTests
                 It.IsAny<CancellationToken>()))
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         _createTransactionHandlerMock
             .Verify(
@@ -147,7 +145,7 @@ public class UpsertAccountCommandProcessorTests
             .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) => new CreateTransactionResponse())
             .Verifiable();
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         _createTransactionHandlerMock
             .Verify(
@@ -205,7 +203,7 @@ public class UpsertAccountCommandProcessorTests
         await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         var fetchedTransaction = await _dbContext.GetByIdAsync<Transaction>(transaction.Id, _token);
         var fetchedTransactionJournal = await _dbContext.GetByIdAsync<Transaction>(transaction.TransactionJournal.Id, _token);
@@ -265,7 +263,7 @@ public class UpsertAccountCommandProcessorTests
         await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
         await _dbContext.SaveChangesAsync(_token);
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         {
             var persitedTransactions = await _dbContext
@@ -341,7 +339,7 @@ public class UpsertAccountCommandProcessorTests
         await _dbContext.AddAsync(transaction.TransactionJournal.TransactionGroup, _token);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        await _upsertAccountCommandProcessor.Process(request, new UpsertAccountCommandResponse(), _currentUserContextMock.Object, _token);
+        await _upsertAccountCommandProcessor.ProcessAsync(request, _currentUserContextMock.Object, _token);
 
         {
             var persitedTransactions = await _dbContext

@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.shared.commands.test.Scenarios.UpsertAccount.Validators;
+﻿namespace mark.davison.finance.shared.commands.test.Scenarios.UpsertAccount;
 
 [TestClass]
 public class UpsertAccountCommandValidatorTests
@@ -14,7 +14,7 @@ public class UpsertAccountCommandValidatorTests
     public UpsertAccountCommandValidatorTests()
     {
         _token = CancellationToken.None;
-        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+        _dbContext = DbContextHelpers.CreateInMemory(_ => new FinanceDbContext(_));
         _currentUserContext = new(MockBehavior.Strict);
 
         _accountTypes = new()
@@ -56,7 +56,7 @@ public class UpsertAccountCommandValidatorTests
                 AccountTypeId = Guid.NewGuid()
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -76,7 +76,7 @@ public class UpsertAccountCommandValidatorTests
             }
         };
 
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -96,7 +96,7 @@ public class UpsertAccountCommandValidatorTests
                 CurrencyId = Currency.NZD
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -132,7 +132,7 @@ public class UpsertAccountCommandValidatorTests
             }
         };
 
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -165,7 +165,7 @@ public class UpsertAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -197,7 +197,7 @@ public class UpsertAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -240,7 +240,7 @@ public class UpsertAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -264,7 +264,7 @@ public class UpsertAccountCommandValidatorTests
                 AccountNumber = AccountNumber
             }
         };
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
@@ -287,7 +287,7 @@ public class UpsertAccountCommandValidatorTests
             }
         };
 
-        var response = await _upsertAccountCommandValidator.Validate(
+        var response = await _upsertAccountCommandValidator.ValidateAsync(
             request,
             _currentUserContext.Object,
             CancellationToken.None);
