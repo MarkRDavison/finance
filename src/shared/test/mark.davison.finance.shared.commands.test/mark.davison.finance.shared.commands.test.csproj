@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JunitXml.TestLogger" Version="3.1.12" />
+    <PackageReference Include="markdavison.common.server.test" Version="8.4.7" />
+    <PackageReference Include="markdavison.common.test" Version="8.4.7" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
+    <PackageReference Include="Moq" Version="[4.18.4]" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.3.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
+    <ProjectReference Include="..\..\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
+    <ProjectReference Include="..\..\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
+  </ItemGroup>
+
+</Project>

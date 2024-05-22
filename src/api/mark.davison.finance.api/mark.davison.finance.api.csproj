@@ -20,8 +20,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
     <ProjectReference Include="..\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj" />

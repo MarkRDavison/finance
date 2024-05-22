@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.commands\mark.davison.finance.bff.commands.csproj" />
-    <ProjectReference Include="..\..\shared\mark.davison.finance.bff.queries\mark.davison.finance.bff.queries.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />
   </ItemGroup>
 
