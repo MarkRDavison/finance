@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.shared.commands.test.Scenarios.CreateTag.Validators;
+﻿namespace mark.davison.finance.shared.commands.test.Scenarios.CreateTag;
 
 [TestClass]
 public class CreateTagCommandValidatorTests
@@ -11,7 +11,7 @@ public class CreateTagCommandValidatorTests
     public CreateTagCommandValidatorTests()
     {
         _userId = Guid.NewGuid();
-        _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
+        _dbContext = DbContextHelpers.CreateInMemory(_ => new FinanceDbContext(_));
         _currentUserContext = new(MockBehavior.Strict);
         _validator = new((IFinanceDbContext)_dbContext);
         _currentUserContext.Setup(_ => _.Token).Returns("");
@@ -26,7 +26,7 @@ public class CreateTagCommandValidatorTests
             Name = "Tag Name"
         };
 
-        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+        var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeTrue();
         response.Errors.Should().BeEmpty();
@@ -49,7 +49,7 @@ public class CreateTagCommandValidatorTests
         }, CancellationToken.None);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+        var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeFalse();
         response.Errors.Should().ContainMatch(CreateTagCommandValidator.VALIDATION_DUPLICATE_TAG_NAME);
@@ -72,7 +72,7 @@ public class CreateTagCommandValidatorTests
         }, CancellationToken.None);
         await _dbContext.SaveChangesAsync(CancellationToken.None);
 
-        var response = await _validator.Validate(request, _currentUserContext.Object, CancellationToken.None);
+        var response = await _validator.ValidateAsync(request, _currentUserContext.Object, CancellationToken.None);
 
         response.Success.Should().BeTrue();
         response.Errors.Should().BeEmpty();

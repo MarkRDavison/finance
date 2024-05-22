@@ -20,7 +20,6 @@ global using mark.davison.finance.shared.commands.Scenarios.CreateAccount.Valida
 global using mark.davison.finance.shared.commands.Scenarios.CreateCategory;
 global using mark.davison.finance.shared.commands.Scenarios.CreateCategory.Validators;
 global using mark.davison.finance.shared.commands.Scenarios.CreateTag;
-global using mark.davison.finance.shared.commands.Scenarios.CreateTag.Validators;
 global using mark.davison.finance.shared.commands.Scenarios.CreateTransaction.Common;
 global using mark.davison.finance.shared.commands.Scenarios.CreateTransaction.Deposit;
 global using mark.davison.finance.shared.commands.Scenarios.CreateTransaction.Transfer;
