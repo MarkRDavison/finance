@@ -76,6 +76,7 @@ dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrati
 dotnet ef migrations add RemoveBank --project .\api\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj
 
 #
+Update dockerfiles to use chiseled images
 Remove Moq
 Move all command/query to ValidateAndProcess handlers
 Update all cqrs to use proper things, Reponse<T> etc
