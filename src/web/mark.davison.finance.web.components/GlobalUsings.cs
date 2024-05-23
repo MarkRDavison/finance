@@ -1,8 +1,6 @@
 ﻿global using Fluxor;
 global using mark.davison.common.client.abstractions.Authentication;
-global using mark.davison.common.client.abstractions.CQRS;
 global using mark.davison.common.client.abstractions.Form;
-global using mark.davison.common.client.abstractions.Repository;
 global using mark.davison.common.client.abstractions.Store;
 global using mark.davison.common.client.Components;
 global using mark.davison.common.client.Form;
@@ -24,6 +22,7 @@ global using mark.davison.finance.web.features.Store.AccountUseCase;
 global using mark.davison.finance.web.features.Store.CategoryUseCase;
 global using mark.davison.finance.web.features.Store.StartupUseCase;
 global using mark.davison.finance.web.features.Store.TransactionUseCase;
+global using mark.davison.finance.web.services.AppContext;
 global using mark.davison.finance.web.services.Injection;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;

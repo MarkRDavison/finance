@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="35.5.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="8.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
     <PackageReference Include="Microsoft.Playwright.MSTest" Version="1.44.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.3.1" />
@@ -18,6 +22,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Modals\" />
+    <Folder Include="Scenarios\" />
   </ItemGroup>
 
 </Project>

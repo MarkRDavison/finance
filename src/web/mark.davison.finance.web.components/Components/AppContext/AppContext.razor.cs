@@ -2,4 +2,6 @@
 
 public partial class AppContext
 {
+    [Inject]
+    public required IAppContextService AppContextService { get; set; }
 }
