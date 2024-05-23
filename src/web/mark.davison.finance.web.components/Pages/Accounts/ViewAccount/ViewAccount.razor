@@ -5,7 +5,7 @@
 
 <MudPaper Class="pa-4">
     <MudStack Row="true" Class="pa-10">
-        <MudText Typo="Typo.h4">@_currentAccount?.Name</MudText>
+        <MudText data-testid="@DataTestIds.ViewAccountTitle" Typo="Typo.h4">@_currentAccount?.Name</MudText>
         <MudTooltip Text="Add">@*What? Transaction where this defaults to source/dest????*@
             <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" />
         </MudTooltip>

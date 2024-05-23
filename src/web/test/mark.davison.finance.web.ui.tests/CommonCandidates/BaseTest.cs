@@ -1,10 +1,4 @@
-﻿using Bogus;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Playwright.MSTest;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Diagnostics;
-
-namespace mark.davison.finance.web.ui.tests.CommonCandidates;
+﻿namespace mark.davison.finance.web.ui.tests.CommonCandidates;
 
 [TestClass]
 public abstract class BaseTest : PlaywrightTest, IAsyncDisposable
@@ -59,11 +53,14 @@ public abstract class BaseTest : PlaywrightTest, IAsyncDisposable
 
     protected AppSettings AppSettings { get; }
     protected AuthenticationHelper AuthenticationHelper { get; }
+    protected DashboardPage Dashboard => new(CurrentPage, AppSettings);
     protected IPage CurrentPage { get; set; } = default!;
 
     protected virtual bool Debug => Debugger.IsAttached;
 
     protected string GetSentence(int words = 3) => _faker.Lorem.Sentence(words);
     protected string GetNoun() => _faker.Hacker.Noun();
+    protected string MakeAccountNumber() => _faker.Finance.Account();
+    protected string MakeAccountName() => _faker.Finance.AccountName();
 
 }

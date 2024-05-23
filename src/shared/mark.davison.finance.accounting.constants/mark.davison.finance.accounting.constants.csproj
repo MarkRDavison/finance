@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\mark.davison.finance.shared.constants\mark.davison.finance.shared.constants.csproj" />
+  </ItemGroup>
+
 </Project>

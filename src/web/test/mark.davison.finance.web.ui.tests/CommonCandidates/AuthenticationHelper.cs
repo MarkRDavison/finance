@@ -29,7 +29,7 @@ public class AuthenticationHelper
         await button.ClickAsync();
 
         await Assertions.Expect(page).ToHaveURLAsync(new Regex(_appSettings.ENVIRONMENT.WEB_ORIGIN));
-        await Assertions.Expect(page).ToHaveTitleAsync("Fanfic", new PageAssertionsToHaveTitleOptions
+        await Assertions.Expect(page).ToHaveTitleAsync("Zeno Finance", new PageAssertionsToHaveTitleOptions
         {
             Timeout = 10_000
         });// TODO: Constants
