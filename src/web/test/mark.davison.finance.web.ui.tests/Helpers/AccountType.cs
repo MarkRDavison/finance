@@ -2,5 +2,7 @@
 
 public enum AccountType
 {
-    Asset
+    Asset,
+    Expense,
+    Revenue
 }

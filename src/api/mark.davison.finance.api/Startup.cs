@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.api;
+﻿using mark.davison.finance.data.helpers.Seeders;
+
+namespace mark.davison.finance.api;
 
 [UseCQRSServer(typeof(DtosRootType), typeof(CommandsRootType), typeof(QueriesRootType))]
 public class Startup
@@ -37,8 +39,8 @@ public class Startup
             .AddRedis(AppSettings.REDIS, AppSettings.SECTION, AppSettings.PRODUCTION_MODE)
             .UseFinancePersistence() // TODO: Include optional defaulters in IFinanceDbContext wrapper????
             .UseUserApplicationContext()
-            .AddCommandCQRS(); // TODO: Remove when ValidateAndProcess implemented
-
+            .AddCommandCQRS()
+            .UseDataSeeders();
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -74,6 +76,16 @@ public class Startup
                     .MapGetById<User>()
                     .MapPost<User>()
                     .MapCQRSEndpoints();
+
+                endpoints
+                    .MapPost("/api/seed", async (HttpContext context) =>
+                    {
+                        var accountSeeder = context.RequestServices.GetRequiredService<AccountSeeder>();
+
+                        await accountSeeder.CreateStandardAccounts();
+
+                        return Results.Ok();
+                    });
             });
 
     }

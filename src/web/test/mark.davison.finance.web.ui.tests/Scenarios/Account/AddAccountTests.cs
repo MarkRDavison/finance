@@ -3,21 +3,24 @@
 [TestClass]
 public sealed class AddAccountTests : LoggedInTest
 {
-    [TestMethod]
-    public async Task AddAssertAccountWorks()
+    [DataRow(AccountType.Asset)]
+    [DataRow(AccountType.Expense)]
+    [DataRow(AccountType.Revenue)]
+    [DataTestMethod]
+    public async Task AddAccountWorks(AccountType accountType)
     {
         var accountName = MakeAccountName();
         var accountNumber = MakeAccountNumber();
 
         var createAccount = await Dashboard
             .OpenQuickCreate()
-            .ThenAsync(_ => _.CreateAssetAccount());
+            .ThenAsync(_ => _.CreateAccount(accountType));
 
         var newAccount = await createAccount
-            .FillName(accountName)
-            .ThenAsync(_ => _.FillAccountNumber(accountNumber))
-            .ThenAsync(_ => _.FillCurrency(CurrencyConstants.NZD))
-            .ThenAsync(_ => _.Submit());
+            .Submit(new NewAccountInfo(
+                accountName,
+                accountNumber,
+                CurrencyConstants.NZD));
 
         newAccount.ExpectAccountName(accountName);
     }

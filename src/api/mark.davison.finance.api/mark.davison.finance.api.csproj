@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="markdavison.common.server" Version="8.4.7" />
-    <PackageReference Include="markdavison.common.source.generators" Version="8.4.7" />
+    <PackageReference Include="markdavison.common.server" Version="8.4.10" />
+    <PackageReference Include="markdavison.common.source.generators" Version="8.4.10" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.DataProtection.StackExchangeRedis" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.5" />
@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\shared\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.data.helpers\mark.davison.finance.data.helpers.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
     <ProjectReference Include="..\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj" />

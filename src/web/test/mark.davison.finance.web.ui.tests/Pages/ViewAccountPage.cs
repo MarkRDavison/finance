@@ -3,6 +3,7 @@
 public sealed class ViewAccountPage : BasePage
 {
     private readonly string _title;
+
     private ViewAccountPage(IPage page, AppSettings appSettings, string title) : base(page, appSettings)
     {
         _title = title;

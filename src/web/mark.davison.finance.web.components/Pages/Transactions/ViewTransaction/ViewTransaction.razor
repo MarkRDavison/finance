@@ -4,7 +4,7 @@
 
 <MudPaper>
     <MudStack Row="true" Class="pa-10">
-        <MudText Typo="Typo.h4">View Transaction</MudText>
+        <MudText data-testid="@DataTestIds.ViewTransactionTitle" Typo="Typo.h4">View Transaction</MudText>
         <MudTooltip Text="Edit">
             <MudIconButton Icon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" />
         </MudTooltip>
@@ -20,8 +20,10 @@
                             <MudItem xs="6">
                                 Type
                             </MudItem>
-                            <MudItem xs="6">
+                            <MudItem xs="6">                                
+                                <p data-testid="@DataTestIds.ViewTransactionType">
                                 @_transactionType
+                                </p>
                             </MudItem>
                             @if (!string.IsNullOrEmpty(_transactionDescription))
                             {
@@ -29,7 +31,9 @@
                                     Description
                                 </MudItem>
                                 <MudItem xs="6">
+                                    <p data-testid="@DataTestIds.ViewTransactionDescription">
                                     @_transactionDescription
+                                    </p>
                                 </MudItem>
                             }
                             @if (_transactionDate != null)
@@ -38,7 +42,9 @@
                                     Date
                                 </MudItem>
                                 <MudItem xs="6">
+                                    <p data-testid="@DataTestIds.ViewTransactionDate">
                                     @_transactionDate.Value.ToString("MMMM d, yyyy")
+                                    </p>
                                 </MudItem>
                             }
                         </MudGrid>

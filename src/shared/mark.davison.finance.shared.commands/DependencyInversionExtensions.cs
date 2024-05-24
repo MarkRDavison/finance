@@ -3,10 +3,12 @@
 [ExcludeFromCodeCoverage]
 public static class DependencyInversionExtensions
 {
-    public static void AddCommandCQRS(this IServiceCollection services)
+    public static IServiceCollection AddCommandCQRS(this IServiceCollection services)
     {
         services.AddTransient<ICreateTransactionValidatorStrategyFactory, CreateTransactionValidatorStrategyFactory>();
         services.AddTransient<ICreateTransctionValidationContext, CreateTransctionValidationContext>();
+
+        return services;
     }
 }
 

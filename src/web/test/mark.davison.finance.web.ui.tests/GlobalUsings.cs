@@ -1,6 +1,7 @@
 global using Bogus;
 global using FluentAssertions;
 global using mark.davison.finance.accounting.constants;
+global using mark.davison.finance.data.helpers.test.constants;
 global using mark.davison.finance.shared.constants;
 global using mark.davison.finance.web.ui.tests.CommonCandidates;
 global using mark.davison.finance.web.ui.tests.Configuration;

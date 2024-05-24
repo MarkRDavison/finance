@@ -13,9 +13,8 @@ public class AccountSeeder
 
     public Task<UpsertAccountCommandResponse> CreateAccount(UpsertAccountDto account)
     {
-        using var scope = _serviceProvider.CreateScope();
-        var handler = scope.ServiceProvider.GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
-        var currentUserContext = scope.ServiceProvider.GetRequiredService<ICurrentUserContext>();
+        var handler = _serviceProvider.GetRequiredService<ICommandHandler<UpsertAccountCommandRequest, UpsertAccountCommandResponse>>();
+        var currentUserContext = _serviceProvider.GetRequiredService<ICurrentUserContext>();
 
         return handler.Handle(new() { UpsertAccountDto = account }, currentUserContext, CancellationToken.None);
     }
@@ -37,50 +36,50 @@ public class AccountSeeder
         var assetAccount1 = new UpsertAccountDto
         {
             Id = AccountTestConstants.AssetAccount1Id,
-            AccountNumber = "Asset 1",
+            AccountNumber = AccountTestConstants.AssetAccount1AccountNumber,
             AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
-            Name = "Test Asset 1"
+            Name = AccountTestConstants.AssetAccount1Name
         };
         var assetAccount2 = new UpsertAccountDto
         {
             Id = AccountTestConstants.AssetAccount2Id,
-            AccountNumber = "Asset 2",
+            AccountNumber = AccountTestConstants.AssetAccount2AccountNumber,
             AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
-            Name = "Test Asset 2"
+            Name = AccountTestConstants.AssetAccount2Name
         };
         var revenueAccount = new UpsertAccountDto
         {
             Id = AccountTestConstants.RevenueAccount1Id,
-            AccountNumber = "Revenue 1",
+            AccountNumber = AccountTestConstants.RevenueAccount1AccountNumber,
             AccountTypeId = AccountTypeConstants.Revenue,
             CurrencyId = Currency.NZD,
-            Name = "Test Revenue 1"
+            Name = AccountTestConstants.RevenueAccount1Name
         };
         var expenseAccount1 = new UpsertAccountDto
         {
             Id = AccountTestConstants.ExpenseAccount1Id,
-            AccountNumber = "Expense 1",
+            AccountNumber = AccountTestConstants.ExpenseAccount1AccountNumber,
             AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
-            Name = "Test Expense 1"
+            Name = AccountTestConstants.ExpenseAccount1Name
         };
         var expenseAccount2 = new UpsertAccountDto
         {
             Id = AccountTestConstants.ExpenseAccount2Id,
-            AccountNumber = "Expense 2",
+            AccountNumber = AccountTestConstants.ExpenseAccount2AccountNumber,
             AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
-            Name = "Test Expense 2"
+            Name = AccountTestConstants.ExpenseAccount2Name
         };
         var expenseAccount3 = new UpsertAccountDto
         {
             Id = AccountTestConstants.ExpenseAccount3Id,
-            AccountNumber = "Expense 3",
+            AccountNumber = AccountTestConstants.ExpenseAccount3AccountNumber,
             AccountTypeId = AccountTypeConstants.Expense,
             CurrencyId = Currency.NZD,
-            Name = "Test Expense 3"
+            Name = AccountTestConstants.ExpenseAccount3Name
         };
 
         await CreateAccount(assetAccount1, assetAccount2, revenueAccount, expenseAccount1, expenseAccount2, expenseAccount3);

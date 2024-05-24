@@ -1,4 +1,7 @@
-﻿namespace mark.davison.finance.bff;
+﻿using mark.davison.common.server.abstractions.Identification;
+using Microsoft.Net.Http.Headers;
+
+namespace mark.davison.finance.bff;
 
 public class Startup
 {
@@ -19,12 +22,28 @@ public class Startup
 
         services
             .AddCors()
-            .UseCookieOidcAuth(AppSettings.AUTH, AppSettings.CLAIMS, AppSettings.API_ORIGIN)
+            .UseCookieOidcAuth(
+                AppSettings.AUTH,
+                AppSettings.CLAIMS, _ =>
+                {
+                    if (!AppSettings.PRODUCTION_MODE)
+                    {
+                        _.OnUserCreated = async (IServiceProvider services, User user, string access_token) =>
+                        {
+                            var client = services.GetRequiredService<IHttpClientFactory>().CreateClient("INIT");
+
+                            client.BaseAddress = new Uri(AppSettings.API_ORIGIN);
+                            client.DefaultRequestHeaders.Add(HeaderNames.Authorization, $"Bearer {access_token}");
+
+                            await client.PostAsync("/api/seed", null);
+                        };
+                    }
+                },
+                AppSettings.API_ORIGIN)
             .AddHealthCheckServices()
             .AddAuthorization()
             .AddEndpointsApiExplorer()
             .AddSwaggerGen();
-
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

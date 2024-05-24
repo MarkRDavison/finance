@@ -6,12 +6,12 @@
     @for (var index = 0; index < FormViewModel.Items.Count; ++index)
     {
         int indexActual = index;
-        <MudPaper Class="mb-4 pa-6">
+        <MudPaper Class="mb-4 pa-6" id="@Id("edit-transaction-form", indexActual)">
             <div class="d-flex justify-space-between align-center">
                 <MudText Typo="Typo.body2">@GetSplitTitle(indexActual)</MudText>
                 @if (FormViewModel.Items.Count > 1)
                 {
-                <MudIconButton Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => FormViewModel.RemoveSplit(FormViewModel.Items[indexActual].Id))" />
+                    <MudIconButton data-testid="@DataTestIds.EditTransactionDeleteSplit" Icon="@Icons.Material.Filled.Delete" Variant="Variant.Filled" Color="Color.Error" OnClick="@(() => FormViewModel.RemoveSplit(FormViewModel.Items[indexActual].Id))" />
                 }
             </div>
 
@@ -21,12 +21,12 @@
         
             @if (indexActual == 0)
             {
-                <MudDatePicker id="@Id("edit-transaction-form-date", indexActual)" Label="Date" @bind-Date="FormViewModel.Date" For="@(() => FormViewModel.Date)" />
+                <MudDatePicker id="@Id("edit-transaction-form-date", indexActual)" ImmediateText Label="Date" @bind-Date="FormViewModel.Date" For="@(() => FormViewModel.Date)" />
             }
 
             <NumericField id="@Id("edit-transaction-form-amount", indexActual)" HideSpinButtons Label="Amount" @bind-Value="FormViewModel.Items[indexActual].Amount" AllowNegative="false" DecimalPlaces="@GetDecimalPlacesForCurrencyId(FormViewModel.Items[indexActual].SourceAccountId)" For="@(() => FormViewModel.Items[indexActual].Amount)" />
 
-             <Dropdown Id="@Id("edit-transaction-form-category", indexActual)" Label="Category" Items="@_categoryItems" @bind-Value="FormViewModel.Items[indexActual].CategoryId" For="@(() => FormViewModel.Items[indexActual].CategoryId)" />
+            <Dropdown Id="@Id("edit-transaction-form-category", indexActual)" Label="Category" Items="@_categoryItems" @bind-Value="FormViewModel.Items[indexActual].CategoryId" For="@(() => FormViewModel.Items[indexActual].CategoryId)" />
         </MudPaper>
     }
 
@@ -35,7 +35,14 @@
         <MudDivider DividerType="DividerType.FullWidth" Class="my-6" />
         
         <MudPaper Class="mb-4 pa-6">
-            <MudTextField id="edit-transaction-form-split-description" T="string" Label="Split transaction description" Required="true" @bind-Text="FormViewModel.SplitDescription" For="@(() => FormViewModel.SplitDescription)" />
+            <MudTextField 
+                data-testid="@DataTestIds.EditTransactionSplitDescription" 
+                id="edit-transaction-form-split-description" 
+                T="string" 
+                Immediate
+                Label="Split transaction description" 
+                Required="true" @bind-Text="FormViewModel.SplitDescription" 
+                For="@(() => FormViewModel.SplitDescription)" />
         </MudPaper>
     }
 

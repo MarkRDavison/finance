@@ -1,5 +1,7 @@
 ﻿namespace mark.davison.finance.web.ui.tests.Pages;
 
+public sealed record NewAccountInfo(string Name, string AccountNumber, string Currency);
+
 public sealed class NewAccountPage : BasePage
 {
     private readonly AccountType _accountType;
@@ -20,20 +22,12 @@ public sealed class NewAccountPage : BasePage
         _accountType = accountType;
     }
 
-    public Task<NewAccountPage> FillName(string value) => FillField(NameLabel, value);
-    public Task<NewAccountPage> FillAccountNumber(string value) => FillField(AccountNumberLabel, value);
-    public Task<NewAccountPage> FillCurrency(string value) => SelectField(CurrencyLabel, value);
-
-    private async Task<NewAccountPage> FillField(string label, string value)
+    public async Task<ViewAccountPage> Submit(NewAccountInfo info)
     {
-        await Page.GetByLabel(label).FillAsync(value);
-        return this;
-    }
-
-    private async Task<NewAccountPage> SelectField(string label, string value)
-    {
-        await ComponentHelpers.SelectAsync(Page, label, value);
-        return this;
+        await FillField(this, NameLabel, info.Name);
+        await FillField(this, AccountNumberLabel, info.AccountNumber);
+        await SelectField(this, CurrencyLabel, info.Currency);
+        return await Submit();
     }
 
     public async Task<ViewAccountPage> Submit()

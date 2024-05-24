@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
     <ProjectReference Include="..\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
-    <ProjectReference Include="..\test\mark.davison.finance.data.helpers.test.constants\mark.davison.finance.data.helpers.test.constants.csproj" />
   </ItemGroup>
 
 </Project>

@@ -20,19 +20,21 @@ public sealed class QuickCreateOverlay
         return overlay;
     }
 
-    public Task<NewAccountPage> CreateAssetAccount() => CreateAccount(AccountType.Asset);
-
     public async Task<NewAccountPage> CreateAccount(AccountType accountType)
     {
-        await _page.GetByText($"New {accountType.ToString().ToLower()} account").ClickAsync();
+        var heading = $"New {accountType.ToString().ToLower()} account";
 
-        var newAccountPage = new NewAccountPage(_page, _appSettings, accountType);
+        await _page.GetByText(heading).ClickAsync();
 
-        await _page.GetByRole(AriaRole.Heading, new PageGetByRoleOptions
-        {
-            Name = $"New {accountType} account"
-        }).WaitForAsync();
+        return new NewAccountPage(_page, _appSettings, accountType);
+    }
 
-        return newAccountPage;
+    public async Task<NewTransactionPage> CreateTransaction(TransactionType transactionType)
+    {
+        var heading = $"New {transactionType.ToString().ToLower()}";
+
+        await _page.GetByText(heading).ClickAsync();
+
+        return new NewTransactionPage(_page, _appSettings, transactionType);
     }
 }
