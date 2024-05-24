@@ -1,34 +1,47 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IAuthenticationContext _authContext
+@inject IStoreHelper _storeHelper
+@inherits LayoutComponentBase
 
 <MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
-    <MudAppBar>
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudSpacer />
-        <AppContext />
-        <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
-    </MudAppBar>
-    <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
-        <NavigationMenu />
-    </MudDrawer>
-    <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
-        <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
-    </MudDrawer>
-    <MudMainContent>
-        <MudContainer>
-            <AppBody>
-                @Body
-            </AppBody>
-        </MudContainer>
-    </MudMainContent>
-</MudLayout>
+<ActivityMonitor Loading="@_loading">
+    <LoadingContent>
+        <div class="entire-app-loading">
+        </div>
+    </LoadingContent>
+    <ChildContent>
+        @if (_authContext.IsAuthenticated)
+        {
+            <MudLayout>
+                <MudAppBar>
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                    <MudSpacer />
+                    <AppContext />
+                    <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
+                </MudAppBar>
+                <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
+                    <NavigationMenu />
+                </MudDrawer>
+                <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
+                    <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
+                </MudDrawer>
+                <MudMainContent>
+                    <MudContainer>
+                        @Body
+                    </MudContainer>
+                </MudMainContent>
+            </MudLayout>
+        }
+    </ChildContent>
+</ActivityMonitor>
+
 
 @code {
-    bool _drawerOpen = true;
-    bool _quickAddOpen = false;
+    private bool _loading;
+    private bool _drawerOpen = true;
+    private bool _quickAddOpen = false;
     private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
     
@@ -40,6 +53,25 @@
     {
         _quickAddOpen = !_quickAddOpen;
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _loading = true;
+
+        await InvokeAsync(StateHasChanged);
+
+        if (_authContext.IsAuthenticated)
+        {
+            await _storeHelper.DispatchAndWaitForResponse<FetchStartupAction, FetchStartupActionResponse>(new FetchStartupAction());
+        }
+
+        await base.OnInitializedAsync();
+
+        _loading = !_authContext.IsAuthenticated;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender && _mudThemeProvider != null)

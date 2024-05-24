@@ -2,7 +2,7 @@
 @inherits FluxorComponent
 @inject IStateHelper _stateHelper
 
-<MudPaper>
+<MudPaper Class="pa-10">
     <MudStack Row="true" Class="pa-10">
         <MudText data-testid="@DataTestIds.ViewTransactionTitle" Typo="Typo.h4">View Transaction</MudText>
         <MudTooltip Text="Edit">
@@ -66,23 +66,7 @@
                                 Source accounts
                             </MudItem>
                             <MudItem xs="6">
-                                @{
-                                    bool first = true;
-                                }
-                                @*TODO: Extract to helper component*@
-                                @foreach (var linkInfo in _sourceAccounts)
-                                {
-                                    if (first)
-                                    {
-                                        first = false;
-                                    }
-                                    else
-                                    {
-                                        var comma = ", ";
-                                        <span>@comma</span>
-                                    }
-                                    <span><MudLink Href="@linkInfo.Href">@linkInfo.Text</MudLink></span>
-                                }
+                                <SourceAccounts Accounts="@_sourceAccounts" />
                             </MudItem>
                             <MudItem xs="6">
                                 Total amount
@@ -95,7 +79,7 @@
                 </MudCardHeader>
             </MudCard>
         </MudItem>
-        @if (_items.Count() > 2)
+        @if (_items.Count() > 1)
         {
             <MudItem sm="12" Class="pa-6">
                 <MudText Typo="Typo.h5">Splits</MudText>

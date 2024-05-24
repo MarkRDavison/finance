@@ -2,14 +2,15 @@
 
 public partial class EditTransactionForm
 {
-
     [Parameter, EditorRequired]
     public required bool Processing { get; set; }
 
     [Inject]
     public required IState<StartupState> StartupState { get; set; }
+
     [Inject]
     public required IState<AccountState> AccountState { get; set; }
+
     [Inject]
     public required IState<CategoryState> CategoryState { get; set; }
 
@@ -77,12 +78,20 @@ public partial class EditTransactionForm
     //}
 
     private async Task EnsureStateLoaded()
-    {// TODO: Need to throttle these
-        await Task.WhenAll(
-            _stateHelper.FetchAccountList(false),
-            _stateHelper.FetchCategoryList()
-        );
+    {
+        // TODO: Need to throttle these
+        // TODO: Base class to encapsulate loading+activity monitor
+        //          - ActivityMonitoredComponentWithState???
+        // TODO: Parallel request are unreliable...
+        await _stateHelper.FetchAccountList(false);
+        await _stateHelper.FetchCategoryList();
+
+        _loading = false;
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private static string Id(string id, int index) => $"{id}-{index}";
+
+    private bool _loading = true;
 }

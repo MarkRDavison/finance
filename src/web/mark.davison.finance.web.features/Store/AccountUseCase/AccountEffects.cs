@@ -14,7 +14,6 @@ public sealed class AccountEffects
     [EffectMethod]
     public async Task HandleFetchAccountsActionAsync(FetchAccountsAction action, IDispatcher dispatcher)
     {
-        // TODO: Rename query req/res
         var queryResponse = await _repository.Get<AccountListQueryResponse, AccountListQueryRequest>(CancellationToken.None);
 
         // TODO: Helper to remove the action id and value from 2 more lines

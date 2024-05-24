@@ -1,3 +1,5 @@
 ﻿<div onclick="@(() => Console.WriteLine("TODO: Select date range"))">
     @* <DateRange @bind-Start="_appContext.RangeStart" @bind-End="_appContext.RangeEnd" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Mark Davison</span> *@
+
+    <span data-testid="@DataTestIds.Username">@AuthenticationContext.User?.preferred_username</span>
 </div>

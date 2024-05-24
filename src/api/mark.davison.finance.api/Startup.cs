@@ -77,15 +77,33 @@ public class Startup
                     .MapPost<User>()
                     .MapCQRSEndpoints();
 
-                endpoints
-                    .MapPost("/api/seed", async (HttpContext context) =>
-                    {
-                        var accountSeeder = context.RequestServices.GetRequiredService<AccountSeeder>();
+                if (!AppSettings.PRODUCTION_MODE)
+                {
+                    endpoints
+                        .MapPost("/api/seed", async (HttpContext context) =>
+                        {
+                            var accountSeeder = context.RequestServices.GetRequiredService<AccountSeeder>();
 
-                        await accountSeeder.CreateStandardAccounts();
+                            await accountSeeder.CreateStandardAccounts();
 
-                        return Results.Ok();
-                    });
+                            return Results.Ok();
+                        });
+
+                    endpoints
+                        .MapPost("/api/reset", async (HttpContext context, CancellationToken cancellationToken) =>
+                        {
+                            var dbContext = context.RequestServices.GetRequiredService<IFinanceDbContext>();
+
+                            var users = await dbContext
+                                .Set<User>()
+                                .Where(_ => _.Id != Guid.Empty)
+                                .ToListAsync(cancellationToken);
+                            await dbContext.DeleteEntitiesAsync(users, cancellationToken);
+                            await dbContext.SaveChangesAsync(cancellationToken);
+
+                            return Results.Ok();
+                        }).AllowAnonymous();
+                }
             });
 
     }

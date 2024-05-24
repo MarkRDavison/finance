@@ -1,5 +1,4 @@
-﻿@using mark.davison.finance.web.components.Pages.Transactions.EditTransaction.Common
-@attribute [Route(Routes.TransactionNew)]
+﻿@attribute [Route(Routes.TransactionNew)]
 @inherits FluxorComponent
 @inject IStateHelper _stateHelper
 @inject IClientNavigationManager _navigation
@@ -23,8 +22,7 @@
         }
         else
         {
-            var t = "Create Transaction";
-            @t
+            <span>Create Transaction</span>
         }
     </MudButton>
 </MudGrid>

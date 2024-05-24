@@ -49,13 +49,21 @@ public class AccountSeeder
             CurrencyId = Currency.NZD,
             Name = AccountTestConstants.AssetAccount2Name
         };
-        var revenueAccount = new UpsertAccountDto
+        var revenueAccount1 = new UpsertAccountDto
         {
             Id = AccountTestConstants.RevenueAccount1Id,
             AccountNumber = AccountTestConstants.RevenueAccount1AccountNumber,
             AccountTypeId = AccountTypeConstants.Revenue,
             CurrencyId = Currency.NZD,
             Name = AccountTestConstants.RevenueAccount1Name
+        };
+        var revenueAccount2 = new UpsertAccountDto
+        {
+            Id = AccountTestConstants.RevenueAccount2Id,
+            AccountNumber = AccountTestConstants.RevenueAccount2AccountNumber,
+            AccountTypeId = AccountTypeConstants.Revenue,
+            CurrencyId = Currency.NZD,
+            Name = AccountTestConstants.RevenueAccount2Name
         };
         var expenseAccount1 = new UpsertAccountDto
         {
@@ -82,7 +90,7 @@ public class AccountSeeder
             Name = AccountTestConstants.ExpenseAccount3Name
         };
 
-        await CreateAccount(assetAccount1, assetAccount2, revenueAccount, expenseAccount1, expenseAccount2, expenseAccount3);
+        await CreateAccount(assetAccount1, assetAccount2, revenueAccount1, revenueAccount2, expenseAccount1, expenseAccount2, expenseAccount3);
     }
 
 }

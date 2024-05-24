@@ -1,0 +1,17 @@
+﻿<div class="ma-auto" data-loading="@Loading">
+    @if (Loading)
+    {
+        @if (LoadingContent == null)
+        {
+            <MudProgressCircular Indeterminate Size="@Size" />
+        }
+        else
+        {
+            @LoadingContent
+        }
+    }
+    else
+    {
+        @ChildContent
+    }
+</div>

@@ -1,12 +1,13 @@
 ﻿namespace mark.davison.finance.web.ui.tests.CommonCandidates;
 
-public class AuthenticationHelper
+public partial class AuthenticationHelper
 {
     private readonly AppSettings _appSettings;
 
     private const string UsernameLabel = "Username or email";
     private const string Password = "Password";
     private const string ExpectedTitle = "Sign in";
+    private const string AppTitle = "Zeno Finance";
 
     public AuthenticationHelper(AppSettings appSettings)
     {
@@ -15,23 +16,63 @@ public class AuthenticationHelper
 
     public async Task EnsureLoggedIn(IPage page)
     {
-        // TODO: After upgrading to cookie auth, try not to have to log in unless you really need to 
-        await Assertions.Expect(page).ToHaveTitleAsync(new Regex(ExpectedTitle, RegexOptions.Compiled));
+        var username = string.Empty;
 
-        await page.GetByLabel(UsernameLabel).FillAsync(_appSettings.AUTH.USERNAME);
-        await page.GetByLabel(Password).FillAsync(_appSettings.AUTH.PASSWORD);
-
-        var button = page.GetByRole(AriaRole.Button, new PageGetByRoleOptions
+        try
         {
-            NameString = ButtonNames.SignIn
-        });
+            username = await page.GetByTestId(DataTestIds.Username).TextContentAsync(new LocatorTextContentOptions
+            {
+                Timeout = 2000.0f
+            });
+        }
+        catch (TimeoutException)
+        {
 
-        await button.ClickAsync();
+        }
+
+        if (string.IsNullOrEmpty(username))
+        {
+            bool requiresLogin;
+            try
+            {
+                await Assertions.Expect(page).ToHaveTitleAsync(ExpectedTitleRegex(), new PageAssertionsToHaveTitleOptions
+                {
+                    Timeout = 2000.0f
+                });
+                requiresLogin = true;
+            }
+            catch (TimeoutException)
+            {
+                throw;
+            }
+            catch (PlaywrightException e)
+            {
+                if (!e.Message.Contains($"Page title expected to be '{ExpectedTitle}'") ||
+                    !e.Message.Contains($"But was: '{AppTitle}'"))
+                {
+                    throw;
+                }
+                requiresLogin = false;
+            }
+
+            if (requiresLogin)
+            {
+                await page.GetByLabel(UsernameLabel).FillAsync(_appSettings.AUTH.USERNAME);
+                await page.GetByLabel(Password).FillAsync(_appSettings.AUTH.PASSWORD);
+
+                var button = page.GetByRole(AriaRole.Button, new PageGetByRoleOptions
+                {
+                    NameString = ButtonNames.SignIn
+                });
+
+                await button.ClickAsync();
+            }
+        }
 
         await Assertions.Expect(page).ToHaveURLAsync(new Regex(_appSettings.ENVIRONMENT.WEB_ORIGIN));
-        await Assertions.Expect(page).ToHaveTitleAsync("Zeno Finance", new PageAssertionsToHaveTitleOptions
-        {
-            Timeout = 10_000
-        });// TODO: Constants
+        await Assertions.Expect(page).ToHaveTitleAsync(AppTitle);
     }
+
+    [GeneratedRegex(ExpectedTitle, RegexOptions.Compiled)]
+    private static partial Regex ExpectedTitleRegex();
 }

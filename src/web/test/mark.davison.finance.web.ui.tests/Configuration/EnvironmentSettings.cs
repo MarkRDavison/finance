@@ -7,6 +7,7 @@ public class EnvironmentSettings
     public string WEB_ORIGIN { get; set; } = string.Empty;
     public string BFF_ORIGIN { get; set; } = string.Empty;
     public string API_ORIGIN { get; set; } = string.Empty;
+    public string? TEMP_DIR { get; set; }
 
 
     public void EnsureValid()

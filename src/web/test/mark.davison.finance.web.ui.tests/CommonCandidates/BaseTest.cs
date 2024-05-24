@@ -4,25 +4,48 @@
 public abstract class BaseTest : PlaywrightTest, IAsyncDisposable
 {
     private IBrowser _browser = default!;
+    private IBrowserContext _context = default!;
     private readonly Faker _faker;
-    private readonly HttpClient _client;
+    private const string _authStateFilename = ".auth.json";
 
     protected BaseTest()
     {
-        _client = new HttpClient();
-        var config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.Development.json")
-            .Build();
-
-        AppSettings = new AppSettings();
-        config.GetRequiredSection(AppSettings.Section).Bind(AppSettings);
-        AppSettings.EnsureValid();
+        AppSettings = CreateAppSettings();
 
         AuthenticationHelper = new AuthenticationHelper(AppSettings);
 
         _faker = new Faker();
     }
 
+    private static AppSettings CreateAppSettings()
+    {
+        var appSettings = new AppSettings();
+        var config = new ConfigurationBuilder()
+            .AddJsonFile("appsettings.Development.json")
+            .Build();
+
+        config.GetRequiredSection(appSettings.Section).Bind(appSettings);
+
+        appSettings.EnsureValid();
+
+        return appSettings;
+    }
+
+    private static string AuthStateFullPath(string? tempDir) => $"{tempDir?.TrimEnd('/')}/{_authStateFilename}";
+
+    [AssemblyInitialize]
+    public static async Task AssemblyInitialize(TestContext _)
+    {
+        var appSettings = CreateAppSettings();
+
+        if (File.Exists(AuthStateFullPath(appSettings.ENVIRONMENT.TEMP_DIR)))
+        {
+            File.Delete(AuthStateFullPath(appSettings.ENVIRONMENT.TEMP_DIR));
+        }
+
+        using var client = new HttpClient();
+        await client.PostAsync($"{appSettings.ENVIRONMENT.API_ORIGIN}/api/reset", null);
+    }
 
     [TestInitialize]
     public async Task TestInitialize()
@@ -32,10 +55,15 @@ public abstract class BaseTest : PlaywrightTest, IAsyncDisposable
         _browser = await Playwright.Chromium.LaunchAsync(new()
         {
             Headless = !Debug,
-            SlowMo = Debug ? 1000 : null
+            SlowMo = Debug ? 250 : null
         });
 
-        CurrentPage = await _browser.NewPageAsync();
+        _context = await _browser.NewContextAsync(new()
+        {
+            StorageStatePath = File.Exists(AuthStateFullPath(AppSettings.ENVIRONMENT.TEMP_DIR)) ? AuthStateFullPath(AppSettings.ENVIRONMENT.TEMP_DIR) : null
+        });
+
+        CurrentPage = await _context.NewPageAsync();
 
         await CurrentPage.GotoAsync(AppSettings.ENVIRONMENT.WEB_ORIGIN);
 
@@ -48,7 +76,26 @@ public abstract class BaseTest : PlaywrightTest, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
+        if (TestContext.CurrentTestOutcome == UnitTestOutcome.Failed && !string.IsNullOrEmpty(AppSettings.ENVIRONMENT.TEMP_DIR))
+        {
+            await CurrentPage.ScreenshotAsync(new PageScreenshotOptions
+            {
+                Path = AppSettings.ENVIRONMENT.TEMP_DIR + "screenshot_" + TestContext.TestName + Guid.NewGuid().ToString().Replace("-", "_") + ".png",
+                Type = ScreenshotType.Png
+            });
+        }
+        else if (TestContext.CurrentTestOutcome == UnitTestOutcome.Passed && !string.IsNullOrEmpty(AppSettings.ENVIRONMENT.TEMP_DIR))
+        {
+            await _context.StorageStateAsync(new()
+            {
+                Path = AuthStateFullPath(AppSettings.ENVIRONMENT.TEMP_DIR)
+            });
+        }
+
+        await _context.DisposeAsync();
         await _browser.DisposeAsync();
+
+        GC.SuppressFinalize(this);
     }
 
     protected AppSettings AppSettings { get; }

@@ -27,3 +27,4 @@ global using mark.davison.finance.web.services.Injection;
 global using Microsoft.AspNetCore.Components;
 global using Microsoft.Extensions.DependencyInjection;
 global using MudBlazor;
+global using System.Linq.Expressions;
