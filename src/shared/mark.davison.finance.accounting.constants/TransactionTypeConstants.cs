@@ -1,5 +1,5 @@
 ﻿namespace mark.davison.finance.accounting.constants;
-public static class TransactionConstants
+public static class TransactionTypeConstants
 {
     public static Guid Withdrawal = new Guid("42E893A8-AA6A-4878-A884-AE610FD184E7");
     public static Guid Deposit = new Guid("A4131938-501C-4BC5-9C7F-0D47A6B11FD6");

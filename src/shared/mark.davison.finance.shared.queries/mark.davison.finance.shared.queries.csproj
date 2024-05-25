@@ -11,7 +11,6 @@
 	</ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\api\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj" />
     <ProjectReference Include="..\mark.davison.finance.accounting.constants\mark.davison.finance.accounting.constants.csproj" />
     <ProjectReference Include="..\mark.davison.finance.accounting.rules\mark.davison.finance.accounting.rules.csproj" />
     <ProjectReference Include="..\mark.davison.finance.models.dtos\mark.davison.finance.models.dtos.csproj" />

@@ -47,6 +47,7 @@ public sealed class StateHelper : IStateHelper
 
     public async Task FetchAccountTypeDashboardSummaryData(params Guid[] accountTypeIds)
     {
+        // TODO: Convert to List<Guid> AccountTypeIds
         await Task.WhenAll(accountTypeIds.Select(
             _ => _storeHelper.DispatchAndWaitForResponse<FetchDashboardSummaryAction, FetchDashboardSummaryActionResponse>(
                     new FetchDashboardSummaryAction

@@ -36,9 +36,9 @@ public class StartupQueryCommandHandlerTests
             new Currency { Id = Currency.INT, Code = "INT", Name = "NZ Dollar", Symbol = "NZ$", DecimalPlaces = 2 }
         };
         var transactionTypes = new List<TransactionType> {
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.OpeningBalance) },
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Invalid) },
-            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionConstants.Deposit) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionTypeConstants.OpeningBalance) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionTypeConstants.Invalid) },
+            new TransactionType { Id = Guid.NewGuid(), Type = nameof(TransactionTypeConstants.Deposit) },
         };
 
         await _dbContext.UpsertEntitiesAsync(accountTypes, _token);

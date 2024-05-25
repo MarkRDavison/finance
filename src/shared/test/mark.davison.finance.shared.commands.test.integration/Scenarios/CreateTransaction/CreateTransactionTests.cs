@@ -16,7 +16,7 @@ public class CreateTransactionTests : CQRSIntegrationTestBase
 
         var request = new CreateTransactionRequest
         {
-            TransactionTypeId = TransactionConstants.Deposit,
+            TransactionTypeId = TransactionTypeConstants.Deposit,
             Transactions =
             {
                 new CreateTransactionDto

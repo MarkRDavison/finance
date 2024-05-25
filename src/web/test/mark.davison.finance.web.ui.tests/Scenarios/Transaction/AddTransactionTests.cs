@@ -35,12 +35,17 @@ public sealed class AddTransactionTests : LoggedInTest
             new(GetSentence(),
                 AccountTestConstants.RevenueAccount1Name,
                 AccountTestConstants.AssetAccount1Name,
-                100.0M,
+                200.0M,
                 DateOnly.FromDateTime(DateTime.Today)),
             new(GetSentence(),
                 AccountTestConstants.RevenueAccount2Name,
                 AccountTestConstants.AssetAccount2Name,
-                100.0M,
+                20.0M,
+                DateOnly.FromDateTime(DateTime.Today)),
+            new(GetSentence(),
+                AccountTestConstants.RevenueAccount2Name,
+                AccountTestConstants.AssetAccount1Name,
+                5.0M,
                 DateOnly.FromDateTime(DateTime.Today))
         };
 

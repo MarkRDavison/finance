@@ -7,7 +7,7 @@ public static class DashboardReducers
     {
         if (response.SuccessWithValue)
         {
-            return new DashboardState(response.Value.AccountNames, response.Value.TransactionData);
+            return new DashboardState(response.Value.TransactionData);
         }
 
         return state;

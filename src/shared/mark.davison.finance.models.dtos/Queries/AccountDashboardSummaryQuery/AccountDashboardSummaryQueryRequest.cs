@@ -4,6 +4,4 @@
 public class AccountDashboardSummaryQueryRequest : IQuery<AccountDashboardSummaryQueryRequest, AccountDashboardSummaryQueryResponse>
 {
     public Guid AccountTypeId { get; set; }
-    public DateOnly RangeStart { get; set; }
-    public DateOnly RangeEnd { get; set; }
 }

@@ -1,9 +1,6 @@
 ﻿global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;
-global using mark.davison.common.server.abstractions.Repository;
 global using mark.davison.finance.accounting.constants;
-global using mark.davison.finance.api.services;
-global using mark.davison.finance.api.services.UserApplicationContext;
 global using mark.davison.finance.models.dtos.Queries.AccountDashboardSummaryQuery;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;
 global using mark.davison.finance.models.dtos.Queries.CategoryListQuery;
@@ -15,5 +12,5 @@ global using mark.davison.finance.models.dtos.Shared;
 global using mark.davison.finance.models.Entities;
 global using mark.davison.finance.persistence.Context;
 global using mark.davison.finance.shared.utilities.Extensions;
+global using mark.davison.finance.shared.utilities.Services;
 global using Microsoft.EntityFrameworkCore;
-global using System.Linq.Expressions;

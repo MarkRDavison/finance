@@ -13,7 +13,7 @@ public class CreateTransactionValidatorStrategyFactoryTests
     [TestMethod]
     public void CreateStrategy_UsingWithdrawalTransactionTypeId_CreatesWithdrawalStrategy()
     {
-        var strategy = _factory.CreateStrategy(TransactionConstants.Withdrawal);
+        var strategy = _factory.CreateStrategy(TransactionTypeConstants.Withdrawal);
 
         Assert.IsInstanceOfType(strategy, typeof(CreateWithdrawalTransactionValidatorStrategy));
     }
@@ -21,7 +21,7 @@ public class CreateTransactionValidatorStrategyFactoryTests
     [TestMethod]
     public void CreateStrategy_UsingDepositTransactionTypeId_CreatesDepositStrategy()
     {
-        var strategy = _factory.CreateStrategy(TransactionConstants.Deposit);
+        var strategy = _factory.CreateStrategy(TransactionTypeConstants.Deposit);
 
         Assert.IsInstanceOfType(strategy, typeof(CreateDepositTransactionValidatorStrategy));
     }
@@ -29,7 +29,7 @@ public class CreateTransactionValidatorStrategyFactoryTests
     [TestMethod]
     public void CreateStrategy_UsingTransferTransactionTypeId_CreatesTransferStrategy()
     {
-        var strategy = _factory.CreateStrategy(TransactionConstants.Transfer);
+        var strategy = _factory.CreateStrategy(TransactionTypeConstants.Transfer);
 
         Assert.IsInstanceOfType(strategy, typeof(CreateTransferTransactionValidatorStrategy));
     }

@@ -88,7 +88,7 @@ public class CreateTransactionCommandProcessorTests
         };
         var request = new CreateTransactionRequest
         {
-            TransactionTypeId = TransactionConstants.Deposit,
+            TransactionTypeId = TransactionTypeConstants.Deposit,
             Transactions =
             {
                 createTransactionDto,

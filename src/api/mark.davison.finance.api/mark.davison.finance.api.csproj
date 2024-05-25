@@ -23,7 +23,7 @@
     <ProjectReference Include="..\..\shared\mark.davison.finance.data.helpers\mark.davison.finance.data.helpers.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.shared.commands\mark.davison.finance.shared.commands.csproj" />
     <ProjectReference Include="..\..\shared\mark.davison.finance.shared.queries\mark.davison.finance.shared.queries.csproj" />
-    <ProjectReference Include="..\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj" />
+    <ProjectReference Include="..\..\shared\mark.davison.finance.shared.utilities\mark.davison.finance.shared.utilities.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.postgresql\mark.davison.finance.migrations.postgresql.csproj" />
     <ProjectReference Include="..\mark.davison.finance.migrations.sqlite\mark.davison.finance.migrations.sqlite.csproj" />
     <ProjectReference Include="..\mark.davison.finance.persistence\mark.davison.finance.persistence.csproj" />

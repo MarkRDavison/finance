@@ -1,0 +1,58 @@
+﻿namespace mark.davison.finance.shared.utilities.Services;
+
+public sealed class FinanceUserContext : IFinanceUserContext
+{
+    private bool _loaded;
+    private readonly IDistributedCache _distributedCache;
+    private readonly ICurrentUserContext _currentUserContext;
+    private readonly IDateService _dateService;
+
+    private string KeyPrefix => $"FUC_{_currentUserContext.CurrentUser.Id}";
+    private string Key(string name) => KeyPrefix + "_" + name;
+
+    public FinanceUserContext(
+        IDistributedCache distributedCache,
+        ICurrentUserContext currentUserContext,
+        IDateService dateService)
+    {
+        _distributedCache = distributedCache;
+        _currentUserContext = currentUserContext;
+        _dateService = dateService;
+    }
+
+    public DateOnly RangeStart { get; private set; }
+    public DateOnly RangeEnd { get; private set; }
+
+    public async Task LoadAsync(CancellationToken cancellationToken)
+    {
+        if (_loaded)
+        {
+            return;
+        }
+
+        var rangeStart = await _distributedCache.GetStringAsync(Key(nameof(RangeStart)), cancellationToken);
+        var rangeEnd = await _distributedCache.GetStringAsync(Key(nameof(RangeEnd)), cancellationToken);
+
+        if (DateOnly.TryParse(rangeStart, out var start) &&
+            DateOnly.TryParse(rangeEnd, out var end))
+        {
+            RangeStart = start;
+            RangeEnd = end;
+        }
+        else
+        {
+            var (s, e) = DateRules.GetMonthRange(_dateService.Today);
+            await SetAsync(s, e, cancellationToken);
+        }
+        _loaded = true;
+    }
+
+    public async Task SetAsync(DateOnly rangeStart, DateOnly rangeEnd, CancellationToken cancellationToken)
+    {
+        RangeStart = rangeStart;
+        RangeEnd = rangeEnd;
+
+        await _distributedCache.SetStringAsync(Key(nameof(RangeStart)), RangeStart.ToString(), cancellationToken);
+        await _distributedCache.SetStringAsync(Key(nameof(RangeEnd)), RangeEnd.ToString(), cancellationToken);
+    }
+}

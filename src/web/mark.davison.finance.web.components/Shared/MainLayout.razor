@@ -12,28 +12,25 @@
         </div>
     </LoadingContent>
     <ChildContent>
-        @if (_authContext.IsAuthenticated)
-        {
-            <MudLayout>
-                <MudAppBar>
-                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-                    <MudSpacer />
-                    <AppContext />
-                    <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
-                </MudAppBar>
-                <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
-                    <NavigationMenu />
-                </MudDrawer>
-                <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
-                    <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
-                </MudDrawer>
-                <MudMainContent>
-                    <MudContainer>
-                        @Body
-                    </MudContainer>
-                </MudMainContent>
-            </MudLayout>
-        }
+        <MudLayout>
+            <MudAppBar>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                <MudSpacer />
+                <AppContext />
+                <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
+            </MudAppBar>
+            <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
+                <NavigationMenu />
+            </MudDrawer>
+            <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
+                <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
+            </MudDrawer>
+            <MudMainContent>
+                <MudContainer>
+                    @Body
+                </MudContainer>
+            </MudMainContent>
+        </MudLayout>
     </ChildContent>
 </ActivityMonitor>
 

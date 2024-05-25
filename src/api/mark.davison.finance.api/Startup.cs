@@ -1,4 +1,10 @@
-﻿using mark.davison.finance.data.helpers.Seeders;
+﻿using mark.davison.finance.accounting.constants;
+using mark.davison.finance.accounting.rules;
+using mark.davison.finance.data.helpers.Seeders;
+using mark.davison.finance.data.helpers.test.constants;
+using mark.davison.finance.models.dtos.Shared;
+using mark.davison.finance.models.Entities;
+using mark.davison.finance.shared.utilities.Ignition;
 
 namespace mark.davison.finance.api;
 
@@ -38,7 +44,7 @@ public class Startup
             .AddCQRSServer()
             .AddRedis(AppSettings.REDIS, AppSettings.SECTION, AppSettings.PRODUCTION_MODE)
             .UseFinancePersistence() // TODO: Include optional defaulters in IFinanceDbContext wrapper????
-            .UseUserApplicationContext()
+            .AddSharedServices()
             .AddCommandCQRS()
             .UseDataSeeders();
     }
@@ -82,9 +88,58 @@ public class Startup
                     endpoints
                         .MapPost("/api/seed", async (HttpContext context) =>
                         {
+                            var today = DateOnly.FromDateTime(DateTime.Today);
+                            var monthStart = new DateOnly(today.Year, today.Month, 1);
+
                             var accountSeeder = context.RequestServices.GetRequiredService<AccountSeeder>();
+                            var transactionSeeder = context.RequestServices.GetRequiredService<TransactionSeeder>();
 
                             await accountSeeder.CreateStandardAccounts();
+                            await transactionSeeder.CreateTransaction(new()
+                            {
+                                TransactionTypeId = TransactionTypeConstants.Deposit,
+                                Transactions = [
+                                    new CreateTransactionDto
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Amount = CurrencyRules.ToPersisted(100.0M),
+                                        CurrencyId = Currency.NZD,
+                                        SourceAccountId =AccountTestConstants.RevenueAccount1Id,
+                                        DestinationAccountId = AccountTestConstants.AssetAccount1Id,
+                                        Date = monthStart
+                                    }
+                                ]
+                            });
+                            await transactionSeeder.CreateTransaction(new()
+                            {
+                                TransactionTypeId = TransactionTypeConstants.Deposit,
+                                Transactions = [
+                                    new CreateTransactionDto
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Amount = CurrencyRules.ToPersisted(80.0M),
+                                        CurrencyId = Currency.NZD,
+                                        SourceAccountId =AccountTestConstants.RevenueAccount1Id,
+                                        DestinationAccountId = AccountTestConstants.AssetAccount1Id,
+                                        Date = monthStart.AddDays(2)
+                                    }
+                                ]
+                            });
+                            await transactionSeeder.CreateTransaction(new()
+                            {
+                                TransactionTypeId = TransactionTypeConstants.Deposit,
+                                Transactions = [
+                                    new CreateTransactionDto
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        Amount = CurrencyRules.ToPersisted(300.0M),
+                                        CurrencyId = Currency.NZD,
+                                        SourceAccountId =AccountTestConstants.RevenueAccount2Id,
+                                        DestinationAccountId = AccountTestConstants.AssetAccount1Id,
+                                        Date = monthStart.AddDays(5)
+                                    }
+                                ]
+                            });
 
                             return Results.Ok();
                         });

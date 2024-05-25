@@ -1,6 +1,27 @@
-﻿@attribute [Route(Routes.Dashboard)]
-@using System.Text.Json;
-@inject IAuthenticationContext authContext
+﻿@using ApexCharts
 
-<h1>Hello, world!</h1>
-<p>@(JsonSerializer.Serialize(authContext.User))</p>
+@attribute [Route(Routes.Dashboard)]
+
+<MudPaper Class="ma-10">
+    <MudContainer Fixed="true" Class="pa-10">
+        <MudText Typo="Typo.h6">Your accounts</MudText>
+        <ApexChart
+            Width="@("100%")"
+            TItem="AccountSummaryAmount"
+            Options="@Options"
+            FormatYAxisLabel="@GetYAxisLabel">
+
+            @foreach (var (accountId, data) in DashboardState.Value.TransactionData)
+            {
+                <ApexPointSeries 
+                    TItem="AccountSummaryAmount"
+                    Items="@data.Select(ToSummary)"
+                    Name="@AccountNameById(accountId)"
+                    SeriesType="SeriesType.Line"
+                    XValue="e => e.Date"
+                    YValue="e => e.Amount" />
+            }
+
+        </ApexChart>
+    </MudContainer>
+</MudPaper>

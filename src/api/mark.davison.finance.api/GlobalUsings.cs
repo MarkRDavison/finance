@@ -13,7 +13,6 @@ global using mark.davison.common.Services;
 global using mark.davison.common.source.generators.CQRS;
 global using mark.davison.finance.api;
 global using mark.davison.finance.api.Configuration;
-global using mark.davison.finance.api.services.Ignition;
 global using mark.davison.finance.data.helpers;
 global using mark.davison.finance.migrations.postgresql;
 global using mark.davison.finance.migrations.sqlite;

@@ -10,19 +10,21 @@ public class DatedTransactionAmount
 public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, AccountListQueryResponse>
 {
     private readonly IFinanceDbContext _dbContext;
-    private readonly IUserApplicationContext _userApplicationContext;
+    private readonly IFinanceUserContext _financeUserContext;
 
     public AccountListQueryHandler(
         IFinanceDbContext dbContext,
-        IUserApplicationContext userApplicationContext
+        IFinanceUserContext financeUserContext
     )
     {
         _dbContext = dbContext;
-        _userApplicationContext = userApplicationContext;
+        _financeUserContext = financeUserContext;
     }
 
     public async Task<AccountListQueryResponse> Handle(AccountListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
+        await _financeUserContext.LoadAsync(cancellationToken);
+
         var response = new AccountListQueryResponse
         {
             Value = []
@@ -40,23 +42,21 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
 
         var accountIds = accounts.Select(_ => _.Id).ToList();
 
-        var context = await _userApplicationContext.LoadRequiredContext<FinanceUserApplicationContext>();
-
         var openingBalances = await _dbContext
             .Set<TransactionJournal>()
             .AsNoTracking()
             .Include(_ => _.Transactions)
             .Where(_ =>
                 _.Transactions.Any(__ => accountIds.Contains(__.AccountId)) &&
-                _.TransactionTypeId == TransactionConstants.OpeningBalance)
+                _.TransactionTypeId == TransactionTypeConstants.OpeningBalance)
             .ToListAsync(cancellationToken);
 
         foreach (var account in accounts)
         {
             var openingBalanceTransactionJournal = openingBalances
-                .FirstOrDefault(_ =>
-                    _.Transactions.Any(__ =>
-                        __.AccountId == account.Id));
+                .FirstOrDefault(_ => _.Transactions
+                    .Any(t => t.AccountId == account.Id));
+
             var openingBalanceTransaction = openingBalanceTransactionJournal?
                 .Transactions
                 .FirstOrDefault(_ => _.AccountId == account.Id);
@@ -69,11 +69,11 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
                 .ToListAsync(cancellationToken);
 
             var currentBalance = amounts
-                .Where(_ => _.Date <= context.RangeEnd)
+                .Where(_ => _.Date <= _financeUserContext.RangeEnd)
                 .Sum(_ => _.Amount);
 
             var balanceDifference = amounts
-                .Where(_ => context.RangeStart <= _.Date && _.Date <= context.RangeEnd)
+                .Where(_ => _financeUserContext.RangeStart <= _.Date && _.Date <= _financeUserContext.RangeEnd)
                 .Sum(_ => _.Amount);
 
             response.Value.Add(new AccountDto

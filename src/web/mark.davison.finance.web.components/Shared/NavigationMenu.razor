@@ -11,9 +11,9 @@
     </MudNavGroup>
     <MudNavGroup Title="ACCOUNTING" Expanded="true">
         <MudNavGroup Title="Transactions" Expanded="true">
-            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Withdrawal)" Match="NavLinkMatch.Prefix">Expenses</MudNavLink>
-            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Deposit)" Match="NavLinkMatch.Prefix">Revenue / income</MudNavLink>
-            <MudNavLink Href="@RouteHelpers.Transactions(TransactionConstants.Transfer)" Match="NavLinkMatch.Prefix">Transfers</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionTypeConstants.Withdrawal)" Match="NavLinkMatch.Prefix">Expenses</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionTypeConstants.Deposit)" Match="NavLinkMatch.Prefix">Revenue / income</MudNavLink>
+            <MudNavLink Href="@RouteHelpers.Transactions(TransactionTypeConstants.Transfer)" Match="NavLinkMatch.Prefix">Transfers</MudNavLink>
         </MudNavGroup>        
         <MudNavLink Href="/automation" Match="NavLinkMatch.Prefix">Automation</MudNavLink>
     </MudNavGroup>

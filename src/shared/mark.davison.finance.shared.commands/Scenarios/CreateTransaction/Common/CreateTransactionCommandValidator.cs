@@ -34,7 +34,7 @@ public class CreateTransactionCommandValidator : ICommandValidator<CreateTransac
 
         var transctionTypeValidator = _createTransactionValidatorStrategyFactory.CreateStrategy(request.TransactionTypeId);
 
-        if (!TransactionConstants.Ids.Contains(request.TransactionTypeId))
+        if (!TransactionTypeConstants.Ids.Contains(request.TransactionTypeId))
         {
             response.Errors.Add(VALIDATION_TRANSACTION_TYPE);
         }

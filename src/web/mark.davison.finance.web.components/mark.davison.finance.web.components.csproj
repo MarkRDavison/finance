@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Blazor-ApexCharts" Version="3.3.0" />
     <PackageReference Include="Fluxor.Blazor.Web" Version="5.9.1" />
     <PackageReference Include="markdavison.common.client" Version="8.4.10" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.5" />

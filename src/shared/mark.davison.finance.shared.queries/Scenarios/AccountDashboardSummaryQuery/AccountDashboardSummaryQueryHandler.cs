@@ -3,14 +3,20 @@
 public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboardSummaryQueryRequest, AccountDashboardSummaryQueryResponse>
 {
     private readonly IFinanceDbContext _dbContext;
+    private readonly IFinanceUserContext _financeUserContext;
 
-    public AccountDashboardSummaryQueryHandler(IFinanceDbContext dbContext)
+    public AccountDashboardSummaryQueryHandler(
+        IFinanceDbContext dbContext,
+        IFinanceUserContext financeUserContext)
     {
         _dbContext = dbContext;
+        _financeUserContext = financeUserContext;
     }
 
     public async Task<AccountDashboardSummaryQueryResponse> Handle(AccountDashboardSummaryQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
+        await _financeUserContext.LoadAsync(cancellationToken);
+
         var accounts = await _dbContext
             .Set<Account>()
             .AsNoTracking()
@@ -23,7 +29,7 @@ public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboar
             .Set<Transaction>()
             .AsNoTracking()
             .Include(_ => _.TransactionJournal)
-            .Where(_ => accountIds.Contains(_.AccountId) && _.TransactionJournal!.Date <= query.RangeEnd)
+            .Where(_ => accountIds.Contains(_.AccountId) && _.TransactionJournal!.Date <= _financeUserContext.RangeEnd)
             .ToListAsync(cancellationToken);
 
         var resultTransactionData = new Dictionary<Guid, List<AccountDashboardTransactionData>>();
@@ -47,14 +53,14 @@ public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboar
             foreach (var transaction in accountTransactions)
             {
                 runningTotal += transaction.Amount;
-                if (transaction.Date >= query.RangeStart)
+                if (transaction.Date >= _financeUserContext.RangeStart)
                 {
                     break;
                 }
             }
 
             var dashboardData = new List<AccountDashboardTransactionData>();
-            for (var date = query.RangeStart; date <= query.RangeEnd; date = date.AddDays(1))
+            for (var date = _financeUserContext.RangeStart; date <= _financeUserContext.RangeEnd; date = date.AddDays(1))
             {
                 var mostRecent = accountTransactions.LastOrDefault(_ => _.Date <= date);
                 if (mostRecent != null)
@@ -77,7 +83,6 @@ public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboar
         {
             Value = new()
             {
-                AccountNames = accounts.ToDictionary(_ => _.Id, _ => _.Name),
                 TransactionData = resultTransactionData
             }
         };

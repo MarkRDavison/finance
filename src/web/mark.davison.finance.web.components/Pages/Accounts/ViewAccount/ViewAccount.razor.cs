@@ -148,7 +148,7 @@ public partial class ViewAccount
                     Amount = CurrencyRules.FromPersisted(thisAccountTransaction.Amount), // TODO: Re-use from ViewTransaction.razor.cs GetAmountText? maybe helper classes etc
                     Date = thisAccountTransaction.Date,
                     TransactionGroupId = tGroup.Key,
-                    TransactionType = transactionType.Type,
+                    TransactionType = transactionType.Type,// TODO: TransactionTypeId???
                     Category = categoryLinkInfo,
                     SourceAccount = sourceAccountLinkInfo,
                     DestinationAccount = destAccountLinkInfo

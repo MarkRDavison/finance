@@ -52,7 +52,7 @@ public class UpsertAccountCommandProcessorTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((CreateTransactionRequest r, ICurrentUserContext uc, CancellationToken c) =>
             {
-                Assert.AreEqual(TransactionConstants.OpeningBalance, r.TransactionTypeId);
+                Assert.AreEqual(TransactionTypeConstants.OpeningBalance, r.TransactionTypeId);
                 Assert.AreEqual(1, r.Transactions.Count);
                 var transaction = r.Transactions[0];
                 Assert.AreNotEqual(Guid.Empty, transaction.Id);
@@ -173,7 +173,7 @@ public class UpsertAccountCommandProcessorTests
         transaction.TransactionJournal = new TransactionJournal
         {
             Id = Guid.NewGuid(),
-            TransactionTypeId = TransactionConstants.OpeningBalance,
+            TransactionTypeId = TransactionTypeConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,
@@ -231,7 +231,7 @@ public class UpsertAccountCommandProcessorTests
         transaction.TransactionJournal = new TransactionJournal
         {
             Id = Guid.NewGuid(),
-            TransactionTypeId = TransactionConstants.OpeningBalance,
+            TransactionTypeId = TransactionTypeConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,
@@ -306,7 +306,7 @@ public class UpsertAccountCommandProcessorTests
         {
             Id = Guid.NewGuid(),
             Date = DateOnly.FromDateTime(DateTime.Today),
-            TransactionTypeId = TransactionConstants.OpeningBalance,
+            TransactionTypeId = TransactionTypeConstants.OpeningBalance,
             Transactions = new List<Transaction>
             {
                 transaction,

@@ -4,6 +4,7 @@
 @inject IClientNavigationManager _navigation
 @inject IFormSubmission<EditTransactionFormViewModel> _formSubmission
 
+<MudPaper Class="ma-10">
 <MudGrid>
     <MudItem Class="py-4">
         <MudText Typo="Typo.h4">New @StartupState.Value.TransactionTypes.FirstOrDefault(_ => _.Id == Type)?.Type</MudText>
@@ -26,3 +27,4 @@
         }
     </MudButton>
 </MudGrid>
+</MudPaper>

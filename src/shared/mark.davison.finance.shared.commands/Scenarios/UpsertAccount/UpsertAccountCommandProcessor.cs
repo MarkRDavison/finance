@@ -32,7 +32,7 @@ public class UpsertAccountCommandProcessor : ICommandProcessor<UpsertAccountComm
                 .Set<TransactionJournal>()
                 .Include(_ => _.Transactions)
                 .Where(_ =>
-                    _.TransactionTypeId == TransactionConstants.OpeningBalance &&
+                    _.TransactionTypeId == TransactionTypeConstants.OpeningBalance &&
                     _.Transactions.Any(__ =>
                         __.AccountId == request.UpsertAccountDto.Id))
                 .FirstOrDefaultAsync(cancellationToken);
@@ -76,7 +76,7 @@ public class UpsertAccountCommandProcessor : ICommandProcessor<UpsertAccountComm
                 // TODO: Replace with IDispatcher/ICQRSDispatcher and handle failure...
                 await _createTransactionHandler.Handle(new()
                 {
-                    TransactionTypeId = TransactionConstants.OpeningBalance,
+                    TransactionTypeId = TransactionTypeConstants.OpeningBalance,
                     Transactions =
                 {
                     new CreateTransactionDto

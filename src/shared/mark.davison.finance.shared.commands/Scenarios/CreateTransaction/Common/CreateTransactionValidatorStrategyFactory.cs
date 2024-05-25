@@ -4,15 +4,15 @@ public class CreateTransactionValidatorStrategyFactory : ICreateTransactionValid
 {
     public ICreateTransactionValidatorStrategy CreateStrategy(Guid transactionTypeId)
     {
-        if (transactionTypeId == TransactionConstants.Withdrawal)
+        if (transactionTypeId == TransactionTypeConstants.Withdrawal)
         {
             return new CreateWithdrawalTransactionValidatorStrategy();
         }
-        else if (transactionTypeId == TransactionConstants.Deposit)
+        else if (transactionTypeId == TransactionTypeConstants.Deposit)
         {
             return new CreateDepositTransactionValidatorStrategy();
         }
-        else if (transactionTypeId == TransactionConstants.Transfer)
+        else if (transactionTypeId == TransactionTypeConstants.Transfer)
         {
             return new CreateTransferTransactionValidatorStrategy();
         }

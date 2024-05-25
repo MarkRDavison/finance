@@ -28,21 +28,21 @@ public partial class QuickAdd
             new()
             {
                 Text = "New withdrawal",
-                Href = RouteHelpers.TransactionNew(TransactionConstants.Withdrawal),
+                Href = RouteHelpers.TransactionNew(TransactionTypeConstants.Withdrawal),
                 Icon = Icons.Material.Filled.ArrowRightAlt,
                 FlipX = true
             },
             new()
             {
                 Text = "New deposit",
-                Href = RouteHelpers.TransactionNew(TransactionConstants.Deposit),
+                Href = RouteHelpers.TransactionNew(TransactionTypeConstants.Deposit),
                 Icon = Icons.Material.Filled.ArrowRightAlt,
                 FlipX = false
             },
             new()
             {
                 Text = "New transfer",
-                Href = RouteHelpers.TransactionNew(TransactionConstants.Transfer),
+                Href = RouteHelpers.TransactionNew(TransactionTypeConstants.Transfer),
                 Icon = Icons.Material.Filled.SyncAlt,
                 FlipX = false
             },

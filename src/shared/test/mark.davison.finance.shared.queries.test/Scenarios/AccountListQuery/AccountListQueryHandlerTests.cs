@@ -5,7 +5,7 @@ public class AccountListQueryHandlerTests
 {
     private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
-    private readonly Mock<IUserApplicationContext> _userApplicationContext;
+    private readonly Mock<IFinanceUserContext> _financeUserContext;
     private readonly AccountListQueryHandler _handler;
     private readonly CancellationToken _token;
 
@@ -15,15 +15,15 @@ public class AccountListQueryHandlerTests
         _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
 
         _currentUserContext = new(MockBehavior.Strict);
-        _userApplicationContext = new(MockBehavior.Strict);
+        _financeUserContext = new(MockBehavior.Strict);
+        _financeUserContext.Setup(_ => _.RangeStart).Returns(DateOnly.MinValue);
+        _financeUserContext.Setup(_ => _.RangeEnd).Returns(DateOnly.MaxValue);
+        _financeUserContext.Setup(_ => _.LoadAsync(It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new AccountListQueryHandler((IFinanceDbContext)_dbContext, _userApplicationContext.Object);
-
-        _userApplicationContext
-            .Setup(_ => _.LoadRequiredContext<FinanceUserApplicationContext>())
-            .ReturnsAsync(new FinanceUserApplicationContext { });
+        _handler = new AccountListQueryHandler((IFinanceDbContext)_dbContext, _financeUserContext.Object);
     }
 
     // TODO: More tests around current balance and balance difference

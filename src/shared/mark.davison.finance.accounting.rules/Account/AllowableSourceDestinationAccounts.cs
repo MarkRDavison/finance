@@ -51,7 +51,7 @@ public static class AllowableSourceDestinationAccounts
         _allowableSourceDestinations = new Dictionary<Guid, IDictionary<Guid, HashSet<Guid>>>
         {
             {
-                TransactionConstants.Withdrawal,
+                TransactionTypeConstants.Withdrawal,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
@@ -92,7 +92,7 @@ public static class AllowableSourceDestinationAccounts
                 }
             },
             {
-                TransactionConstants.Deposit,
+                TransactionTypeConstants.Deposit,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
@@ -139,7 +139,7 @@ public static class AllowableSourceDestinationAccounts
                 }
             },
             {
-                TransactionConstants.Transfer,
+                TransactionTypeConstants.Transfer,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
@@ -179,7 +179,7 @@ public static class AllowableSourceDestinationAccounts
                 }
             },
             {
-                TransactionConstants.OpeningBalance,
+                TransactionTypeConstants.OpeningBalance,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
@@ -223,7 +223,7 @@ public static class AllowableSourceDestinationAccounts
                 }
             },
             {
-                TransactionConstants.Reconciliation,
+                TransactionTypeConstants.Reconciliation,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {
@@ -243,7 +243,7 @@ public static class AllowableSourceDestinationAccounts
                 }
             },
             {
-                TransactionConstants.LiabilityCredit,
+                TransactionTypeConstants.LiabilityCredit,
                 new Dictionary<Guid, HashSet<Guid>>
                 {
                     {

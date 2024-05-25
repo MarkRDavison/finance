@@ -47,13 +47,13 @@ public partial class ViewTransaction
     // TODO: To helper
     private TransactionDto GetSourceTransaction(Guid transactionTypeId, List<TransactionDto> transactions)
     {
-        if (transactionTypeId == TransactionConstants.Transfer)
+        if (transactionTypeId == TransactionTypeConstants.Transfer)
         {
             return transactions.First(_ => _.Source);
         }
         else if (
-            transactionTypeId == TransactionConstants.Deposit ||
-            transactionTypeId == TransactionConstants.Withdrawal
+            transactionTypeId == TransactionTypeConstants.Deposit ||
+            transactionTypeId == TransactionTypeConstants.Withdrawal
         )
         {
             var sourceTransactionAccountTypes = AllowableSourceDestinationAccounts.GetSourceAccountTypes(transactionTypeId);
@@ -74,13 +74,13 @@ public partial class ViewTransaction
     // TODO: To helper
     private TransactionDto GetDestinationTransaction(Guid transactionTypeId, Guid sourceAccountId, Guid sourceAccountTypeId, List<TransactionDto> transactions)
     {
-        if (transactionTypeId == TransactionConstants.Transfer)
+        if (transactionTypeId == TransactionTypeConstants.Transfer)
         {
             return transactions.First(_ => !_.Source);
         }
         else if (
-            transactionTypeId == TransactionConstants.Deposit ||
-            transactionTypeId == TransactionConstants.Withdrawal
+            transactionTypeId == TransactionTypeConstants.Deposit ||
+            transactionTypeId == TransactionTypeConstants.Withdrawal
         )
         {
             var destTransactionAccountTypes = AllowableSourceDestinationAccounts.GetDestinationAccountTypesForSource(transactionTypeId, sourceAccountTypeId);
@@ -106,11 +106,11 @@ public partial class ViewTransaction
     private string GetAmountText(Guid transactionTypeId, long amount, CurrencyDto? currency)
     {
 
-        if (transactionTypeId == TransactionConstants.Transfer)
+        if (transactionTypeId == TransactionTypeConstants.Transfer)
         {
             amount = Math.Abs(amount);
         }
-        else if (transactionTypeId == TransactionConstants.Deposit)
+        else if (transactionTypeId == TransactionTypeConstants.Deposit)
         {
             amount = Math.Abs(amount);
         }
@@ -124,12 +124,12 @@ public partial class ViewTransaction
 
     private string GetAmountColour(Guid transactionTypeId, long amount)
     {
-        if (transactionTypeId == TransactionConstants.Transfer)
+        if (transactionTypeId == TransactionTypeConstants.Transfer)
         {
             return "color: #47b2f5; "; // blue
         }
 
-        if (transactionTypeId == TransactionConstants.Deposit)
+        if (transactionTypeId == TransactionTypeConstants.Deposit)
         {
             if (amount < 0)
             {
@@ -142,7 +142,7 @@ public partial class ViewTransaction
             }
         }
 
-        if (transactionTypeId == TransactionConstants.Withdrawal)
+        if (transactionTypeId == TransactionTypeConstants.Withdrawal)
         {
             if (amount < 0)
             {

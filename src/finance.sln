@@ -86,8 +86,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.shared
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.web.components.test", "web\test\mark.davison.finance.web.components.test\mark.davison.finance.web.components.test.csproj", "{DBF0087E-5BA8-4EAB-B534-41A56B368025}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.api.services", "api\mark.davison.finance.api.services\mark.davison.finance.api.services.csproj", "{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff", "bff\mark.davison.finance.bff\mark.davison.finance.bff.csproj", "{57E0A26B-F71A-453B-A38B-B197068BC575}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "mark.davison.finance.bff.test", "bff\test\mark.davison.finance.bff.test\mark.davison.finance.bff.test.csproj", "{13ECF8AA-F4C3-4BD7-AFD3-E36B15BDCB9E}"
@@ -200,10 +198,6 @@ Global
 		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DBF0087E-5BA8-4EAB-B534-41A56B368025}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5105CAE1-E68A-492E-8D79-DCDFEA8F2725}.Release|Any CPU.Build.0 = Release|Any CPU
 		{57E0A26B-F71A-453B-A38B-B197068BC575}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57E0A26B-F71A-453B-A38B-B197068BC575}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{57E0A26B-F71A-453B-A38B-B197068BC575}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -251,7 +245,6 @@ Global
 		{AC1D9D53-7FB6-46D9-8C3E-37413EB76A76} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
 		{A52CD91B-221A-44A8-83AA-2183F828EAE8} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
 		{DBF0087E-5BA8-4EAB-B534-41A56B368025} = {E693CBD9-F93D-492A-BC2C-956DAFAC439C}
-		{5105CAE1-E68A-492E-8D79-DCDFEA8F2725} = {E1377132-D395-45C8-8325-23A908F2DA4D}
 		{57E0A26B-F71A-453B-A38B-B197068BC575} = {2195F093-0053-4EED-8409-EEBCA64D0532}
 		{13ECF8AA-F4C3-4BD7-AFD3-E36B15BDCB9E} = {7E3B8DDF-D353-4A37-8560-04ADEB39E8BF}
 		{6B1CD796-2483-41ED-8987-A232EDB31C19} = {45B4BC19-C5D4-4AD0-AADF-68CB64649BF0}
