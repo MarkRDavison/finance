@@ -23,8 +23,6 @@ public class AccountListQueryHandler : IQueryHandler<AccountListQueryRequest, Ac
 
     public async Task<AccountListQueryResponse> Handle(AccountListQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        await _financeUserContext.LoadAsync(cancellationToken);
-
         var response = new AccountListQueryResponse
         {
             Value = []

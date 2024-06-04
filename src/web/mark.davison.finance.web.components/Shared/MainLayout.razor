@@ -1,47 +1,49 @@
 ﻿@inject IAuthenticationContext _authContext
 @inject IStoreHelper _storeHelper
+@inject IAppContextService _appContext
 @inherits LayoutComponentBase
 
-<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_isDarkMode" />
+<MudThemeProvider @ref="@_mudThemeProvider" @bind-IsDarkMode="@_themeInfo.DarkMode" />
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<ActivityMonitor Loading="@_loading">
-    <LoadingContent>
-        <div class="entire-app-loading">
-        </div>
-    </LoadingContent>
-    <ChildContent>
-        <MudLayout>
-            <MudAppBar>
-                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-                <MudSpacer />
-                <AppContext />
-                <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
-            </MudAppBar>
-            <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
-                <NavigationMenu />
-            </MudDrawer>
-            <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
-                <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
-            </MudDrawer>
-            <MudMainContent>
-                <MudContainer>
-                    @Body
-                </MudContainer>
-            </MudMainContent>
-        </MudLayout>
-    </ChildContent>
-</ActivityMonitor>
-
+<CascadingValue Value="_themeInfo">
+    <ActivityMonitor Loading="@_loading">
+        <LoadingContent>
+            <div class="entire-app-loading">
+            </div>
+        </LoadingContent>
+        <ChildContent>
+            <MudLayout>
+                <MudAppBar>
+                    <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+                    <MudSpacer />
+                    <AppContext />
+                    <MudIconButton data-testid="@DataTestIds.QuickCreate" Icon="@Icons.Material.Filled.Add" Color="Color.Inherit" Edge="Edge.End" OnClick="@((e) => QuickAddToggle())" />
+                </MudAppBar>
+                <MudDrawer @bind-Open="@_drawerOpen" Anchor="@Anchor.Left">
+                    <NavigationMenu />
+                </MudDrawer>
+                <MudDrawer Class="mud-height-full" @bind-Open="@_quickAddOpen" Anchor="@Anchor.Right">
+                    <QuickAdd OnSelect="@(() => _quickAddOpen = false)" />
+                </MudDrawer>
+                <MudMainContent>
+                    <MudContainer>
+                        @Body
+                    </MudContainer>
+                </MudMainContent>
+            </MudLayout>
+        </ChildContent>
+    </ActivityMonitor>
+</CascadingValue>
 
 @code {
     private bool _loading;
     private bool _drawerOpen = true;
     private bool _quickAddOpen = false;
-    private bool _isDarkMode;
     private MudThemeProvider? _mudThemeProvider;
-    
+    private ThemeInfo _themeInfo = new();
+
     void DrawerToggle()
     {
         _drawerOpen = !_drawerOpen;
@@ -53,6 +55,11 @@
 
     protected override async Task OnInitializedAsync()
     {
+        _appContext.RangeUpdated += async (o, e) =>
+        {
+            await InvokeAsync(StateHasChanged);
+        };
+
         _loading = true;
 
         await InvokeAsync(StateHasChanged);
@@ -73,7 +80,7 @@
     {
         if (firstRender && _mudThemeProvider != null)
         {
-            _isDarkMode = await _mudThemeProvider.GetSystemPreference();
+            _themeInfo.DarkMode = await _mudThemeProvider.GetSystemPreference();
             await _mudThemeProvider.WatchSystemPreference(OnSystemPreferenceChanged);
             await InvokeAsync(StateHasChanged);
         }
@@ -81,7 +88,7 @@
 
     private async Task OnSystemPreferenceChanged(bool newValue)
     {
-        _isDarkMode = newValue;
+        _themeInfo.DarkMode = newValue;
         await InvokeAsync(StateHasChanged);
     }
 }

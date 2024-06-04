@@ -1,0 +1,15 @@
+﻿@namespace mark.davison.finance.web.components.DashboardTiles
+
+<MudItem Class="fill-width" sm="12" md="6" lg="3">
+    <div class="@($"d-flex flex-row align-items-center ma-2 {Colour.ToLower()}")">
+        <div class="@($"{Colour.ToLower()} darken-2")">
+            <MudIcon Class="ma-4" Icon="@Icon" Size="@Size.Large" />
+        </div>
+        <div class="ml-2 text-ellipsis">
+            <MudText Typo="@Typo.overline">@Title</MudText>
+            <MudText Typo="@Typo.subtitle1">@Summary</MudText>
+            <MudDivider DividerType="DividerType.FullWidth" />
+            <MudText Typo="@Typo.subtitle2">@Secondary</MudText>
+        </div>
+    </div>
+</MudItem>

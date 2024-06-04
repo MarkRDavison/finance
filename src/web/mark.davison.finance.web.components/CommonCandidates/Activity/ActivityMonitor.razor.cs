@@ -7,14 +7,10 @@ public partial class ActivityMonitor
 
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
+
     [Parameter]
     public RenderFragment? LoadingContent { get; set; }
 
-    protected override void OnParametersSet()
-    {
-        Console.WriteLine("ActivityMonitor:OnParameterSet: Loading:{0}", Loading);
-    }
-
     [Parameter]
-    public Size Size { get; set; } = Size.Large;
+    public MudBlazor.Size Size { get; set; } = MudBlazor.Size.Large;
 }

@@ -1,7 +1,4 @@
-﻿using mark.davison.common.server.abstractions.Identification;
-using Microsoft.Net.Http.Headers;
-
-namespace mark.davison.finance.bff;
+﻿namespace mark.davison.finance.bff;
 
 public class Startup
 {
@@ -24,7 +21,8 @@ public class Startup
             .AddCors()
             .UseCookieOidcAuth(
                 AppSettings.AUTH,
-                AppSettings.CLAIMS, _ =>
+                AppSettings.CLAIMS,
+                _ =>
                 {
                     if (!AppSettings.PRODUCTION_MODE)
                     {
@@ -65,7 +63,7 @@ public class Startup
         app
             .UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.All
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
             })
             .UseMiddleware<RequestResponseLoggingMiddleware>()
             .UseRouting()

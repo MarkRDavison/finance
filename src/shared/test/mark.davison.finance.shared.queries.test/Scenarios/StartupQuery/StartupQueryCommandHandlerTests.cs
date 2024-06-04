@@ -5,6 +5,7 @@ public class StartupQueryCommandHandlerTests
 {
     private readonly IDbContext<FinanceDbContext> _dbContext;
     private readonly Mock<ICurrentUserContext> _currentUserContext;
+    private readonly Mock<IFinanceUserContext> _financeUserContext;
     private readonly StartupQueryHandler _handler;
     private readonly CancellationToken _token;
 
@@ -13,15 +14,16 @@ public class StartupQueryCommandHandlerTests
         _token = CancellationToken.None;
         _dbContext = DbContextHelpers.CreateInMemory<FinanceDbContext>(_ => new FinanceDbContext(_));
 
+        _financeUserContext = new(MockBehavior.Strict);
         _currentUserContext = new(MockBehavior.Strict);
         _currentUserContext.Setup(_ => _.Token).Returns("");
         _currentUserContext.Setup(_ => _.CurrentUser).Returns(new User { });
 
-        _handler = new StartupQueryHandler((IFinanceDbContext)_dbContext);
+        _handler = new StartupQueryHandler((IFinanceDbContext)_dbContext, _financeUserContext.Object);
     }
 
     [TestMethod]
-    public async Task DtosForAccountTypes_Currencies_ReturnedCorrectly()
+    public async Task DtosForAccountTypes_Currencies_TransactionTypes_Ranges_ReturnedCorrectly()
     {
         var accountTypes = new List<AccountType> {
             new AccountType { Id = Guid.NewGuid(), Type = nameof(AccountTypeConstants.Default) },
@@ -46,14 +48,22 @@ public class StartupQueryCommandHandlerTests
         await _dbContext.UpsertEntitiesAsync(transactionTypes, _token);
         await _dbContext.SaveChangesAsync(_token);
 
+        var rangeStart = DateOnly.FromDateTime(DateTime.Today).AddDays(-5);
+        var rangeEnd = DateOnly.FromDateTime(DateTime.Today).AddDays(+5);
+
+        _financeUserContext.Setup(_ => _.RangeStart).Returns(rangeStart);
+        _financeUserContext.Setup(_ => _.RangeEnd).Returns(rangeEnd);
+
         var request = new StartupQueryRequest { };
 
         var response = await _handler.Handle(request, _currentUserContext.Object, CancellationToken.None);
 
-        response.Success.Should().BeTrue();
-        response.Value.Should().NotBeNull();
+        response.SuccessWithValue.Should().BeTrue();
 
-        response.Value!.AccountTypes.Should().HaveCount(accountTypes.Count);
+        response.Value!.UserContext.StartRange.Should().Be(rangeStart);
+        response.Value.UserContext.EndRange.Should().Be(rangeEnd);
+
+        response.Value.AccountTypes.Should().HaveCount(accountTypes.Count);
         response.Value.Currencies.Should().HaveCount(currencies.Count(_ => _.Id != Currency.INT));
         response.Value.TransactionTypes.Should().HaveCount(transactionTypes.Count);
 

@@ -2,6 +2,7 @@
 global using mark.davison.common.server;
 global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.Configuration;
+global using mark.davison.common.server.abstractions.Identification;
 global using mark.davison.common.server.Authentication;
 global using mark.davison.common.server.Configuration;
 global using mark.davison.common.server.Middleware;
@@ -9,3 +10,4 @@ global using mark.davison.common.Services;
 global using mark.davison.finance.bff;
 global using mark.davison.finance.bff.Configuration;
 global using Microsoft.AspNetCore.HttpOverrides;
+global using Microsoft.Net.Http.Headers;

@@ -1,6 +1,5 @@
 ﻿namespace mark.davison.finance.bff.Configuration;
 
-
 public sealed class AppSettings : IAppSettings
 {
     public string SECTION => "FINANCE";

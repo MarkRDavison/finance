@@ -34,3 +34,9 @@ h1:focus {
 .flip-icon-x svg {
     transform: scaleX(-1)
 }
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}

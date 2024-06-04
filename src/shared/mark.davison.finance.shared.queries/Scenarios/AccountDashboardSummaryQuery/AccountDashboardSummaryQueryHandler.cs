@@ -4,19 +4,20 @@ public class AccountDashboardSummaryQueryHandler : IQueryHandler<AccountDashboar
 {
     private readonly IFinanceDbContext _dbContext;
     private readonly IFinanceUserContext _financeUserContext;
+    private readonly IDateService _dateService;
 
     public AccountDashboardSummaryQueryHandler(
         IFinanceDbContext dbContext,
-        IFinanceUserContext financeUserContext)
+        IFinanceUserContext financeUserContext,
+        IDateService dateService)
     {
         _dbContext = dbContext;
         _financeUserContext = financeUserContext;
+        _dateService = dateService;
     }
 
     public async Task<AccountDashboardSummaryQueryResponse> Handle(AccountDashboardSummaryQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
     {
-        await _financeUserContext.LoadAsync(cancellationToken);
-
         var accounts = await _dbContext
             .Set<Account>()
             .AsNoTracking()

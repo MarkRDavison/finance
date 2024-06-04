@@ -3,10 +3,14 @@
 public class StartupQueryHandler : IQueryHandler<StartupQueryRequest, StartupQueryResponse>
 {
     private readonly IFinanceDbContext _dbContext;
+    private readonly IFinanceUserContext _financeUserContext;
 
-    public StartupQueryHandler(IFinanceDbContext dbContext)
+    public StartupQueryHandler(
+        IFinanceDbContext dbContext,
+        IFinanceUserContext financeUserContext)
     {
         _dbContext = dbContext;
+        _financeUserContext = financeUserContext;
     }
 
     public async Task<StartupQueryResponse> Handle(StartupQueryRequest query, ICurrentUserContext currentUserContext, CancellationToken cancellationToken)
@@ -49,6 +53,11 @@ public class StartupQueryHandler : IQueryHandler<StartupQueryRequest, StartupQue
 
         response.Value = new()
         {
+            UserContext = new()
+            {
+                StartRange = _financeUserContext.RangeStart,
+                EndRange = _financeUserContext.RangeEnd
+            },
             AccountTypes = accountTypes,
             TransactionTypes = transactionTypes,
             Currencies = currencies

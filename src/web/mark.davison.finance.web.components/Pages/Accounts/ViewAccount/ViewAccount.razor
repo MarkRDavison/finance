@@ -7,7 +7,7 @@
     <MudStack Row="true">
         <MudText data-testid="@DataTestIds.ViewAccountTitle" Typo="Typo.h4">@_currentAccount?.Name</MudText>
         <MudTooltip Text="Add">@*What? Transaction where this defaults to source/dest????*@
-            <MudIconButton Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" />
+            <MudIconButton Disabled Icon="@Icons.Material.Filled.AddCircle" Variant="Variant.Filled" Color="Color.Primary" Style="min-width: 60px;" />
         </MudTooltip>
     </MudStack>
     @*TODO: Re-enable sorting?*@

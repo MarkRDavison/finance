@@ -1,4 +1,4 @@
-﻿namespace mark.davison.finance.api;
+﻿namespace mark.davison.finance.api.Middleware;
 
 public sealed class ValidateUserExistsInDbMiddleware
 {

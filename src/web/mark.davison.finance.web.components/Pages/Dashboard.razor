@@ -1,27 +1,36 @@
 ﻿@using ApexCharts
-
 @attribute [Route(Routes.Dashboard)]
+@inherits DateRangeWithFluxorComponent
 
 <MudPaper Class="ma-10">
-    <MudContainer Fixed="true" Class="pa-10">
-        <MudText Typo="Typo.h6">Your accounts</MudText>
-        <ApexChart
-            Width="@("100%")"
-            TItem="AccountSummaryAmount"
-            Options="@Options"
-            FormatYAxisLabel="@GetYAxisLabel">
-
-            @foreach (var (accountId, data) in DashboardState.Value.TransactionData)
+    <MudStack>
+        <MudContainer Fixed="true" Class="pa-10">
+            <MudGrid Spacing="0">
+                <DashboardTile Colour="blue" Icon="@Icons.Material.Filled.Balance" Title="IN/OUT THIS PERIOD" Summary="@("$100.00")" />
+                <DashboardTile Colour="green" Icon="@Icons.Material.Filled.CalendarMonth" Title="BILLS TO PAY" Summary="@("$100.00")" />
+                <DashboardTile Colour="blue-grey" Icon="@Icons.Material.Filled.Money" Title="SPENT" Summary="@("$100.00")" />
+                <DashboardTile Colour="teal" Icon="@Icons.Material.Filled.AutoGraph" Title="NET WORTH" Summary="@("$100.00")" />
+            </MudGrid>
+            <MudText Typo="Typo.h6">@($"Your accounts as at {DateTime.Now.ToLongTimeString()}")</MudText>
+            @if (!DashboardState.Value.Loading)
             {
-                <ApexPointSeries 
-                    TItem="AccountSummaryAmount"
-                    Items="@data.Select(ToSummary)"
-                    Name="@AccountNameById(accountId)"
-                    SeriesType="SeriesType.Line"
-                    XValue="e => e.Date"
-                    YValue="e => e.Amount" />
-            }
+                <ApexChart Width="@("100%")"
+                TItem="AccountSummaryAmount"
+                Options="@Options"
+                FormatYAxisLabel="@GetYAxisLabel">
 
-        </ApexChart>
-    </MudContainer>
+                    @foreach (var (accountId, data) in DashboardState.Value.TransactionData)
+                    {
+                        <ApexPointSeries TItem="AccountSummaryAmount"
+                        Items="@data.Select(ToSummary)"
+                        Name="@AccountNameById(accountId)"
+                        SeriesType="SeriesType.Line"
+                        XValue="e => e.Date"
+                        YValue="e => e.Amount" />
+                    }
+
+            </ApexChart>
+            }
+        </MudContainer>
+    </MudStack>
 </MudPaper>

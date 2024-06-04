@@ -23,6 +23,12 @@ public sealed class FinanceUserContext : IFinanceUserContext
     public DateOnly RangeStart { get; private set; }
     public DateOnly RangeEnd { get; private set; }
 
+    public async Task ResetAsync(CancellationToken cancellationToken)
+    {
+        var (start, end) = DateRules.GetMonthRange(_dateService.Today);
+        await SetAsync(start, end, cancellationToken);
+    }
+
     public async Task LoadAsync(CancellationToken cancellationToken)
     {
         if (_loaded)
@@ -30,6 +36,7 @@ public sealed class FinanceUserContext : IFinanceUserContext
             return;
         }
 
+        // TODO: Store as serialised state rather than 2 cache entries
         var rangeStart = await _distributedCache.GetStringAsync(Key(nameof(RangeStart)), cancellationToken);
         var rangeEnd = await _distributedCache.GetStringAsync(Key(nameof(RangeEnd)), cancellationToken);
 
@@ -41,8 +48,7 @@ public sealed class FinanceUserContext : IFinanceUserContext
         }
         else
         {
-            var (s, e) = DateRules.GetMonthRange(_dateService.Today);
-            await SetAsync(s, e, cancellationToken);
+            await ResetAsync(cancellationToken);
         }
         _loaded = true;
     }

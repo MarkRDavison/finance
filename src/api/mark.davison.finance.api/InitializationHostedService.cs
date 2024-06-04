@@ -25,11 +25,11 @@ public class InitializationHostedService : GenericApplicationHealthStateHostedSe
 
         if (_appSettings.Value.PRODUCTION_MODE)
         {
-            await dbContext.Database.MigrateAsync();
+            await dbContext.Database.MigrateAsync(cancellationToken);
         }
         else
         {
-            //await dbContext.Database.EnsureDeletedAsync(cancellationToken);
+            await dbContext.Database.EnsureDeletedAsync(cancellationToken);
             await dbContext.Database.EnsureCreatedAsync(cancellationToken);
         }
 

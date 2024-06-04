@@ -1,4 +1,6 @@
-﻿namespace mark.davison.finance.data.helpers.Seeders;
+﻿using mark.davison.finance.accounting.rules;
+
+namespace mark.davison.finance.data.helpers.Seeders;
 
 public class AccountSeeder
 {
@@ -31,7 +33,7 @@ public class AccountSeeder
         }
     }
 
-    public async Task CreateStandardAccounts()
+    public async Task CreateStandardAccounts(DateOnly openingBalanceDate)
     {
         var assetAccount1 = new UpsertAccountDto
         {
@@ -39,7 +41,9 @@ public class AccountSeeder
             AccountNumber = AccountTestConstants.AssetAccount1AccountNumber,
             AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
-            Name = AccountTestConstants.AssetAccount1Name
+            Name = AccountTestConstants.AssetAccount1Name,
+            OpeningBalanceDate = openingBalanceDate,
+            OpeningBalance = CurrencyRules.ToPersisted(400.0M)
         };
         var assetAccount2 = new UpsertAccountDto
         {
@@ -47,7 +51,9 @@ public class AccountSeeder
             AccountNumber = AccountTestConstants.AssetAccount2AccountNumber,
             AccountTypeId = AccountTypeConstants.Asset,
             CurrencyId = Currency.NZD,
-            Name = AccountTestConstants.AssetAccount2Name
+            Name = AccountTestConstants.AssetAccount2Name,
+            OpeningBalanceDate = openingBalanceDate,
+            OpeningBalance = CurrencyRules.ToPersisted(50.0M)
         };
         var revenueAccount1 = new UpsertAccountDto
         {

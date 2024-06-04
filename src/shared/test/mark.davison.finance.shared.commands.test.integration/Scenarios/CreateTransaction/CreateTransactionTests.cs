@@ -5,7 +5,7 @@ public class CreateTransactionTests : CQRSIntegrationTestBase
 {
     protected override async Task SeedTestData()
     {
-        await GetRequiredService<AccountSeeder>().CreateStandardAccounts();
+        await GetRequiredService<AccountSeeder>().CreateStandardAccounts(DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-40));
     }
 
     [TestMethod]

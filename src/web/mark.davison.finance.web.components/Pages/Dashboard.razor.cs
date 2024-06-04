@@ -1,15 +1,16 @@
-﻿using ApexCharts;
-
-namespace mark.davison.finance.web.components.Pages;
+﻿namespace mark.davison.finance.web.components.Pages;
 
 public sealed class AccountSummaryAmount
 {
     public DateOnly Date { get; set; }
-    public decimal Amount { get; set; }
+    public decimal? Amount { get; set; }
 }
 
 public partial class Dashboard
 {
+    [CascadingParameter]
+    public required ThemeInfo ThemeInfo { get; set; }
+
     [Inject]
     public required IState<StartupState> StartupState { get; set; }
 
@@ -24,14 +25,15 @@ public partial class Dashboard
 
     private string AccountNameById(Guid accountId) => AccountState.Value.Accounts.FirstOrDefault(_ => _.Id == accountId)?.Name ?? string.Empty;
 
-    public static ApexChartOptions<AccountSummaryAmount> Options => new()
+    public ApexChartOptions<AccountSummaryAmount> Options => new()
     {
         Legend = new Legend
         {
             Show = true,
             Position = LegendPosition.Bottom,
             HorizontalAlign = ApexCharts.Align.Center,
-            ShowForSingleSeries = true
+            ShowForSingleSeries = true,
+            ShowForNullSeries = true
         },
         Chart = new Chart
         {
@@ -56,45 +58,33 @@ public partial class Dashboard
         Xaxis = new XAxis
         {
             TickAmount = 2,
-            Type = XAxisType.Datetime,
-            Labels = new XAxisLabels
-            {
-                //                Formatter = @"function (value, timestamp) {
-                //return 'some custom text'
-                //}"
-                //DatetimeFormatter = new DatetimeFormatter
-                //{
-                //    Year = "yyyy",
-                //    Month = "MMM 'yy",
-                //    Day = "dd MMM"
-                //},
-                //Formatter = @"function(value, { series, seriesIndex, dataPointIndex, w }) { return '$' + value }"
-            }
+            Type = XAxisType.Datetime
         },
         NoData = new NoData
         {
-            Text = "Loading"
+            Text = DashboardState.Value.Loading
+                ? "Loading..."
+                : "No data"
         },
         Theme = new Theme
         {
-            Mode = Mode.Dark // TODO: Need to get mudblazor mode and set here
+            Mode = ThemeInfo.DarkMode ? Mode.Dark : Mode.Light
         }
     };
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task EnsureContextStateHasLoaded()
     {
-        await EnsureStateHasLoaded();
-    }
-
-    private async Task EnsureStateHasLoaded()
-    {
-        await StateHelper.FetchAccountList(false);
         await StateHelper.FetchAccountTypeDashboardSummaryData(AccountTypeConstants.Asset);
     }
-    private string GetYAxisLabel(decimal value)
+
+    protected override async Task EnsureStateHasLoaded()
     {
-        return "$" + value.ToString("N0");
+        await StateHelper.FetchAccountList(false);
+        await EnsureContextStateHasLoaded();
     }
+
+    private string GetYAxisLabel(decimal value) => value.ToString("N0");
+
     public static AccountSummaryAmount ToSummary(AccountDashboardTransactionData data) => new AccountSummaryAmount
     {
         Date = data.Date, // TODO: UTC -> LOCAL???

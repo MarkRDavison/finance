@@ -62,7 +62,7 @@ public partial class ViewAccount
 
         foreach (var tGroup in TransactionState.Value.Transactions
             .GroupBy(_ => _.TransactionGroupId)
-            .Where(_ => _appContext.RangeStart <= _.First().Date || _appContext.RangeEnd <= _.First().Date)
+            .Where(_ => _appContext.State.RangeStart <= _.First().Date || _appContext.State.RangeEnd <= _.First().Date)
             .OrderByDescending(_ => _.First().Date)) // TODO: Sorting with multi line entries
         {
             var splitDescription = tGroup.First().SplitTransactionDescription ?? string.Empty;

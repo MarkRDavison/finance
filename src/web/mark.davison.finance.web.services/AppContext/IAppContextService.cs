@@ -2,6 +2,11 @@
 
 public interface IAppContextService
 {
-    public DateOnly RangeStart { get; set; }
-    public DateOnly RangeEnd { get; set; }
+    AppContextState State { get; }
+
+    void UpdateRange(DateOnly start, DateOnly end);
+
+    event EventHandler RangeUpdated;
+
+    AppContextState? GetChangedState(AppContextState existing);
 }

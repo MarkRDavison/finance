@@ -5,7 +5,6 @@ public static class StartupReducers
     [ReducerMethod]
     public static StartupState FetchStartupActionResponse(StartupState state, FetchStartupActionResponse response)
     {
-        Console.WriteLine("StartupReducers.FetchStartupActionResponse");
         if (response.SuccessWithValue)
         {
             return new StartupState(

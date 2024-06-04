@@ -1,5 +1,6 @@
 ﻿global using mark.davison.common.server.abstractions.Authentication;
 global using mark.davison.common.server.abstractions.CQRS;
+global using mark.davison.common.Services;
 global using mark.davison.finance.accounting.constants;
 global using mark.davison.finance.models.dtos.Queries.AccountDashboardSummaryQuery;
 global using mark.davison.finance.models.dtos.Queries.AccountListQuery;

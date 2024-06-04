@@ -1,5 +1,13 @@
-﻿<div onclick="@(() => Console.WriteLine("TODO: Select date range"))">
-    @* <DateRange @bind-Start="_appContext.RangeStart" @bind-End="_appContext.RangeEnd" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Mark Davison</span> *@
+﻿<style>
+    .mud-picker.mud-picker-inline.mud-picker-input-button {
+        visibility: collapse !important;
+    }
 
-    <span data-testid="@DataTestIds.Username">@AuthenticationContext.User?.preferred_username</span>
-</div>
+    .mud-range-input-separator {
+        visibility: collapse !important;
+    }
+</style>
+
+<MudButton OnClick="@OpenPicker">@FormattedRange</MudButton>
+<MudDateRangePicker Style="visibility: collapse !important" @ref="rangePicker" DateRange="@_range" DateRangeChanged="@DateRangeChanged" />
+<span data-testid="@DataTestIds.Username">@AuthenticationContext.User?.preferred_username</span>
