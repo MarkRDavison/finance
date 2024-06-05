@@ -24,8 +24,8 @@ jobs:
 
       - name: build
         working-directory: ./src
-        run: dotnet build
+        run: dotnet build ./finance.sln
 
       - name: test
         working-directory: ./src
-        run: dotnet test --filter "TestCategory!=UI"
+        run: dotnet test ./finance.sln --filter "TestCategory!=UI"

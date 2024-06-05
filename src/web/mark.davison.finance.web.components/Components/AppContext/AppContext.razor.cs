@@ -12,7 +12,7 @@ public partial class AppContext
     public required IClientHttpRepository ClientHttpRepository { get; set; }
 
     [AllowNull]
-    private MudDateRangePicker rangePicker;
+    private MudDateRangePicker _picker;
 
     private readonly DateRange _range = new();
     private bool _changeInProgress;
@@ -25,7 +25,14 @@ public partial class AppContext
 
     private void OpenPicker()
     {
-        rangePicker.Open();
+        _picker.Open();
+    }
+
+    private async Task Reset()
+    {
+        _picker.Close(false);
+        var (s, e) = DateRules.GetMonthRange(DateOnly.FromDateTime(DateTime.Today));
+        await DateRangeChanged(new DateRange(s.ToDateTime(TimeOnly.MinValue), e.ToDateTime(TimeOnly.MinValue)));
     }
 
     private async Task DateRangeChanged(DateRange range)

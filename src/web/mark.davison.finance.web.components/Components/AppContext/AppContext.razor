@@ -9,5 +9,10 @@
 </style>
 
 <MudButton OnClick="@OpenPicker">@FormattedRange</MudButton>
-<MudDateRangePicker Style="visibility: collapse !important" @ref="rangePicker" DateRange="@_range" DateRangeChanged="@DateRangeChanged" />
+<MudDateRangePicker @ref="_picker" Style="visibility: collapse !important" DateRange="@_range" DateRangeChanged="@DateRangeChanged" AutoClose="true">
+    <PickerActions>
+        <MudButton Class="mr-auto align-self-start" OnClick="@(() => _picker.Close(false))">Cancel</MudButton>
+        <MudButton OnClick="@Reset">Reset</MudButton>
+    </PickerActions>
+</MudDateRangePicker>
 <span data-testid="@DataTestIds.Username">@AuthenticationContext.User?.preferred_username</span>

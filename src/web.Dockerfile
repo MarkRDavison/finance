@@ -1,8 +1,10 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 as BUILD
 WORKDIR /app 
 
+ENV CI_BUILD=true
+
 COPY / /app/
-RUN dotnet restore
+RUN dotnet restore ./finance.sln
 RUN dotnet publish -c Release -o /app/publish/ web/mark.davison.finance.web.ui/mark.davison.finance.web.ui.csproj
 
 FROM nginx:alpine AS FINAL

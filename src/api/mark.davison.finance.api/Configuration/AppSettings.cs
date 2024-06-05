@@ -1,6 +1,4 @@
-﻿using mark.davison.common.persistence.Configuration;
-
-namespace mark.davison.finance.api.Configuration;
+﻿namespace mark.davison.finance.api.Configuration;
 
 public sealed class AppSettings : IAppSettings
 {

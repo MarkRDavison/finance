@@ -2,6 +2,7 @@ global:
   ingress:
     hostname: prod-ingress.markdavison.kiwi
     certIssuer: letsencrypt-staging
+    proxyBufferSize: 64k
 api:
   app: zeno-finance-api
   replicas: 1
@@ -13,20 +14,28 @@ api:
     host: finance-api.markdavison.kiwi
   env:
     secret:
-      - CLIENT_SECRET
-      - DB_USERNAME
-      - DB_PASSWORD
+      - AUTH__CLIENT_SECRET
+      - DATABASE__DB_USERNAME
+      - DATABASE__DB_PASSWORD
+      - REDIS__PASSWORD
     public:
-      FINANCE__DATABASE_TYPE: postgres
-      FINANCE__DB_DATABASE: prod-finance
-      FINANCE__DB_PORT: 5432
-      FINANCE__DB_HOST: postgres.markdavison.kiwi
-      FINANCE__URL: http://0.0.0.0:50000
-      FINANCE__CLIENT_ID: zeno-finance
-      FINANCE__SESSION_NAME: zeno-finance-prod-session
-      FINANCE__SCOPE: openid profile email offline_access zeno-finance
-      FINANCE__AUTHORITY: https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi
+      FINANCE__AUTH__CLIENT_ID: zeno-finance
+      FINANCE__AUTH__AUDIENCE: zeno-finance
+      FINANCE__AUTH__SESSION_NAME: zeno-finance-prod-session
+      FINANCE__AUTH__SCOPE: openid profile email offline_access zeno-finance
+      FINANCE__AUTH__AUTHORITY: https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi
+      FINANCE__CLAIMS__OIDC_ID_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier
+      FINANCE__CLAIMS__OIDC_EMAIL_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+      FINANCE__CLAIMS__OIDC_FIRST_NAME_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
+      FINANCE__CLAIMS__OIDC_LAST_NAME_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
+      FINANCE__CLAIMS__OIDC_USERNAME_ATTRIBUTE: preferred_username
+      FINANCE__REDIS__HOST: redis.markdavison.kiwi
+      FINANCE__DATABASE__DATABASE_TYPE: postgres
+      FINANCE__DATABASE__DB_DATABASE: prod-finance
+      FINANCE__DATABASE__DB_PORT: 5432
+      FINANCE__DATABASE__DB_HOST: postgres.markdavison.kiwi
       FINANCE__PRODUCTION_MODE: true
+      FINANCE__URL: http://0.0.0.0:50000
 bff:
   app: zeno-finance-bff
   replicas: 1
@@ -38,20 +47,25 @@ bff:
     host: finance-bff.markdavison.kiwi
   env:
     secret:
-      - REDIS_PASSWORD
-      - CLIENT_SECRET
-      - SESSION_SECRET
+      - AUTH__CLIENT_SECRET
+      - AUTH__SESSION_SECRET
+      - REDIS__PASSWORD
     public:
-      FINANCE__AUTHORITY: https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi
-      FINANCE__REDIS_PORT: '6379'
+      FINANCE__AUTH__AUTHORITY: https://keycloak.markdavison.kiwi/auth/realms/markdavison.kiwi
+      FINANCE__AUTH__CLIENT_ID: zeno-finance
+      FINANCE__AUTH__AUDIENCE: zeno-finance
+      FINANCE__AUTH__SESSION_NAME: zeno-finance-prod-session
+      FINANCE__AUTH__SCOPE: openid profile email offline_access zeno-finance
+      FINANCE__CLAIMS__OIDC_ID_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier
+      FINANCE__CLAIMS__OIDC_EMAIL_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+      FINANCE__CLAIMS__OIDC_FIRST_NAME_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
+      FINANCE__CLAIMS__OIDC_LAST_NAME_ATTRIBUTE: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
+      FINANCE__CLAIMS__OIDC_USERNAME_ATTRIBUTE: preferred_username
+      FINANCE__REDIS__HOST: redis.markdavison.kiwi
       FINANCE__WEB_ORIGIN: https://finance.markdavison.kiwi
       FINANCE__BFF_ORIGIN: https://finance-bff.markdavison.kiwi
       FINANCE__API_ORIGIN: https://finance-api.markdavison.kiwi
-      FINANCE__SESSION_NAME: zeno-finance-prod-session
-      FINANCE__REDIS_HOST: redis.markdavison.kiwi
-      FINANCE__CLIENT_ID: zeno-finance
       FINANCE__URL: http://0.0.0.0:40000
-      FINANCE__SCOPE: openid profile email offline_access zeno-finance
       FINANCE__PRODUCTION_MODE: true
 web:
   app: zeno-finance-web
