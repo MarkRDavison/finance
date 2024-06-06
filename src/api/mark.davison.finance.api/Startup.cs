@@ -39,6 +39,11 @@ public class Startup
             .AddSharedServices()
             .AddCommandCQRS()
             .UseDataSeeders();
+
+        if (string.IsNullOrEmpty(AppSettings.REDIS.HOST)) // TODO: Can remove next common upgrade
+        {
+            services.AddDistributedMemoryCache();
+        }
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
